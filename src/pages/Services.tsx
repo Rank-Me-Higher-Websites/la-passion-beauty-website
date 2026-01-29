@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Scissors, Sparkles, Heart, Palette, ArrowRight } from "lucide-react";
@@ -80,57 +79,48 @@ const services = [
 
 const Services = () => {
   return (
-    <>
-      <Helmet>
-        <title>Our Services | Hair, Coloring, Treatments & Permanent Makeup - La Passion Beauty Salon</title>
-        <meta 
-          name="description" 
-          content="Explore La Passion Beauty Salon's full range of services: haircuts, coloring, balayage, hair treatments, extensions, and permanent makeup. Premium beauty services in Lemont, IL." 
-        />
-        <link rel="canonical" href="https://lapassionbeautysalon.com/services" />
-      </Helmet>
-      <Layout>
-        {/* Hero Section */}
-        <section className="pt-32 pb-16 bg-cream-dark">
-          <div className="container-custom">
-            <div className="max-w-4xl">
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-primary uppercase tracking-[0.2em] text-sm mb-3"
-              >
-                What We Offer
-              </motion.p>
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="heading-hero text-foreground mb-6"
-              >
-                Our Beauty Services
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-body max-w-2xl"
-              >
-                Whether it's a new color, a fresh cut, or a treatment to revive your hair, our stylists 
-                use techniques and products that keep it healthy and styled just for you.
-              </motion.p>
-              <motion.nav
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="flex items-center gap-2 text-sm mt-6"
-              >
-                <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
-                <span className="text-muted-foreground">/</span>
-                <span className="text-foreground">Services</span>
-              </motion.nav>
-            </div>
+    <Layout>
+      {/* Hero Section */}
+      <section className="pt-32 pb-16 bg-cream-dark">
+        <div className="container-custom">
+          <div className="max-w-4xl">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-primary uppercase tracking-[0.2em] text-sm mb-3"
+            >
+              What We Offer
+            </motion.p>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="heading-hero text-foreground mb-6"
+            >
+              Our Beauty Services
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-body max-w-2xl"
+            >
+              Whether it's a new color, a fresh cut, or a treatment to revive your hair, our stylists 
+              use techniques and products that keep it healthy and styled just for you.
+            </motion.p>
+            <motion.nav
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex items-center gap-2 text-sm mt-6"
+            >
+              <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
+              <span className="text-muted-foreground">/</span>
+              <span className="text-foreground">Services</span>
+            </motion.nav>
           </div>
-        </section>
+        </div>
+      </section>
 
         {/* Services List */}
         <section className="section-padding bg-background">
@@ -220,7 +210,6 @@ const Services = () => {
 
         <CTASection />
       </Layout>
-    </>
   );
 };
 

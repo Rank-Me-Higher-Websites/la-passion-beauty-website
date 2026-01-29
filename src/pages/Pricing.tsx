@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
@@ -65,58 +64,49 @@ const permanentMakeup = [
 
 const Pricing = () => {
   return (
-    <>
-      <Helmet>
-        <title>Pricing | Beauty Salon Prices in Lemont, IL - La Passion Beauty Salon</title>
-        <meta 
-          name="description" 
-          content="View La Passion Beauty Salon's transparent pricing for haircuts, coloring, treatments, and permanent makeup. Fair prices for high-quality beauty services in Lemont, IL." 
-        />
-        <link rel="canonical" href="https://lapassionbeautysalon.com/pricing" />
-      </Helmet>
-      <Layout>
-        {/* Hero Section */}
-        <section className="pt-32 pb-16 bg-cream-dark">
-          <div className="container-custom">
-            <div className="max-w-4xl">
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-primary uppercase tracking-[0.2em] text-sm mb-3"
-              >
-                La Passion Beauty Salon
-              </motion.p>
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="heading-hero text-foreground mb-6"
-              >
-                Our Pricing
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-body max-w-2xl"
-              >
-                We're proud to offer high-quality hair and beauty services at fair, transparent pricing. 
-                From coloring and cuts to treatments and permanent makeup, our pricing reflects the care 
-                and expertise that go into every appointment.
-              </motion.p>
-              <motion.nav
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="flex items-center gap-2 text-sm mt-6"
-              >
-                <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
-                <span className="text-muted-foreground">/</span>
-                <span className="text-foreground">Pricing</span>
-              </motion.nav>
-            </div>
+    <Layout>
+      {/* Hero Section */}
+      <section className="pt-32 pb-16 bg-cream-dark">
+        <div className="container-custom">
+          <div className="max-w-4xl">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-primary uppercase tracking-[0.2em] text-sm mb-3"
+            >
+              La Passion Beauty Salon
+            </motion.p>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="heading-hero text-foreground mb-6"
+            >
+              Our Pricing
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-body max-w-2xl"
+            >
+              We're proud to offer high-quality hair and beauty services at fair, transparent pricing. 
+              From coloring and cuts to treatments and permanent makeup, our pricing reflects the care 
+              and expertise that go into every appointment.
+            </motion.p>
+            <motion.nav
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex items-center gap-2 text-sm mt-6"
+            >
+              <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
+              <span className="text-muted-foreground">/</span>
+              <span className="text-foreground">Pricing</span>
+            </motion.nav>
           </div>
-        </section>
+        </div>
+      </section>
 
         {/* Hair Services Pricing */}
         <section className="section-padding bg-background">
@@ -234,7 +224,6 @@ const Pricing = () => {
 
         <CTASection />
       </Layout>
-    </>
   );
 };
 
