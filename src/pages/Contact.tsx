@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
@@ -41,57 +40,48 @@ const Contact = () => {
   };
 
   return (
-    <>
-      <Helmet>
-        <title>Contact Us | La Passion Beauty Salon - Book Your Appointment in Lemont, IL</title>
-        <meta 
-          name="description" 
-          content="Contact La Passion Beauty Salon in Lemont, IL. Call +1 331-318-8113 to book your hair or permanent makeup appointment. Visit our salon for a luxury beauty experience." 
-        />
-        <link rel="canonical" href="https://lapassionbeautysalon.com/contact" />
-      </Helmet>
-      <Layout>
-        {/* Hero Section */}
-        <section className="pt-32 pb-16 bg-cream-dark">
-          <div className="container-custom">
-            <div className="max-w-4xl">
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-primary uppercase tracking-[0.2em] text-sm mb-3"
-              >
-                Reach our beauty salon team in Lemont, IL
-              </motion.p>
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="heading-hero text-foreground mb-6"
-              >
-                Contact Us
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-body max-w-2xl"
-              >
-                At La Passion Beauty Salon, we're here to make your beauty experience effortless and enjoyable. 
-                Contact us today to schedule your appointment and let us bring out your natural beauty.
-              </motion.p>
-              <motion.nav
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="flex items-center gap-2 text-sm mt-6"
-              >
-                <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
-                <span className="text-muted-foreground">/</span>
-                <span className="text-foreground">Contact Us</span>
-              </motion.nav>
-            </div>
+    <Layout>
+      {/* Hero Section */}
+      <section className="pt-32 pb-16 bg-cream-dark">
+        <div className="container-custom">
+          <div className="max-w-4xl">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-primary uppercase tracking-[0.2em] text-sm mb-3"
+            >
+              Reach our beauty salon team in Lemont, IL
+            </motion.p>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="heading-hero text-foreground mb-6"
+            >
+              Contact Us
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-body max-w-2xl"
+            >
+              At La Passion Beauty Salon, we're here to make your beauty experience effortless and enjoyable. 
+              Contact us today to schedule your appointment and let us bring out your natural beauty.
+            </motion.p>
+            <motion.nav
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex items-center gap-2 text-sm mt-6"
+            >
+              <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
+              <span className="text-muted-foreground">/</span>
+              <span className="text-foreground">Contact Us</span>
+            </motion.nav>
           </div>
-        </section>
+        </div>
+      </section>
 
         {/* Contact Content */}
         <section className="section-padding bg-background">
@@ -289,7 +279,6 @@ const Contact = () => {
           </div>
         </section>
       </Layout>
-    </>
   );
 };
 

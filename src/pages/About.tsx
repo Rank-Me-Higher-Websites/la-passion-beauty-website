@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Check, Award, Heart, Sparkles } from "lucide-react";
@@ -20,16 +19,7 @@ const commitments = [
 
 const About = () => {
   return (
-    <>
-      <Helmet>
-        <title>About Us | La Passion Beauty Salon - Expert Stylists in Lemont, IL</title>
-        <meta 
-          name="description" 
-          content="Learn about La Passion Beauty Salon's team of certified expert stylists. We use Kérastase products and offer personalized hair care and permanent makeup services in Lemont, IL." 
-        />
-        <link rel="canonical" href="https://lapassionbeautysalon.com/about" />
-      </Helmet>
-      <Layout>
+    <Layout>
         {/* Hero Section */}
         <section className="pt-32 pb-16 bg-cream-dark">
           <div className="container-custom">
@@ -199,7 +189,6 @@ const About = () => {
         <ReviewsSection />
         <CTASection />
       </Layout>
-    </>
   );
 };
 
