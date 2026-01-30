@@ -5,16 +5,17 @@ import Layout from "@/components/layout/Layout";
 import CTASection from "@/components/sections/CTASection";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import hairStylingImage from "@/assets/hair-styling.jpg";
-import permanentMakeupImage from "@/assets/permanent-makeup.jpg";
+import hairExtensionsImage from "@/assets/hair-extensions.jpg";
+import hairColoringImage from "@/assets/hair-coloring.jpg";
 import hairTreatmentImage from "@/assets/hair-treatment.jpg";
+import permanentMakeupImage from "@/assets/permanent-makeup.jpg";
 
 const services = [
   {
     id: "hair",
     title: "Hair Services",
     icon: Scissors,
-    image: hairStylingImage,
+    image: hairExtensionsImage,
     description: "Our professional stylists specialize in personalized hair services that enhance your natural beauty. From sleek blowouts to trend-forward styling, we make sure your hair looks flawless and feels its best.",
     items: [
       { name: "Women's Haircut & Style", price: "$45+" },
@@ -27,7 +28,7 @@ const services = [
     id: "coloring",
     title: "Hair Coloring",
     icon: Palette,
-    image: hairStylingImage,
+    image: hairColoringImage,
     description: "From subtle highlights to bold, vibrant shades, our hair coloring services are tailored to your style and personality. Using professional techniques and quality products, we create colors that look fresh, natural, and keep your hair healthy and radiant.",
     items: [
       { name: "Root Touch-Up", price: "$85+" },
@@ -55,7 +56,7 @@ const services = [
     id: "extensions",
     title: "Hair Extensions",
     icon: Scissors,
-    image: hairStylingImage,
+    image: hairExtensionsImage,
     description: "Looking for instant length or volume? Our high-quality hair extensions blend seamlessly with your natural hair, giving you a fuller, longer look that feels comfortable and effortless. Perfect for a quick style boost or a complete transformation.",
     items: [
       { name: "Hair Extensions Consultation", price: "Free" },
