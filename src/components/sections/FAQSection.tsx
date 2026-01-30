@@ -11,7 +11,7 @@ import {
 const faqs = [
   {
     question: "What services does La Passion Beauty Salon offer?",
-    answer: "We offer a wide range of beauty services including haircuts, hair coloring, balayage, highlights, hair extensions, keratin treatments, deep conditioning, permanent makeup (ombre brows, combo brows, eyeliner), and more. Our stylists are trained in the latest techniques to deliver stunning results.",
+    answer: "We offer hair services including custom cuts, styling, and blowouts. Our hair coloring services include balayage, highlights, and full color. We also provide hair treatments to repair, hydrate, and restore shine. Additionally, we offer permanent makeup services including ombre brows, combo brows, and eyeliner.",
   },
   {
     question: "Do I need an appointment or do you accept walk-ins?",
@@ -19,7 +19,7 @@ const faqs = [
   },
   {
     question: "What hair care products do you use?",
-    answer: "We work exclusively with Kérastase, the world's leading luxury haircare brand trusted by professionals worldwide. Each formula is crafted with high-performance ingredients to strengthen, nourish, and protect every strand.",
+    answer: "Healthy, beautiful hair starts with the right products. That's why we work exclusively with Kérastase, a luxury haircare brand trusted by professionals worldwide. Each formula is crafted with high-performance ingredients to strengthen, nourish, and protect every strand.",
   },
   {
     question: "How long does permanent makeup last?",

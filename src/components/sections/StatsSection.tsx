@@ -1,13 +1,12 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Award, Users, Star, Sparkles } from "lucide-react";
+import { Star } from "lucide-react";
 
-const stats = [
-  { value: "1K+", label: "Happy Clients", icon: Users },
-  { value: "10+", label: "Years Experience", icon: Award },
-  { value: "5.0", label: "Star Rating", icon: Star },
-  { value: "100%", label: "Certified Stylists", icon: Sparkles },
+const ratings = [
+  { platform: "Google Rating", rating: "5.0", color: "text-primary" },
+  { platform: "Facebook Rating", rating: "5.0", color: "text-primary" },
+  { platform: "Work Quality", rating: "100%", color: "text-primary" },
 ];
 
 const StatsSection = () => {
@@ -15,24 +14,33 @@ const StatsSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-16 bg-foreground text-primary-foreground">
+    <section ref={ref} className="py-16 bg-card">
       <div className="container-custom">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-          {stats.map((stat, index) => (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-10"
+        >
+          <h2 className="heading-section text-foreground">What Our Clients Say</h2>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          {ratings.map((item, index) => (
             <motion.div
-              key={stat.label}
+              key={item.platform}
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="text-center"
+              className="text-center p-8 bg-background rounded-xl border border-border shadow-soft"
             >
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
-                <stat.icon className="h-6 w-6 text-primary" />
+              <div className="flex justify-center gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 fill-primary text-primary" />
+                ))}
               </div>
-              <p className="font-serif text-3xl md:text-4xl font-semibold text-primary-foreground mb-1">
-                {stat.value}
-              </p>
-              <p className="text-sm text-primary-foreground/70">{stat.label}</p>
+              <p className="text-sm text-muted-foreground mb-2">{item.platform}</p>
+              <p className="font-serif text-4xl font-semibold text-foreground">{item.rating}</p>
             </motion.div>
           ))}
         </div>

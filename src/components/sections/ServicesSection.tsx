@@ -48,10 +48,11 @@ const ServicesSection = () => {
           className="max-w-2xl mb-12 md:mb-16"
         >
           <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">What We Offer</p>
-          <h2 className="heading-section text-foreground mb-4">Our Signature Services</h2>
+          <h2 className="heading-section text-foreground mb-4">Our Services</h2>
           <p className="text-body">
-            From precision cuts to rejuvenating treatments, we create styles that blend 
-            beauty with everyday ease.
+            At La Passion Beauty Salon, we create styles that blend beauty with everyday ease. 
+            Our services include custom cuts, rich, blended hair color, and restorative treatments 
+            that bring back softness, shine, and strength.
           </p>
         </motion.div>
 
