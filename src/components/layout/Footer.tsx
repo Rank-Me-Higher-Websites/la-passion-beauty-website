@@ -16,7 +16,7 @@ const Footer = () => {
               <img 
                 src={logo} 
                 alt="La Passion Beauty Salon" 
-                className="h-20 w-auto brightness-0 invert"
+                className="h-14 w-auto brightness-0 invert"
               />
             </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-6">

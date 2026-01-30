@@ -45,7 +45,7 @@ const Header = () => {
             <img 
               src={logo} 
               alt="La Passion Beauty Salon" 
-              className="h-16 md:h-20 w-auto"
+              className="h-12 md:h-14 w-auto"
             />
           </Link>
 
@@ -95,7 +95,7 @@ const Header = () => {
                     <img 
                       src={logo} 
                       alt="La Passion Beauty Salon" 
-                      className="h-14 w-auto"
+                      className="h-10 w-auto"
                     />
                   </div>
                   
