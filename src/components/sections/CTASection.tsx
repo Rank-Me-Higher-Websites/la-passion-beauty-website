@@ -22,9 +22,9 @@ const CTASection = () => {
           transition={{ duration: 0.6 }}
           className="max-w-3xl mx-auto text-center"
         >
-          <p className="text-primary uppercase tracking-[0.2em] text-sm mb-4">Ready to Transform?</p>
+          <p className="text-primary uppercase tracking-[0.2em] text-sm mb-4">Get In Touch</p>
           <h2 className="heading-section text-primary-foreground mb-6">
-            Book Your Appointment Today
+            Contact Us
           </h2>
           <p className="text-lg text-primary-foreground/70 mb-8 max-w-2xl mx-auto">
             Experience the luxury of personalized beauty care at La Passion Beauty Salon. 
