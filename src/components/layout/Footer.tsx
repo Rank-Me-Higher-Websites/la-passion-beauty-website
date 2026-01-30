@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin, Clock, Facebook, Instagram } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -12,10 +13,11 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="mb-6">
-              <span className="font-serif text-2xl font-semibold">La Passion</span>
-              <p className="text-xs tracking-[0.2em] uppercase text-primary-foreground/60 mt-1">
-                Beauty Salon
-              </p>
+              <img 
+                src={logo} 
+                alt="La Passion Beauty Salon" 
+                className="h-14 w-auto brightness-0 invert"
+              />
             </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-6">
               Elevating beauty in Chicago. Expert hair care, nourishing treatments, and flawless 

@@ -4,6 +4,7 @@ import { Menu, X, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import logo from "@/assets/logo.png";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -40,21 +41,12 @@ const Header = () => {
       <div className="container-custom">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex flex-col">
-              <span className={cn(
-                "font-serif text-xl md:text-2xl font-semibold tracking-tight transition-colors",
-                isScrolled ? "text-foreground" : "text-foreground"
-              )}>
-                La Passion
-              </span>
-              <span className={cn(
-                "text-xs tracking-[0.2em] uppercase transition-colors",
-                isScrolled ? "text-muted-foreground" : "text-muted-foreground"
-              )}>
-                Beauty Salon
-              </span>
-            </div>
+          <Link to="/" className="flex items-center">
+            <img 
+              src={logo} 
+              alt="La Passion Beauty Salon" 
+              className="h-12 md:h-14 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -100,10 +92,11 @@ const Header = () => {
               <SheetContent side="right" className="w-[300px] bg-background">
                 <div className="flex flex-col h-full">
                   <div className="flex items-center justify-between mb-8 pt-2">
-                    <div className="flex flex-col">
-                      <span className="font-serif text-xl font-semibold">La Passion</span>
-                      <span className="text-xs tracking-[0.2em] uppercase text-muted-foreground">Beauty Salon</span>
-                    </div>
+                    <img 
+                      src={logo} 
+                      alt="La Passion Beauty Salon" 
+                      className="h-10 w-auto"
+                    />
                   </div>
                   
                   <nav className="flex flex-col gap-1">
