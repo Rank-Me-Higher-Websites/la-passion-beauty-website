@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { ArrowRight, Scissors, Sparkles, Heart } from "lucide-react";
+import { ArrowRight, Scissors, Sparkles, Heart, Palette } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import hairStylingImage from "@/assets/hair-styling.jpg";
+import hairColoringImage from "@/assets/hair-coloring.jpg";
+import hairExtensionsImage from "@/assets/hair-extensions.jpg";
 import permanentMakeupImage from "@/assets/permanent-makeup.jpg";
 import hairTreatmentImage from "@/assets/hair-treatment.jpg";
 
@@ -18,11 +20,18 @@ const services = [
     link: "/services#hair",
   },
   {
-    title: "Permanent Makeup",
-    description: "Our permanent makeup services enhance your natural beauty with expertly applied brows, eyeliner, and lip blush—customized to your features for soft, long-lasting results that simplify your routine.",
-    image: permanentMakeupImage,
-    icon: Sparkles,
-    link: "/services#permanent-makeup",
+    title: "Hair Coloring",
+    description: "From subtle highlights to bold, vibrant shades, our hair coloring services are tailored to your style and personality. Using professional techniques and quality products, we create colors that look fresh and natural.",
+    image: hairColoringImage,
+    icon: Palette,
+    link: "/services#coloring",
+  },
+  {
+    title: "Hair Extensions",
+    description: "Looking for instant length or volume? Our high-quality hair extensions blend seamlessly with your natural hair, giving you a fuller, longer look that feels comfortable and effortless.",
+    image: hairExtensionsImage,
+    icon: Scissors,
+    link: "/services#extensions",
   },
   {
     title: "Hair Treatments",
@@ -30,6 +39,13 @@ const services = [
     image: hairTreatmentImage,
     icon: Heart,
     link: "/services#treatments",
+  },
+  {
+    title: "Permanent Makeup",
+    description: "Our permanent makeup services enhance your natural beauty with expertly applied brows, eyeliner, and lip blush—customized to your features for soft, long-lasting results that simplify your routine.",
+    image: permanentMakeupImage,
+    icon: Sparkles,
+    link: "/services#permanent-makeup",
   },
 ];
 
