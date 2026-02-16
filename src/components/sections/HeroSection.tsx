@@ -90,7 +90,7 @@ const HeroSection = () => {
             className="flex flex-col sm:flex-row gap-4"
           >
             <Button variant="gold" size="xl" asChild>
-              <Link to="/about">About Us</Link>
+              <Link to="/booking">Book Now</Link>
             </Button>
             <Button variant="outline" size="xl" asChild>
               <a href="tel:+13313188113" className="gap-2">
