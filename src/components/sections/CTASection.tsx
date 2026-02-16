@@ -32,7 +32,7 @@ const CTASection = () => {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button variant="cta" size="xl" asChild>
-              <Link to="/contact">
+              <Link to="/booking">
                 <Calendar className="h-5 w-5 mr-2" />
                 Book Appointment
               </Link>
