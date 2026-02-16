@@ -6,12 +6,13 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
 
+import { useAuth } from "@/contexts/AuthContext";
+
 const navLinks = [
   { name: "Home", path: "/" },
-  { name: "About", path: "/about" },
+  { name: "Book Now", path: "/booking" },
   { name: "Services", path: "/services" },
   { name: "Pricing", path: "/pricing" },
-  { name: "Book Now", path: "/booking" },
   { name: "Contact", path: "/contact" },
 ];
 
@@ -19,6 +20,7 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,12 +74,29 @@ const Header = () => {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-4">
-            <a href="tel:+13313188113" className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
-              <Phone className="h-4 w-4" />
-              <span>+1 331-318-8113</span>
-            </a>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/my-bookings"
+                  className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
+                >
+                  My Bookings
+                </Link>
+                <span className="text-sm text-muted-foreground">{user?.name?.split(" ")[0]}</span>
+                <Button variant="ghost" size="sm" onClick={logout}>
+                  Log Out
+                </Button>
+              </>
+            ) : (
+              <Button variant="gold-outline" size="sm" asChild>
+                <Link to="/login">Log In</Link>
+              </Button>
+            )}
             <Button variant="gold" size="lg" asChild>
-              <a href="tel:+13313188113">Call Now</a>
+              <a href="tel:+13313188113">
+                <Phone className="h-4 w-4 mr-2" />
+                Call Now
+              </a>
             </Button>
           </div>
 
@@ -119,12 +138,27 @@ const Header = () => {
                   </nav>
 
                   <div className="mt-auto pb-8 space-y-4">
-                    <div className="px-4 py-4 bg-muted rounded-lg">
-                      <p className="text-sm text-muted-foreground mb-1">Call us today</p>
-                      <a href="tel:+13313188113" className="text-lg font-semibold text-primary">
-                        +1 331-318-8113
-                      </a>
-                    </div>
+                    {isAuthenticated ? (
+                      <>
+                        <Link
+                          to="/my-bookings"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block px-4 py-3 rounded-lg text-base font-medium text-foreground hover:bg-muted"
+                        >
+                          My Bookings
+                        </Link>
+                        <div className="px-4 py-2">
+                          <p className="text-sm text-muted-foreground">Logged in as {user?.name}</p>
+                          <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="text-sm text-primary hover:underline mt-1">
+                            Log Out
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <Button variant="gold-outline" className="w-full" asChild>
+                        <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Log In / Sign Up</Link>
+                      </Button>
+                    )}
                     <Button variant="gold" size="lg" className="w-full" asChild>
                       <a href="tel:+13313188113">
                         <Phone className="h-4 w-4 mr-2" />
