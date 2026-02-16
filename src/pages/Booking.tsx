@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { ArrowLeft, ArrowRight, Check, Clock, User, CalendarIcon, Phone, Mail, ChevronRight } from "lucide-react";
@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { addBooking } from "@/lib/bookings-store";
 import {
   services,
   staffMembers,
@@ -29,17 +31,26 @@ const steps: { key: Step; label: string }[] = [
 ];
 
 const Booking = () => {
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState<Step>("service");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [clientName, setClientName] = useState("");
-  const [clientPhone, setClientPhone] = useState("");
-  const [clientEmail, setClientEmail] = useState("");
+  const [clientName, setClientName] = useState(user?.name || "");
+  const [clientPhone, setClientPhone] = useState(user?.phone || "");
+  const [clientEmail, setClientEmail] = useState(user?.email || "");
   const [notes, setNotes] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setClientName(user.name);
+      setClientPhone(user.phone);
+      setClientEmail(user.email);
+    }
+  }, [user]);
 
   const currentStepIndex = steps.findIndex((s) => s.key === currentStep);
 
@@ -67,7 +78,20 @@ const Booking = () => {
   };
 
   const handleSubmit = () => {
-    // In production, this would POST to your Replit backend
+    // Save booking to localStorage
+    addBooking({
+      id: `b_${Date.now()}`,
+      clientName,
+      clientPhone,
+      clientEmail,
+      serviceId: selectedService?.id || "",
+      staffId: selectedStaff?.id || "",
+      date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
+      time: selectedTime || "",
+      status: "pending",
+      notes: notes || undefined,
+      createdAt: new Date().toISOString(),
+    });
     setIsSubmitted(true);
   };
 
