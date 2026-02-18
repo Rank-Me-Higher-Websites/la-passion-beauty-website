@@ -8,12 +8,19 @@ export interface Service {
   price: string;
 }
 
+export interface DaySchedule {
+  day: number; // 0=Sun,1=Mon,...6=Sat
+  startHour: number;
+  endHour: number;
+}
+
 export interface StaffMember {
   id: string;
   name: string;
   role: string;
   avatar: string;
   services: string[]; // service category IDs
+  schedule: DaySchedule[]; // days they work with hours
 }
 
 export interface TimeSlot {
@@ -58,24 +65,109 @@ export const services: Service[] = [
 export const staffMembers: StaffMember[] = [
   {
     id: "st1",
-    name: "Maria",
+    name: "Laima",
     role: "Senior Stylist",
-    avatar: "M",
+    avatar: "L",
     services: ["hair", "coloring", "treatments", "extensions"],
+    schedule: [
+      { day: 2, startHour: 10, endHour: 17 }, // Tue
+      { day: 3, startHour: 10, endHour: 17 }, // Wed
+      { day: 4, startHour: 10, endHour: 17 }, // Thu
+    ],
   },
   {
     id: "st2",
-    name: "Elena",
-    role: "Color Specialist",
-    avatar: "E",
-    services: ["coloring", "treatments", "hair"],
+    name: "Kasia",
+    role: "Stylist",
+    avatar: "K",
+    services: ["hair", "coloring", "treatments"],
+    schedule: [
+      { day: 2, startHour: 10, endHour: 17 }, // Tue
+      { day: 3, startHour: 10, endHour: 17 }, // Wed
+      { day: 5, startHour: 10, endHour: 17 }, // Fri
+      { day: 6, startHour: 9, endHour: 14 },  // Sat
+    ],
   },
   {
     id: "st3",
+    name: "Kamila J.",
+    role: "Stylist",
+    avatar: "K",
+    services: ["hair", "coloring", "treatments"],
+    schedule: [
+      { day: 2, startHour: 10, endHour: 16 }, // Tue
+      { day: 3, startHour: 10, endHour: 16 }, // Wed
+    ],
+  },
+  {
+    id: "st4",
+    name: "Karolina",
+    role: "Stylist",
+    avatar: "K",
+    services: ["hair", "coloring", "treatments", "extensions"],
+    schedule: [
+      { day: 2, startHour: 10, endHour: 13 }, // Tue
+      { day: 3, startHour: 10, endHour: 17 }, // Wed
+      { day: 4, startHour: 10, endHour: 17 }, // Thu
+      { day: 5, startHour: 10, endHour: 13 }, // Fri
+      { day: 6, startHour: 9, endHour: 13 },  // Sat
+    ],
+  },
+  {
+    id: "st5",
+    name: "Veronika",
+    role: "Stylist",
+    avatar: "V",
+    services: ["hair", "coloring", "treatments"],
+    schedule: [
+      { day: 2, startHour: 10, endHour: 17 }, // Tue (assumed)
+      { day: 3, startHour: 10, endHour: 17 }, // Wed
+      { day: 4, startHour: 10, endHour: 13 }, // Thu
+      { day: 5, startHour: 10, endHour: 17 }, // Fri
+      { day: 6, startHour: 9, endHour: 14 },  // Sat
+    ],
+  },
+  {
+    id: "st6",
+    name: "Zofia",
+    role: "Stylist",
+    avatar: "Z",
+    services: ["hair", "coloring", "treatments"],
+    schedule: [
+      { day: 2, startHour: 10, endHour: 17 }, // Tue
+      { day: 3, startHour: 10, endHour: 17 }, // Wed
+      { day: 4, startHour: 10, endHour: 17 }, // Thu
+      { day: 5, startHour: 10, endHour: 14 }, // Fri
+      { day: 6, startHour: 9, endHour: 14 },  // Sat
+    ],
+  },
+  {
+    id: "st7",
+    name: "Kamila G.",
+    role: "Stylist",
+    avatar: "K",
+    services: ["hair", "coloring", "treatments"],
+    schedule: [
+      { day: 2, startHour: 10, endHour: 17 }, // Tue
+      { day: 3, startHour: 10, endHour: 17 }, // Wed
+      { day: 4, startHour: 10, endHour: 17 }, // Thu
+      { day: 5, startHour: 10, endHour: 16 }, // Fri
+      { day: 6, startHour: 9, endHour: 14 },  // Sat
+    ],
+  },
+  {
+    id: "st8",
     name: "Sofia",
     role: "PMU Artist",
     avatar: "S",
     services: ["permanent-makeup"],
+    schedule: [
+      { day: 2, startHour: 10, endHour: 17 },
+      { day: 3, startHour: 10, endHour: 17 },
+      { day: 4, startHour: 10, endHour: 17 },
+      { day: 5, startHour: 10, endHour: 17 },
+      { day: 6, startHour: 9, endHour: 15 },
+    ],
   },
 ];
 
@@ -89,23 +181,41 @@ export const serviceCategories = [
 
 export function generateTimeSlots(date: Date): TimeSlot[] {
   const day = date.getDay();
-  // Closed on Sundays
   if (day === 0) return [];
   
   const slots: TimeSlot[] = [];
-  const start = 9; // 9 AM
-  const end = day === 6 ? 17 : 19; // Sat closes at 5, weekdays at 7
+  const start = 9;
+  const end = day === 6 ? 17 : 19;
   
   for (let hour = start; hour < end; hour++) {
     for (const min of [0, 30]) {
       const h = hour > 12 ? hour - 12 : hour;
       const ampm = hour >= 12 ? "PM" : "AM";
       const time = `${h}:${min === 0 ? "00" : "30"} ${ampm}`;
-      // Randomly make some slots unavailable for demo
       slots.push({ time, available: Math.random() > 0.3 });
     }
   }
   return slots;
+}
+
+/** Get 1-hour time slots for a specific staff member on a given date */
+export function getStaffTimeSlots(staff: StaffMember, date: Date): string[] {
+  const day = date.getDay();
+  const daySchedule = staff.schedule.find((s) => s.day === day);
+  if (!daySchedule) return [];
+
+  const slots: string[] = [];
+  for (let hour = daySchedule.startHour; hour < daySchedule.endHour; hour++) {
+    const h = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+    const ampm = hour >= 12 ? "PM" : "AM";
+    slots.push(`${h}:00 ${ampm}`);
+  }
+  return slots;
+}
+
+/** Check if a staff member works on a given date */
+export function staffWorksOnDate(staff: StaffMember, date: Date): boolean {
+  return staff.schedule.some((s) => s.day === date.getDay());
 }
 
 // Mock bookings for admin panel
