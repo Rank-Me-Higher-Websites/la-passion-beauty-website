@@ -68,7 +68,7 @@ export const staffMembers: StaffMember[] = [
     name: "Laima",
     role: "Senior Stylist",
     avatar: "L",
-    services: ["hair", "coloring", "treatments", "extensions"],
+    services: ["hair", "coloring", "treatments"],
     schedule: [
       { day: 2, startHour: 10, endHour: 17 }, // Tue
       { day: 3, startHour: 10, endHour: 17 }, // Wed
@@ -104,7 +104,7 @@ export const staffMembers: StaffMember[] = [
     name: "Karolina",
     role: "Stylist",
     avatar: "K",
-    services: ["hair", "coloring", "treatments", "extensions"],
+    services: ["hair", "coloring", "treatments"],
     schedule: [
       { day: 2, startHour: 10, endHour: 13 }, // Tue
       { day: 3, startHour: 10, endHour: 17 }, // Wed
@@ -118,9 +118,9 @@ export const staffMembers: StaffMember[] = [
     name: "Veronika",
     role: "Stylist",
     avatar: "V",
-    services: ["hair", "coloring", "treatments"],
+    services: ["hair", "coloring", "treatments", "extensions"],
     schedule: [
-      { day: 2, startHour: 10, endHour: 17 }, // Tue (assumed)
+      { day: 2, startHour: 10, endHour: 17 }, // Tue
       { day: 3, startHour: 10, endHour: 17 }, // Wed
       { day: 4, startHour: 10, endHour: 13 }, // Thu
       { day: 5, startHour: 10, endHour: 17 }, // Fri
@@ -146,7 +146,7 @@ export const staffMembers: StaffMember[] = [
     name: "Kamila G.",
     role: "Stylist",
     avatar: "K",
-    services: ["hair", "coloring", "treatments"],
+    services: ["hair", "coloring", "treatments", "extensions"],
     schedule: [
       { day: 2, startHour: 10, endHour: 17 }, // Tue
       { day: 3, startHour: 10, endHour: 17 }, // Wed
@@ -157,9 +157,9 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: "st8",
-    name: "Sofia",
+    name: "Birute Francis",
     role: "PMU Artist",
-    avatar: "S",
+    avatar: "B",
     services: ["permanent-makeup"],
     schedule: [
       { day: 2, startHour: 10, endHour: 17 },
@@ -174,7 +174,7 @@ export const staffMembers: StaffMember[] = [
 export const serviceCategories = [
   { id: "hair", label: "Hair Services" },
   { id: "coloring", label: "Hair Coloring" },
-  { id: "treatments", label: "Treatments" },
+  { id: "treatments", label: "Hair Treatments" },
   { id: "extensions", label: "Extensions" },
   { id: "permanent-makeup", label: "Permanent Makeup" },
 ];
