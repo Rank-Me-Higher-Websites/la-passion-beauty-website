@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import aboutSalon from "@/assets/about-salon.jpg";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -243,39 +244,57 @@ const Contact = () => {
           </div>
         </section>
 
-        {/* Map Section */}
+        {/* Map & About Section */}
         <section className="section-padding bg-cream-dark">
           <div className="container-custom">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-10"
-            >
-              <h2 className="heading-section text-foreground mb-4">Find Us</h2>
-              <p className="text-body">
-                Conveniently located in Lemont, IL, serving the greater Chicago area.
-              </p>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-card rounded-2xl overflow-hidden shadow-elevated"
-            >
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2887.5534534651215!2d-87.96842082403798!3d41.66221607126628!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e384a230a083d%3A0xfd3d8f5449fd7b9c!2sLa%20Passion%20Beauty%20Salon!5e1!3m2!1sen!2slt!4v1769706988091!5m2!1sen!2slt" 
-                width="100%" 
-                height="450" 
-                style={{ border: 0 }}
-                allowFullScreen 
-                loading="lazy" 
-                referrerPolicy="no-referrer-when-downgrade"
-                title="La Passion Beauty Salon Location Map"
-                className="w-full"
-              />
-            </motion.div>
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              {/* Left - Content & Image */}
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="heading-section text-foreground mb-4">Find Us</h2>
+                <p className="text-body mb-6">
+                  Conveniently located in Lemont, IL, serving the greater Chicago area. 
+                  Visit our salon and experience the luxurious atmosphere that sets La Passion apart.
+                </p>
+                <div className="flex items-start gap-3 mb-6">
+                  <MapPin className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-medium text-foreground">12420 Archer Ave Suite C</p>
+                    <p className="text-muted-foreground">Lemont, IL 60439</p>
+                  </div>
+                </div>
+                <div className="rounded-2xl overflow-hidden shadow-card">
+                  <img
+                    src={aboutSalon}
+                    alt="Inside La Passion Beauty Salon"
+                    className="w-full h-64 object-cover"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Right - Map */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="bg-card rounded-2xl overflow-hidden shadow-elevated"
+              >
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2887.5534534651215!2d-87.96842082403798!3d41.66221607126628!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e384a230a083d%3A0xfd3d8f5449fd7b9c!2sLa%20Passion%20Beauty%20Salon!5e1!3m2!1sen!2slt!4v1769706988091!5m2!1sen!2slt" 
+                  width="100%" 
+                  height="350" 
+                  style={{ border: 0 }}
+                  allowFullScreen 
+                  loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="La Passion Beauty Salon Location Map"
+                  className="w-full"
+                />
+              </motion.div>
+            </div>
           </div>
         </section>
       </Layout>
