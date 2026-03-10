@@ -223,7 +223,7 @@ const HeroSection = () => {
                       </>
                     ) : (
                       <>
-                        Browse All Services
+                        Book Now
                         <ChevronRight className="h-4 w-4 ml-1" />
                       </>
                     )}
