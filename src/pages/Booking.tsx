@@ -328,7 +328,27 @@ const Booking = () => {
                       disabled={(date) =>
                         date < new Date() || date.getDay() === 0
                       }
-                      className="p-0 pointer-events-auto mx-auto"
+                      className="p-0 pointer-events-auto w-full"
+                      classNames={{
+                        months: "flex flex-col w-full",
+                        month: "space-y-4 w-full",
+                        table: "w-full border-collapse space-y-1",
+                        head_row: "flex w-full justify-between",
+                        head_cell: "text-muted-foreground rounded-md flex-1 text-center font-normal text-[0.8rem]",
+                        row: "flex w-full justify-between mt-2",
+                        cell: "flex-1 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                        day: "h-9 w-full p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md transition-colors",
+                        day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+                        day_today: "bg-accent text-accent-foreground",
+                        day_outside: "day-outside text-muted-foreground opacity-50",
+                        day_disabled: "text-muted-foreground opacity-50",
+                        caption: "flex justify-center pt-1 relative items-center",
+                        caption_label: "text-sm font-medium",
+                        nav: "space-x-1 flex items-center",
+                        nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 inline-flex items-center justify-center rounded-md border border-border",
+                        nav_button_previous: "absolute left-1",
+                        nav_button_next: "absolute right-1",
+                      }}
                     />
                   </div>
 
