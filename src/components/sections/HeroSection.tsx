@@ -162,41 +162,6 @@ const HeroSection = () => {
                     })}
                   </div>
 
-                  {/* Service List */}
-                  {selectedCategory && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 0.3 }}
-                      className="mb-4"
-                    >
-                      <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
-                        Choose a service
-                      </p>
-                      <div className="max-h-48 overflow-y-auto space-y-1 pr-1">
-                        {filteredServices.map((service) => (
-                          <button
-                            key={service.id}
-                            onClick={() =>
-                              setSelectedService(
-                                selectedService === service.id ? null : service.id
-                              )
-                            }
-                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-200 border ${
-                              selectedService === service.id
-                                ? "bg-primary/10 border-primary text-foreground"
-                                : "bg-transparent border-transparent hover:bg-muted/50 text-foreground"
-                            }`}
-                          >
-                            <span className="text-left">{service.name}</span>
-                            <span className="text-muted-foreground text-xs font-medium whitespace-nowrap ml-2">
-                              {service.price} · {service.duration}min
-                            </span>
-                          </button>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
 
                   {/* Next Button */}
                   <Button
