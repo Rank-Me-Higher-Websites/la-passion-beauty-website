@@ -41,22 +41,28 @@ const Admin = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [selectedStaffId, setSelectedStaffId] = useState<string>("all");
 
   const getServiceName = (id: string) => services.find((s) => s.id === id)?.name || id;
   const getStaffName = (id: string) => staffMembers.find((s) => s.id === id)?.name || id;
 
+  const staffFilteredBookings = useMemo(() => {
+    if (selectedStaffId === "all") return bookings;
+    return bookings.filter((b) => b.staffId === selectedStaffId);
+  }, [bookings, selectedStaffId]);
+
   const todayBookings = useMemo(
-    () => bookings.filter((b) => isSameDay(parseISO(b.date), new Date())),
-    [bookings]
+    () => staffFilteredBookings.filter((b) => isSameDay(parseISO(b.date), new Date())),
+    [staffFilteredBookings]
   );
 
   const filteredBookings = useMemo(() => {
-    let filtered = bookings;
+    let filtered = staffFilteredBookings;
     if (statusFilter !== "all") {
       filtered = filtered.filter((b) => b.status === statusFilter);
     }
     return filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }, [bookings, statusFilter]);
+  }, [staffFilteredBookings, statusFilter]);
 
   const updateStatus = (id: string, status: Booking["status"]) => {
     setBookings((prev) =>
