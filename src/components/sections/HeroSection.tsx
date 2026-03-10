@@ -146,8 +146,7 @@ const HeroSection = () => {
                         <button
                           key={cat.id}
                           onClick={() => {
-                            setSelectedCategory(isActive ? null : cat.id);
-                            setSelectedService(null);
+                            navigate(`/booking?category=${cat.id}`);
                           }}
                           className={`flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 border ${
                             isActive
