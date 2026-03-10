@@ -81,34 +81,29 @@ const Admin = () => {
   ];
 
   const StaffFilter = () => (
-    <div className="px-3 pb-3">
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 mb-2">Staff</p>
+    <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
       <button
         onClick={() => setSelectedStaffId("all")}
         className={cn(
-          "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+          "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
           selectedStaffId === "all"
-            ? "bg-accent text-accent-foreground font-medium"
-            : "text-muted-foreground hover:bg-muted"
+            ? "bg-primary text-primary-foreground"
+            : "bg-muted text-muted-foreground hover:bg-accent"
         )}
       >
-        <Users className="h-4 w-4" />
-        All Staff
+        All
       </button>
       {staffMembers.map((staff) => (
         <button
           key={staff.id}
           onClick={() => setSelectedStaffId(staff.id)}
           className={cn(
-            "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+            "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
             selectedStaffId === staff.id
-              ? "bg-accent text-accent-foreground font-medium"
-              : "text-muted-foreground hover:bg-muted"
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground hover:bg-accent"
           )}
         >
-          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-semibold text-primary">
-            {staff.avatar}
-          </div>
           {staff.name}
         </button>
       ))}
