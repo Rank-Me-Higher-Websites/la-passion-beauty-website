@@ -41,22 +41,28 @@ const Admin = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [selectedStaffId, setSelectedStaffId] = useState<string>("all");
 
   const getServiceName = (id: string) => services.find((s) => s.id === id)?.name || id;
   const getStaffName = (id: string) => staffMembers.find((s) => s.id === id)?.name || id;
 
+  const staffFilteredBookings = useMemo(() => {
+    if (selectedStaffId === "all") return bookings;
+    return bookings.filter((b) => b.staffId === selectedStaffId);
+  }, [bookings, selectedStaffId]);
+
   const todayBookings = useMemo(
-    () => bookings.filter((b) => isSameDay(parseISO(b.date), new Date())),
-    [bookings]
+    () => staffFilteredBookings.filter((b) => isSameDay(parseISO(b.date), new Date())),
+    [staffFilteredBookings]
   );
 
   const filteredBookings = useMemo(() => {
-    let filtered = bookings;
+    let filtered = staffFilteredBookings;
     if (statusFilter !== "all") {
       filtered = filtered.filter((b) => b.status === statusFilter);
     }
     return filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }, [bookings, statusFilter]);
+  }, [staffFilteredBookings, statusFilter]);
 
   const updateStatus = (id: string, status: Booking["status"]) => {
     setBookings((prev) =>
@@ -74,13 +80,49 @@ const Admin = () => {
     { key: "staff", label: "Staff", icon: Users },
   ];
 
+  const StaffFilter = () => (
+    <div className="px-3 pb-3">
+      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 mb-2">Staff</p>
+      <button
+        onClick={() => setSelectedStaffId("all")}
+        className={cn(
+          "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+          selectedStaffId === "all"
+            ? "bg-accent text-accent-foreground font-medium"
+            : "text-muted-foreground hover:bg-muted"
+        )}
+      >
+        <Users className="h-4 w-4" />
+        All Staff
+      </button>
+      {staffMembers.map((staff) => (
+        <button
+          key={staff.id}
+          onClick={() => setSelectedStaffId(staff.id)}
+          className={cn(
+            "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+            selectedStaffId === staff.id
+              ? "bg-accent text-accent-foreground font-medium"
+              : "text-muted-foreground hover:bg-muted"
+          )}
+        >
+          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-semibold text-primary">
+            {staff.avatar}
+          </div>
+          {staff.name}
+        </button>
+      ))}
+    </div>
+  );
+
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border">
         <img src={logo} alt="La Passion" className="h-14 w-auto" />
         <p className="text-xs text-muted-foreground mt-1">Admin Panel</p>
       </div>
-      <nav className="flex-1 p-3 space-y-1">
+      <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 mb-2">Menu</p>
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -99,6 +141,8 @@ const Admin = () => {
             {tab.label}
           </button>
         ))}
+        <div className="border-t border-border my-3" />
+        <StaffFilter />
       </nav>
       <div className="p-4 border-t border-border">
         <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" asChild>
@@ -136,9 +180,16 @@ const Admin = () => {
             >
               <MenuIcon className="h-5 w-5" />
             </button>
-            <h1 className="font-serif text-lg font-semibold text-foreground capitalize">
-              {activeTab}
-            </h1>
+            <div>
+              <h1 className="font-serif text-lg font-semibold text-foreground capitalize">
+                {activeTab}
+              </h1>
+              {selectedStaffId !== "all" && (
+                <p className="text-xs text-primary font-medium">
+                  Viewing: {staffMembers.find(s => s.id === selectedStaffId)?.name}
+                </p>
+              )}
+            </div>
           </div>
           <p className="text-sm text-muted-foreground">{format(new Date(), "EEEE, MMM d")}</p>
         </header>
@@ -236,7 +287,7 @@ const Admin = () => {
                 <h3 className="font-medium text-foreground mb-3">
                   {format(selectedDate, "EEEE, MMMM d")}
                 </h3>
-                {bookings
+                {staffFilteredBookings
                   .filter((b) => isSameDay(parseISO(b.date), selectedDate))
                   .sort((a, b) => a.time.localeCompare(b.time))
                   .map((booking) => (
@@ -248,7 +299,7 @@ const Admin = () => {
                       onUpdateStatus={updateStatus}
                     />
                   ))}
-                {!bookings.some((b) => isSameDay(parseISO(b.date), selectedDate)) && (
+                {!staffFilteredBookings.some((b) => isSameDay(parseISO(b.date), selectedDate)) && (
                   <p className="text-muted-foreground text-sm text-center py-8">No bookings on this day</p>
                 )}
               </div>
