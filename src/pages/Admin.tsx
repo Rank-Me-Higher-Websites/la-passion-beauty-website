@@ -274,12 +274,12 @@ const Admin = () => {
           {/* Calendar View */}
           {activeTab === "calendar" && (
             <div className="space-y-4">
-              <div className="bg-card rounded-xl border border-border p-4">
+              <div className="bg-card rounded-xl border border-border p-6">
                 <Calendar
                   mode="single"
                   selected={selectedDate}
                   onSelect={(d) => d && setSelectedDate(d)}
-                  className="p-0 pointer-events-auto mx-auto"
+                  className="p-0 pointer-events-auto w-full [&_table]:w-full [&_td]:p-1 [&_th]:p-1 [&_button]:h-12 [&_button]:w-full [&_button]:text-base [&_.rdp-caption_label]:text-lg [&_.rdp-head_cell]:text-sm"
                 />
               </div>
 
