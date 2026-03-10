@@ -163,35 +163,14 @@ const HeroSection = () => {
                   </div>
 
 
-                  {/* Next Button */}
                   <Button
                     variant="gold"
                     size="lg"
                     className="w-full"
-                    onClick={() => {
-                      if (canPickDate) {
-                        setStep("date");
-                      } else {
-                        handleBook();
-                      }
-                    }}
+                    onClick={handleBook}
                   >
-                    {canPickDate ? (
-                      <>
-                        Pick a Date
-                        <CalendarIcon className="h-4 w-4 ml-1" />
-                      </>
-                    ) : selectedCategory ? (
-                      <>
-                        Select a Service
-                        <ChevronRight className="h-4 w-4 ml-1" />
-                      </>
-                    ) : (
-                      <>
-                        Book Now
-                        <ChevronRight className="h-4 w-4 ml-1" />
-                      </>
-                    )}
+                    Book Now
+                    <ChevronRight className="h-4 w-4 ml-1" />
                   </Button>
                 </>
               )}
