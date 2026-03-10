@@ -13,6 +13,7 @@ import Booking from "./pages/Booking";
 import Login from "./pages/Login";
 import MyBookings from "./pages/MyBookings";
 import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
