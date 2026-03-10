@@ -187,6 +187,7 @@ const Admin = () => {
         </header>
 
         <div className="p-4 md:p-6 max-w-5xl">
+          <StaffFilter />
           {/* Dashboard */}
           {activeTab === "dashboard" && (
             <div className="space-y-6">
