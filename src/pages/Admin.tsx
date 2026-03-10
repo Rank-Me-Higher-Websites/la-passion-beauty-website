@@ -180,9 +180,16 @@ const Admin = () => {
             >
               <MenuIcon className="h-5 w-5" />
             </button>
-            <h1 className="font-serif text-lg font-semibold text-foreground capitalize">
-              {activeTab}
-            </h1>
+            <div>
+              <h1 className="font-serif text-lg font-semibold text-foreground capitalize">
+                {activeTab}
+              </h1>
+              {selectedStaffId !== "all" && (
+                <p className="text-xs text-primary font-medium">
+                  Viewing: {staffMembers.find(s => s.id === selectedStaffId)?.name}
+                </p>
+              )}
+            </div>
           </div>
           <p className="text-sm text-muted-foreground">{format(new Date(), "EEEE, MMM d")}</p>
         </header>
