@@ -117,7 +117,6 @@ const Admin = () => {
         <p className="text-xs text-muted-foreground mt-1">Admin Panel</p>
       </div>
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 mb-2">Menu</p>
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -136,8 +135,6 @@ const Admin = () => {
             {tab.label}
           </button>
         ))}
-        <div className="border-t border-border my-3" />
-        <StaffFilter />
       </nav>
       <div className="p-4 border-t border-border">
         <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" asChild>
