@@ -280,7 +280,7 @@ const Admin = () => {
                 <h3 className="font-medium text-foreground mb-3">
                   {format(selectedDate, "EEEE, MMMM d")}
                 </h3>
-                {bookings
+                {staffFilteredBookings
                   .filter((b) => isSameDay(parseISO(b.date), selectedDate))
                   .sort((a, b) => a.time.localeCompare(b.time))
                   .map((booking) => (
@@ -292,7 +292,7 @@ const Admin = () => {
                       onUpdateStatus={updateStatus}
                     />
                   ))}
-                {!bookings.some((b) => isSameDay(parseISO(b.date), selectedDate)) && (
+                {!staffFilteredBookings.some((b) => isSameDay(parseISO(b.date), selectedDate)) && (
                   <p className="text-muted-foreground text-sm text-center py-8">No bookings on this day</p>
                 )}
               </div>
