@@ -267,11 +267,35 @@ const Admin = () => {
           {/* Calendar View */}
           {activeTab === "calendar" && (
             <div className="space-y-4">
+              {/* Month/Year selector above calendar */}
+              <div className="flex items-center gap-4">
+                <select
+                  value={selectedDate.getMonth()}
+                  onChange={(e) => setSelectedDate(setMonth(selectedDate, parseInt(e.target.value)))}
+                  className="px-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <option key={i} value={i}>{format(new Date(2024, i), "MMMM")}</option>
+                  ))}
+                </select>
+                <select
+                  value={selectedDate.getFullYear()}
+                  onChange={(e) => setSelectedDate(setYear(selectedDate, parseInt(e.target.value)))}
+                  className="px-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  {Array.from({ length: 5 }, (_, i) => 2024 + i).map((y) => (
+                    <option key={y} value={y}>{y}</option>
+                  ))}
+                </select>
+              </div>
+
               <div className="bg-card rounded-xl border border-border p-6">
                 <Calendar
                   mode="single"
                   selected={selectedDate}
                   onSelect={(d) => d && setSelectedDate(d)}
+                  month={selectedDate}
+                  onMonthChange={setSelectedDate}
                   className="p-0 pointer-events-auto w-full"
                   classNames={{
                     months: "flex flex-col w-full",
@@ -293,9 +317,6 @@ const Admin = () => {
                     day_disabled: "text-muted-foreground opacity-50",
                     day_hidden: "invisible",
                   }}
-                  captionLayout="dropdown-buttons"
-                  fromYear={2024}
-                  toYear={2028}
                 />
               </div>
 
