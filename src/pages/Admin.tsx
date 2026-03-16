@@ -513,28 +513,28 @@ const Admin = () => {
                 </select>
               </div>
 
-              <div className="bg-card rounded-xl border border-black/20 p-6">
+              <div className="bg-card rounded-xl border border-black/20 p-6 flex justify-center">
                 <Calendar
                   mode="single"
                   selected={selectedDate}
                   onSelect={(d) => d && setSelectedDate(d)}
                   month={selectedDate}
                   onMonthChange={setSelectedDate}
-                  className="p-0 pointer-events-auto w-full"
+                  className="p-0 pointer-events-auto"
                   classNames={{
-                    months: "flex flex-col w-full",
-                    month: "space-y-6 w-full",
+                    months: "flex flex-col",
+                    month: "space-y-6",
                     caption: "flex justify-center pt-1 relative items-center",
                     caption_label: "text-lg font-semibold",
                     nav_button: "h-9 w-9 bg-transparent p-0 opacity-50 hover:opacity-100 border border-input rounded-md inline-flex items-center justify-center",
                     nav_button_previous: "absolute left-1",
                     nav_button_next: "absolute right-1",
-                    table: "w-full border-collapse",
-                    head_row: "flex w-full",
-                    head_cell: "text-muted-foreground rounded-md flex-1 font-medium text-sm py-2",
-                    row: "flex w-full mt-1",
-                    cell: "flex-1 text-center text-sm p-0.5 relative [&:has([aria-selected])]:bg-transparent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                    day: "h-14 w-full p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md inline-flex items-start justify-start transition-colors relative border border-black/10",
+                    table: "border-collapse",
+                    head_row: "flex",
+                    head_cell: "text-muted-foreground rounded-md w-14 font-medium text-sm py-2",
+                    row: "flex mt-1",
+                    cell: "w-14 text-center text-sm p-0.5 relative [&:has([aria-selected])]:bg-transparent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                    day: "h-14 w-14 p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md inline-flex items-start justify-start transition-colors relative border border-black/10",
                     day_selected: "bg-primary/10 text-foreground ring-2 ring-primary hover:bg-primary/15",
                     day_today: "bg-accent text-accent-foreground font-semibold",
                     day_outside: "text-muted-foreground opacity-50",

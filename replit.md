@@ -46,10 +46,23 @@ A React/Vite frontend with Express/PostgreSQL backend for La Passion Beauty Salo
 - `POST /api/auth/login` - Staff login
 - `POST /api/auth/logout` - Staff logout
 - `GET /api/auth/me` - Get current staff user
-- `GET /api/bookings` - Get bookings (filtered by role)
-- `POST /api/bookings` - Create booking (public, no auth required)
-- `PATCH /api/bookings/:id` - Update booking status (auth required)
-- `DELETE /api/bookings/:id` - Delete booking (auth required)
+- `GET /api/bookings` - Get bookings (filtered by role, auth required)
+- `POST /api/bookings` - Create booking (public for client booking form, forces status=pending)
+- `PATCH /api/bookings/:id` - Update booking status (auth + IDOR protection)
+- `PATCH /api/bookings/:id/notes` - Update booking notes (auth + IDOR protection)
+- `DELETE /api/bookings/:id` - Delete booking (auth + IDOR protection)
+
+## Server Logging
+All API actions are logged with timestamps, including:
+- Login attempts (success/failure with email and IP)
+- Logout events
+- Auth checks (session validation)
+- Booking reads (who fetched, count)
+- Booking creates (by whom, client name, service, date)
+- Booking status changes (old → new status)
+- Booking notes updates
+- Booking deletions (client name, date, time)
+- Auth denials (unauthenticated access, IDOR attempts)
 
 ## Running the App
 - `npm run dev` starts both the Express API (port 3001) and Vite dev server (port 5000)
