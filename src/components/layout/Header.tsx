@@ -37,8 +37,8 @@ const Header = () => {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         isScrolled
-          ? "bg-background/95 backdrop-blur-md shadow-soft py-3"
-          : "bg-transparent py-4 md:py-6"
+          ? "bg-background/95 backdrop-blur-md shadow-soft py-1"
+          : "bg-transparent py-2 md:py-3"
       )}
     >
       <div className="container-custom">
@@ -48,7 +48,7 @@ const Header = () => {
             <img 
               src={logo} 
               alt="La Passion Beauty Salon" 
-              className="h-20 md:h-24 w-auto"
+              className="h-12 md:h-14 w-auto"
             />
           </Link>
 
