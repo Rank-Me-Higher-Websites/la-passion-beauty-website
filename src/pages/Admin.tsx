@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { format, isSameDay, parseISO, startOfWeek, addDays, setMonth, setYear } from "date-fns";
+import { motion } from "framer-motion";
 import {
   CalendarIcon,
   List,
@@ -10,12 +11,17 @@ import {
   ChevronLeft,
   ChevronRight,
   Phone,
-  Mail,
+  Mail as MailIcon,
   LayoutDashboard,
   Menu as MenuIcon,
   LogOut,
+  Lock,
+  Eye,
+  EyeOff,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import {
@@ -25,6 +31,9 @@ import {
   type Booking,
 } from "@/lib/booking-data";
 import logo from "@/assets/logo.png";
+
+const ADMIN_EMAIL = "admin@lapassion.com";
+const ADMIN_PASSWORD = "admin123";
 
 type Tab = "dashboard" | "bookings" | "calendar" | "staff";
 
@@ -36,6 +45,14 @@ const statusColors: Record<Booking["status"], string> = {
 };
 
 const Admin = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => localStorage.getItem("lp_admin_auth") === "true"
+  );
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState("");
+
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
   const [bookings, setBookings] = useState<Booking[]>(mockBookings);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -110,6 +127,99 @@ const Admin = () => {
     </div>
   );
 
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError("");
+    if (!loginEmail || !loginPassword) {
+      setLoginError("Please fill in all fields");
+      return;
+    }
+    if (loginEmail === ADMIN_EMAIL && loginPassword === ADMIN_PASSWORD) {
+      localStorage.setItem("lp_admin_auth", "true");
+      setIsAuthenticated(true);
+    } else {
+      setLoginError("Invalid admin credentials");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("lp_admin_auth");
+    setIsAuthenticated(false);
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-sm"
+        >
+          <div className="text-center mb-8">
+            <img src={logo} alt="La Passion" className="h-16 w-auto mx-auto mb-4" />
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-medium mb-4">
+              <ShieldCheck className="h-4 w-4" />
+              Admin Access
+            </div>
+          </div>
+          <div className="bg-card rounded-2xl border border-border p-8 shadow-card">
+            <h1 className="heading-card text-foreground text-center mb-6">Admin Login</h1>
+            {loginError && (
+              <div className="bg-destructive/10 text-destructive text-sm rounded-lg p-3 mb-6">
+                {loginError}
+              </div>
+            )}
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-foreground mb-1.5 block">Email</label>
+                <div className="relative">
+                  <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                    placeholder="admin@lapassion.com"
+                    type="email"
+                    className="pl-10"
+                    data-testid="input-admin-email"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-foreground mb-1.5 block">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    placeholder="••••••••"
+                    type={showPassword ? "text" : "password"}
+                    className="pl-10 pr-10"
+                    data-testid="input-admin-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              <Button variant="gold" size="lg" className="w-full" type="submit" data-testid="button-admin-login">
+                Sign In
+              </Button>
+            </form>
+            <div className="mt-6 text-center">
+              <a href="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                ← Back to website
+              </a>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border">
@@ -137,8 +247,8 @@ const Admin = () => {
         ))}
       </nav>
       <div className="p-4 border-t border-border">
-        <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" asChild>
-          <a href="/"><LogOut className="h-4 w-4 mr-2" /> Back to Site</a>
+        <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" onClick={handleLogout}>
+          <LogOut className="h-4 w-4 mr-2" /> Log Out
         </Button>
       </div>
     </div>
@@ -422,7 +532,7 @@ function BookingCard({
           <Phone className="h-3 w-3" /> {booking.clientPhone}
         </a>
         <a href={`mailto:${booking.clientEmail}`} className="flex items-center gap-1 hover:text-primary">
-          <Mail className="h-3 w-3" /> {booking.clientEmail}
+          <MailIcon className="h-3 w-3" /> {booking.clientEmail}
         </a>
       </div>
       {(booking.status === "pending" || booking.status === "confirmed") && (
