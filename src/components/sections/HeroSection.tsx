@@ -134,7 +134,7 @@ const HeroSection = () => {
                     Book Now
                   </h3>
                   <p className="text-sm text-muted-foreground mb-5">
-                    Select a service to get started
+                    {selectedCategory ? "Choose a service below" : "Select a service to get started"}
                   </p>
 
                   {/* Category Grid */}
@@ -147,6 +147,7 @@ const HeroSection = () => {
                           key={cat.id}
                           onClick={() => {
                             setSelectedCategory(isActive ? null : cat.id);
+                            setSelectedService(null);
                           }}
                           className={`flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 border-2 ${
                             isActive
@@ -161,6 +162,28 @@ const HeroSection = () => {
                     })}
                   </div>
 
+                  {selectedCategory && filteredServices.length > 0 && (
+                    <div className="space-y-1.5 mb-4 max-h-48 overflow-y-auto">
+                      {filteredServices.map((service) => (
+                        <button
+                          key={service.id}
+                          onClick={() => setSelectedService(service.id)}
+                          className={cn(
+                            "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all border-2",
+                            selectedService === service.id
+                              ? "border-primary bg-primary/10 text-foreground"
+                              : "border-black/30 bg-background/60 text-foreground hover:border-primary"
+                          )}
+                        >
+                          <div className="text-left">
+                            <p className="font-medium">{service.name}</p>
+                            <p className="text-xs text-muted-foreground">{service.duration} min · {service.price}</p>
+                          </div>
+                          <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
 
                   <Button
                     variant="gold"
