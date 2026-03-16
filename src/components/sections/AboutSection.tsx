@@ -38,10 +38,10 @@ const AboutSection = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">About Us</p>
-            <h2 className="heading-section text-foreground mb-6">
+            <h2 className="heading-section text-foreground mb-3">
               About Us
             </h2>
-            <p className="text-body mb-8 text-lg">
+            <p className="text-body mb-4">
               At La Passion Beauty Salon, every visit is about more than just great hair — it's about 
               feeling amazing. Our stylists specialize in precision haircuts, dimensional color, 
               nourishing hair treatments, and expert permanent makeup that enhance your natural 

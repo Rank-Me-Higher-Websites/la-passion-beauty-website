@@ -126,7 +126,7 @@ const Services = () => {
         {/* Services List */}
         <section className="section-padding bg-background">
           <div className="container-custom">
-            <div className="space-y-24">
+            <div className="space-y-12">
               {services.map((service, index) => (
                 <motion.div
                   key={service.id}

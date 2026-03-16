@@ -20,7 +20,7 @@ const StatsSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10"
+          className="text-center mb-4"
         >
           <h2 className="heading-section text-foreground">What Our Clients Say</h2>
         </motion.div>

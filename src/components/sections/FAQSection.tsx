@@ -50,7 +50,7 @@ const FAQSection = () => {
             transition={{ duration: 0.6 }}
           >
             <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">FAQ</p>
-            <h2 className="heading-section text-foreground mb-6">
+            <h2 className="heading-section text-foreground mb-3">
               Frequently Asked Questions
             </h2>
             <p className="text-body">

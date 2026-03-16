@@ -23,10 +23,10 @@ const CTASection = () => {
           className="max-w-3xl mx-auto text-center"
         >
           <p className="text-primary uppercase tracking-[0.2em] text-sm mb-4">Get In Touch</p>
-          <h2 className="heading-section text-primary-foreground mb-6">
+          <h2 className="heading-section text-primary-foreground mb-3">
             Contact Us
           </h2>
-          <p className="text-lg text-primary-foreground/70 mb-8 max-w-2xl mx-auto">
+          <p className="text-sm text-primary-foreground/70 mb-4 max-w-2xl mx-auto">
             Experience the luxury of personalized beauty care at La Passion Beauty Salon. 
             Our expert stylists are ready to help you look and feel your absolute best.
           </p>
