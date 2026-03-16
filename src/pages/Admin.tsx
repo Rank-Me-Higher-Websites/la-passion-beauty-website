@@ -313,7 +313,10 @@ const Admin = () => {
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-black/20">
         <img src={logo} alt="La Passion" className="h-14 w-auto" />
-        <p className="text-xs text-muted-foreground font-medium mt-1">{isAdmin ? "Admin Panel" : staffUser?.name}</p>
+        <div className="mt-2">
+          <p className="text-sm font-semibold text-foreground">{staffUser?.name}</p>
+          <p className="text-xs text-primary font-medium">{isAdmin ? "Admin" : "Stylist"}</p>
+        </div>
       </div>
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
         {tabs.map((tab) => (
