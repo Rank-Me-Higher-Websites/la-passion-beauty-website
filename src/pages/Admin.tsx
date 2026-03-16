@@ -517,7 +517,7 @@ const Admin = () => {
                     head_cell: "text-muted-foreground rounded-md flex-1 font-medium text-sm py-2",
                     row: "flex w-full mt-1",
                     cell: "flex-1 text-center text-sm p-0.5 relative [&:has([aria-selected])]:bg-transparent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                    day: "h-14 w-full p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md inline-flex items-start justify-start transition-colors relative",
+                    day: "h-14 w-full p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md inline-flex items-start justify-start transition-colors relative border border-black/10",
                     day_selected: "bg-primary/10 text-foreground ring-2 ring-primary hover:bg-primary/15",
                     day_today: "bg-accent text-accent-foreground font-semibold",
                     day_outside: "text-muted-foreground opacity-50",
