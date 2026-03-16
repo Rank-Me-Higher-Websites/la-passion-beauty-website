@@ -91,7 +91,7 @@ export const staffMembers: StaffMember[] = [
   {
     id: "st3",
     name: "Kamila Janik",
-    role: "Stylist & Extensions Specialist",
+    role: "Stylist",
     avatar: "KJ",
     services: ["hair", "coloring", "treatments", "extensions"],
     schedule: [
@@ -116,7 +116,7 @@ export const staffMembers: StaffMember[] = [
   {
     id: "st5",
     name: "Veronika Dadek",
-    role: "Stylist & Extensions Specialist",
+    role: "Stylist",
     avatar: "VD",
     services: ["hair", "coloring", "treatments", "extensions"],
     schedule: [
