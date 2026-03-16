@@ -147,11 +147,11 @@
 @layer components {
   /* Section spacing */
   .section-padding {
-    @apply py-16 md:py-20 lg:py-24;
+    @apply py-8 md:py-10 lg:py-12;
   }
   
   .section-padding-sm {
-    @apply py-12 md:py-16;
+    @apply py-6 md:py-8;
   }
   
   /* Container */
@@ -165,7 +165,7 @@
   }
   
   .heading-section {
-    @apply text-3xl sm:text-4xl md:text-5xl font-serif font-semibold leading-tight;
+    @apply text-2xl sm:text-3xl md:text-4xl font-serif font-semibold leading-tight;
   }
   
   .heading-card {

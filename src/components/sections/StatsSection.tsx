@@ -14,7 +14,7 @@ const StatsSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-16 bg-card">
+    <section ref={ref} className="py-8 md:py-10 bg-card">
       <div className="container-custom">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

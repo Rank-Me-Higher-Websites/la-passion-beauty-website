@@ -61,7 +61,7 @@ const ServicesSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="max-w-2xl mb-12 md:mb-16"
+          className="max-w-2xl mb-6 md:mb-8"
         >
           <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">What We Offer</p>
           <h2 className="heading-section text-foreground mb-4">Our Services</h2>
@@ -119,7 +119,7 @@ const ServicesSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-center mt-16"
+          className="text-center mt-8"
         >
           <Button variant="gold" size="lg" asChild>
             <Link to="/services">View All Services</Link>

@@ -15,7 +15,7 @@ const ReviewsSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-12"
+          className="text-center max-w-3xl mx-auto mb-6"
         >
           <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">Testimonials</p>
           <h2 className="heading-section text-foreground mb-4">What Our Clients Say</h2>
