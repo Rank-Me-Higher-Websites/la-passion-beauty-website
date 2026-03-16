@@ -111,7 +111,7 @@ const HeroSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.35 }}
             >
-              <Button variant="outline" size="lg" asChild>
+              <Button variant="outline" size="lg" asChild className="border-2 border-black">
                 <a href="tel:+13313188113" className="gap-2">
                   <Phone className="h-4 w-4" />
                   Call +1 331-318-8113
@@ -127,7 +127,7 @@ const HeroSection = () => {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="lg:col-span-2"
           >
-            <div className="bg-card/90 backdrop-blur-md rounded-2xl border border-border p-6 shadow-elevated">
+            <div className="bg-card/90 backdrop-blur-md rounded-2xl border-2 border-black p-6 shadow-elevated">
               {step === "service" && (
                 <>
                   <h3 className="font-serif text-2xl font-semibold text-foreground mb-1">
