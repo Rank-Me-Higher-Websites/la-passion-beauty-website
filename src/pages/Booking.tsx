@@ -15,10 +15,10 @@ import {
   services,
   staffMembers,
   serviceCategories,
-  generateTimeSlots,
+  getStaffTimeSlots,
   type Service,
   type StaffMember,
-  type TimeSlot,
+  staffWorksOnDate,
 } from "@/lib/booking-data";
 
 type Step = "service" | "staff" | "datetime" | "details" | "confirm";
@@ -65,9 +65,9 @@ const Booking = () => {
     ? staffMembers.filter((s) => s.services.includes(selectedService.category))
     : staffMembers;
 
-  const timeSlots = useMemo(
-    () => (selectedDate ? generateTimeSlots(selectedDate) : []),
-    [selectedDate]
+  const staffTimeSlots = useMemo(
+    () => (selectedDate && selectedStaff ? getStaffTimeSlots(selectedStaff, selectedDate) : []),
+    [selectedDate, selectedStaff]
   );
 
   const goNext = () => {
@@ -329,7 +329,7 @@ const Booking = () => {
                         setSelectedTime(null);
                       }}
                       disabled={(date) =>
-                        date < new Date() || date.getDay() === 0
+                        date < new Date() || date.getDay() === 0 || (selectedStaff ? !staffWorksOnDate(selectedStaff, date) : date.getDay() === 1)
                       }
                       className="p-0 pointer-events-auto w-full"
                       classNames={{
@@ -360,25 +360,22 @@ const Booking = () => {
                       <p className="font-medium text-foreground mb-3">
                         Available times for {format(selectedDate, "EEEE, MMM d")}
                       </p>
-                      {timeSlots.length === 0 ? (
-                        <p className="text-muted-foreground text-sm">Closed on this day</p>
+                      {staffTimeSlots.length === 0 ? (
+                        <p className="text-muted-foreground text-sm">{selectedStaff?.name} is not available on this day</p>
                       ) : (
                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                          {timeSlots.map((slot) => (
+                          {staffTimeSlots.map((time) => (
                             <button
-                              key={slot.time}
-                              disabled={!slot.available}
-                              onClick={() => setSelectedTime(slot.time)}
+                              key={time}
+                              onClick={() => setSelectedTime(time)}
                               className={cn(
                                 "py-2.5 px-2 rounded-lg text-sm font-medium transition-all",
-                                selectedTime === slot.time
+                                selectedTime === time
                                   ? "bg-primary text-primary-foreground shadow-glow"
-                                  : slot.available
-                                  ? "bg-card border border-border hover:border-primary text-foreground"
-                                  : "bg-muted text-muted-foreground/40 cursor-not-allowed line-through"
+                                  : "bg-card border border-border hover:border-primary text-foreground"
                               )}
                             >
-                              {slot.time}
+                              {time}
                             </button>
                           ))}
                         </div>
