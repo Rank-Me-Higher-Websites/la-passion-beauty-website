@@ -90,10 +90,10 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: "st3",
-    name: "Kamila J.",
-    role: "Stylist",
-    avatar: "K",
-    services: ["hair", "coloring", "treatments"],
+    name: "Kamila Janik",
+    role: "Stylist & Extensions Specialist",
+    avatar: "KJ",
+    services: ["hair", "coloring", "treatments", "extensions"],
     schedule: [
       { day: 2, startHour: 10, endHour: 16 }, // Tue
       { day: 3, startHour: 10, endHour: 16 }, // Wed
@@ -115,13 +115,13 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: "st5",
-    name: "Veronika",
-    role: "Stylist",
-    avatar: "V",
+    name: "Veronika Dadek",
+    role: "Stylist & Extensions Specialist",
+    avatar: "VD",
     services: ["hair", "coloring", "treatments", "extensions"],
     schedule: [
-      { day: 2, startHour: 10, endHour: 17 }, // Tue
-      { day: 3, startHour: 10, endHour: 17 }, // Wed
+      { day: 2, startHour: 10, endHour: 13 }, // Tue
+      { day: 3, startHour: 10, endHour: 13 }, // Wed
       { day: 4, startHour: 10, endHour: 13 }, // Thu
       { day: 5, startHour: 10, endHour: 17 }, // Fri
       { day: 6, startHour: 9, endHour: 14 },  // Sat
@@ -134,9 +134,9 @@ export const staffMembers: StaffMember[] = [
     avatar: "Z",
     services: ["hair", "coloring", "treatments"],
     schedule: [
-      { day: 2, startHour: 10, endHour: 17 }, // Tue
-      { day: 3, startHour: 10, endHour: 17 }, // Wed
-      { day: 4, startHour: 10, endHour: 17 }, // Thu
+      { day: 2, startHour: 10, endHour: 14 }, // Tue
+      { day: 3, startHour: 10, endHour: 14 }, // Wed
+      { day: 4, startHour: 10, endHour: 14 }, // Thu
       { day: 5, startHour: 10, endHour: 14 }, // Fri
       { day: 6, startHour: 9, endHour: 14 },  // Sat
     ],
@@ -145,8 +145,8 @@ export const staffMembers: StaffMember[] = [
     id: "st7",
     name: "Kamila G.",
     role: "Stylist",
-    avatar: "K",
-    services: ["hair", "coloring", "treatments", "extensions"],
+    avatar: "KG",
+    services: ["hair", "coloring", "treatments"],
     schedule: [
       { day: 2, startHour: 10, endHour: 17 }, // Tue
       { day: 3, startHour: 10, endHour: 17 }, // Wed
