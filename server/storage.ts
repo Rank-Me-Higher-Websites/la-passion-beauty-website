@@ -68,6 +68,10 @@ export class DatabaseStorage implements IStorage {
   async deleteBooking(id: number): Promise<void> {
     await db.delete(bookings).where(eq(bookings.id, id));
   }
+
+  async updateStaffPassword(id: number, passwordHash: string): Promise<void> {
+    await db.update(staffAccounts).set({ passwordHash }).where(eq(staffAccounts.id, id));
+  }
 }
 
 export const storage = new DatabaseStorage();

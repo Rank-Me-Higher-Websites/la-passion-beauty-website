@@ -51,6 +51,8 @@ A React/Vite frontend with Express/PostgreSQL backend for La Passion Beauty Salo
 - `PATCH /api/bookings/:id` - Update booking status (auth + IDOR protection)
 - `PATCH /api/bookings/:id/notes` - Update booking notes (auth + IDOR protection)
 - `DELETE /api/bookings/:id` - Delete booking (auth + IDOR protection)
+- `PATCH /api/auth/change-password` - Change password (self: requires current password; admin: can reset any stylist)
+- `GET /api/staff` - Get staff list (admin only, no password hashes returned)
 
 ## Server Logging
 All API actions are logged with timestamps, including:

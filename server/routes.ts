@@ -59,6 +59,77 @@ router.post("/api/auth/logout", (req: Request, res: Response) => {
   res.json({ ok: true });
 });
 
+router.patch("/api/auth/change-password", async (req: Request, res: Response) => {
+  const sessionStaffId = (req.session as any)?.staffId;
+  if (!sessionStaffId) {
+    log("AUTH_DENIED", `Unauthenticated PATCH /api/auth/change-password from ${req.ip}`);
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  const staff = await storage.getStaffById(sessionStaffId);
+  if (!staff) {
+    log("AUTH_DENIED", `Invalid session staffId=${sessionStaffId} PATCH /api/auth/change-password from ${req.ip}`);
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  const { targetStaffId, currentPassword, newPassword } = req.body;
+
+  if (!newPassword || newPassword.length < 6) {
+    log("PASSWORD_CHANGE_FAIL", `${staff.name} provided password too short`);
+    return res.status(400).json({ error: "New password must be at least 6 characters" });
+  }
+
+  const targetId = targetStaffId ? parseInt(targetStaffId) : staff.id;
+
+  if (targetId !== staff.id && staff.role !== "admin") {
+    log("AUTH_DENIED", `${staff.name} tried to change password for staffId=${targetId}`);
+    return res.status(403).json({ error: "Only admin can change other staff passwords" });
+  }
+
+  if (targetId === staff.id) {
+    if (!currentPassword) {
+      return res.status(400).json({ error: "Current password is required" });
+    }
+    const valid = await bcrypt.compare(currentPassword, staff.passwordHash);
+    if (!valid) {
+      log("PASSWORD_CHANGE_FAIL", `${staff.name} provided wrong current password`);
+      return res.status(401).json({ error: "Current password is incorrect" });
+    }
+  }
+
+  const targetStaff = targetId === staff.id ? staff : await storage.getStaffById(targetId);
+  if (!targetStaff) {
+    log("PASSWORD_CHANGE_FAIL", `${staff.name} target staffId=${targetId} not found`);
+    return res.status(404).json({ error: "Staff member not found" });
+  }
+
+  const hash = await bcrypt.hash(newPassword, 10);
+  await storage.updateStaffPassword(targetId, hash);
+  log("PASSWORD_CHANGED", `${staff.name} changed password for ${targetStaff.name} (id=${targetId})`);
+  res.json({ ok: true });
+});
+
+router.get("/api/staff", async (req: Request, res: Response) => {
+  const sessionStaffId = (req.session as any)?.staffId;
+  if (!sessionStaffId) {
+    log("AUTH_DENIED", `Unauthenticated GET /api/staff from ${req.ip}`);
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  const staff = await storage.getStaffById(sessionStaffId);
+  if (!staff) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  if (staff.role !== "admin") {
+    log("AUTH_DENIED", `${staff.name} tried to access GET /api/staff`);
+    return res.status(403).json({ error: "Admin only" });
+  }
+
+  const allStaff = await storage.getAllStaff();
+  const safeStaff = allStaff.map(({ id, name, email, role, staffDataId }) => ({ id, name, email, role, staffDataId }));
+  log("STAFF_READ", `${staff.name} fetched staff list (${safeStaff.length} members)`);
+  res.json(safeStaff);
+});
+
 router.get("/api/auth/me", async (req: Request, res: Response) => {
   const staffId = (req.session as any)?.staffId;
   if (!staffId) {

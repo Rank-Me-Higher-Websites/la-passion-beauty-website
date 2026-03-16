@@ -23,6 +23,7 @@ import {
   Trash2,
   StickyNote,
   Save,
+  KeyRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,6 +80,15 @@ const Admin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedStaffId, setSelectedStaffId] = useState<string>("all");
+  const [passwordChangeTarget, setPasswordChangeTarget] = useState<number | null>(null);
+  const [currentPasswordInput, setCurrentPasswordInput] = useState("");
+  const [newPasswordInput, setNewPasswordInput] = useState("");
+  const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [dbStaffList, setDbStaffList] = useState<{ id: number; name: string; email: string; role: string; staffDataId: string }[]>([]);
 
   const isAdmin = staffUser?.role === "admin";
 
@@ -110,6 +120,12 @@ const Admin = () => {
   useEffect(() => {
     if (staffUser) fetchBookings();
   }, [staffUser, fetchBookings]);
+
+  useEffect(() => {
+    if (staffUser?.role === "admin") {
+      fetch("/api/staff").then((r) => r.ok ? r.json() : []).then(setDbStaffList).catch(() => {});
+    }
+  }, [staffUser]);
 
   const getServiceName = (id: string) => services.find((s) => s.id === id)?.name || id;
   const getStaffName = (id: string) => staffMembers.find((s) => s.id === id)?.name || id;
@@ -168,6 +184,56 @@ const Admin = () => {
         setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, notes: notes || null } : b)));
       }
     } catch {}
+  };
+
+  const resetPasswordForm = () => {
+    setPasswordChangeTarget(null);
+    setCurrentPasswordInput("");
+    setNewPasswordInput("");
+    setConfirmPasswordInput("");
+    setPasswordError("");
+    setPasswordSuccess("");
+    setShowNewPassword(false);
+    setShowCurrentPassword(false);
+  };
+
+  const handlePasswordChange = async () => {
+    setPasswordError("");
+    setPasswordSuccess("");
+
+    if (newPasswordInput.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
+      return;
+    }
+    if (newPasswordInput !== confirmPasswordInput) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+
+    const isSelf = passwordChangeTarget === staffUser?.id;
+    const body: any = { newPassword: newPasswordInput };
+    if (isSelf) body.currentPassword = currentPasswordInput;
+    if (!isSelf) body.targetStaffId = String(passwordChangeTarget);
+
+    try {
+      const res = await fetch("/api/auth/change-password", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setPasswordSuccess("Password changed successfully");
+        setCurrentPasswordInput("");
+        setNewPasswordInput("");
+        setConfirmPasswordInput("");
+        setTimeout(() => resetPasswordForm(), 2000);
+      } else {
+        setPasswordError(data.error || "Failed to change password");
+      }
+    } catch {
+      setPasswordError("Network error");
+    }
   };
 
   const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
@@ -593,31 +659,134 @@ const Admin = () => {
           {/* Staff */}
           {activeTab === "staff" && (
             <div className="space-y-4">
-              {visibleStaff.map((staff) => (
-                <div key={staff.id} className="bg-card rounded-xl border border-black/20 p-5">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-primary font-semibold text-lg">{staff.avatar}</span>
+              {!isAdmin && (
+                <div className="bg-card rounded-xl border border-black/20 p-5">
+                  <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                    <KeyRound className="h-4 w-4" /> Change My Password
+                  </h3>
+                  {passwordChangeTarget === staffUser?.id ? (
+                    <div className="space-y-3">
+                      {passwordError && <p className="text-sm text-red-600 font-medium" data-testid="text-password-error">{passwordError}</p>}
+                      {passwordSuccess && <p className="text-sm text-green-600 font-medium" data-testid="text-password-success">{passwordSuccess}</p>}
+                      <div className="relative">
+                        <Input
+                          type={showCurrentPassword ? "text" : "password"}
+                          placeholder="Current password"
+                          value={currentPasswordInput}
+                          onChange={(e) => setCurrentPasswordInput(e.target.value)}
+                          data-testid="input-current-password"
+                        />
+                        <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                          {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <Input
+                          type={showNewPassword ? "text" : "password"}
+                          placeholder="New password (min 6 characters)"
+                          value={newPasswordInput}
+                          onChange={(e) => setNewPasswordInput(e.target.value)}
+                          data-testid="input-new-password"
+                        />
+                        <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                          {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                      <Input
+                        type="password"
+                        placeholder="Confirm new password"
+                        value={confirmPasswordInput}
+                        onChange={(e) => setConfirmPasswordInput(e.target.value)}
+                        data-testid="input-confirm-password"
+                      />
+                      <div className="flex gap-2">
+                        <Button variant="gold" size="sm" onClick={handlePasswordChange} data-testid="button-save-password">
+                          <Save className="h-3.5 w-3.5 mr-1" /> Save
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={resetPasswordForm}>Cancel</Button>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-foreground">{staff.name}</p>
-                      <p className="text-sm text-muted-foreground">{staff.role}</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {staff.services.map((s) => (
-                      <span key={s} className="px-2 py-1 bg-muted rounded-md text-xs text-muted-foreground capitalize">
-                        {s.replace("-", " ")}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="mt-3 text-sm text-muted-foreground">
-                    <p>
-                      Upcoming: {bookings.filter((b) => b.staffId === staff.id && (b.status === "pending" || b.status === "confirmed")).length} bookings
-                    </p>
-                  </div>
+                  ) : (
+                    <Button variant="outline" size="sm" onClick={() => setPasswordChangeTarget(staffUser?.id || null)} data-testid="button-change-my-password">
+                      <KeyRound className="h-3.5 w-3.5 mr-1" /> Change Password
+                    </Button>
+                  )}
                 </div>
-              ))}
+              )}
+              {visibleStaff.map((staff) => {
+                const dbStaff = dbStaffList.find((s) => s.staffDataId === staff.id);
+                return (
+                  <div key={staff.id} className="bg-card rounded-xl border border-black/20 p-5">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-primary font-semibold text-lg">{staff.avatar}</span>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-foreground">{staff.name}</p>
+                        <p className="text-sm text-muted-foreground">{staff.role}</p>
+                        {isAdmin && dbStaff && <p className="text-xs text-muted-foreground">{dbStaff.email}</p>}
+                      </div>
+                      {isAdmin && dbStaff && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            resetPasswordForm();
+                            setPasswordChangeTarget(dbStaff.id);
+                          }}
+                          data-testid={`button-change-password-${staff.id}`}
+                        >
+                          <KeyRound className="h-3.5 w-3.5 mr-1" /> Reset Password
+                        </Button>
+                      )}
+                    </div>
+                    {isAdmin && passwordChangeTarget === dbStaff?.id && (
+                      <div className="mb-4 p-3 bg-muted/50 rounded-lg border border-black/10 space-y-3">
+                        <p className="text-sm font-medium text-foreground">Set new password for {staff.name}</p>
+                        {passwordError && <p className="text-sm text-red-600 font-medium" data-testid="text-password-error">{passwordError}</p>}
+                        {passwordSuccess && <p className="text-sm text-green-600 font-medium" data-testid="text-password-success">{passwordSuccess}</p>}
+                        <div className="relative">
+                          <Input
+                            type={showNewPassword ? "text" : "password"}
+                            placeholder="New password (min 6 characters)"
+                            value={newPasswordInput}
+                            onChange={(e) => setNewPasswordInput(e.target.value)}
+                            data-testid="input-new-password"
+                          />
+                          <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                            {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </button>
+                        </div>
+                        <Input
+                          type="password"
+                          placeholder="Confirm new password"
+                          value={confirmPasswordInput}
+                          onChange={(e) => setConfirmPasswordInput(e.target.value)}
+                          data-testid="input-confirm-password"
+                        />
+                        <div className="flex gap-2">
+                          <Button variant="gold" size="sm" onClick={handlePasswordChange} data-testid="button-save-password">
+                            <Save className="h-3.5 w-3.5 mr-1" /> Save
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={resetPasswordForm}>Cancel</Button>
+                        </div>
+                      </div>
+                    )}
+                    <div className="flex flex-wrap gap-2">
+                      {staff.services.map((s) => (
+                        <span key={s} className="px-2 py-1 bg-muted rounded-md text-xs text-muted-foreground capitalize">
+                          {s.replace("-", " ")}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="mt-3 text-sm text-muted-foreground">
+                      <p>
+                        Upcoming: {bookings.filter((b) => b.staffId === staff.id && (b.status === "pending" || b.status === "confirmed")).length} bookings
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
