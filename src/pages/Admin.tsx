@@ -57,10 +57,10 @@ interface StaffUser {
 }
 
 const statusColors: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-800",
-  confirmed: "bg-green-100 text-green-800",
-  cancelled: "bg-red-100 text-red-800",
-  completed: "bg-blue-100 text-blue-800",
+  pending: "bg-yellow-100 text-yellow-800 border border-yellow-300",
+  confirmed: "bg-green-100 text-green-800 border border-green-300",
+  cancelled: "bg-red-100 text-red-800 border border-red-300",
+  completed: "bg-blue-100 text-blue-800 border border-blue-300",
 };
 
 const Admin = () => {
@@ -311,9 +311,9 @@ const Admin = () => {
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
-      <div className="p-4 border-b border-border">
+      <div className="p-4 border-b-2 border-border">
         <img src={logo} alt="La Passion" className="h-14 w-auto" />
-        <p className="text-xs text-muted-foreground mt-1">{isAdmin ? "Admin Panel" : staffUser?.name}</p>
+        <p className="text-xs text-muted-foreground font-medium mt-1">{isAdmin ? "Admin Panel" : staffUser?.name}</p>
       </div>
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
         {tabs.map((tab) => (
@@ -335,7 +335,7 @@ const Admin = () => {
           </button>
         ))}
       </nav>
-      <div className="p-4 border-t border-border">
+      <div className="p-4 border-t-2 border-border">
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
@@ -349,7 +349,7 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Desktop sidebar */}
-      <aside className="hidden md:block w-60 border-r border-border bg-card fixed h-full">
+      <aside className="hidden md:block w-60 border-r-2 border-border bg-card fixed h-full shadow-md">
         <SidebarContent />
       </aside>
 
@@ -366,7 +366,7 @@ const Admin = () => {
       {/* Main content */}
       <main className="flex-1 md:ml-60">
         {/* Top bar */}
-        <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between">
+        <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b-2 border-border px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
               className="md:hidden p-2 -ml-2"
@@ -396,13 +396,13 @@ const Admin = () => {
               {/* Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
-                  { label: "Today", value: todayBookings.length, color: "text-primary" },
-                  { label: "Pending", value: bookings.filter((b) => b.status === "pending").length, color: "text-yellow-600" },
-                  { label: "Confirmed", value: bookings.filter((b) => b.status === "confirmed").length, color: "text-green-600" },
-                  { label: "Total", value: bookings.length, color: "text-foreground" },
+                  { label: "Today", value: todayBookings.length, color: "text-primary", borderColor: "border-primary/30" },
+                  { label: "Pending", value: bookings.filter((b) => b.status === "pending").length, color: "text-yellow-600", borderColor: "border-yellow-300" },
+                  { label: "Confirmed", value: bookings.filter((b) => b.status === "confirmed").length, color: "text-green-600", borderColor: "border-green-300" },
+                  { label: "Total", value: bookings.length, color: "text-foreground", borderColor: "border-border" },
                 ].map((stat) => (
-                  <div key={stat.label} className="bg-card rounded-xl border border-border p-4">
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <div key={stat.label} className={cn("bg-card rounded-xl border-2 p-4 shadow-sm", stat.borderColor)}>
+                    <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
                     <p className={cn("text-2xl font-semibold mt-1", stat.color)}>{stat.value}</p>
                   </div>
                 ))}
@@ -412,7 +412,7 @@ const Admin = () => {
               <div>
                 <h2 className="font-serif text-lg font-semibold text-foreground mb-3">Today's Appointments</h2>
                 {todayBookings.length === 0 ? (
-                  <p className="text-muted-foreground text-sm bg-card rounded-xl border border-border p-6 text-center">
+                  <p className="text-muted-foreground text-sm bg-card rounded-xl border-2 border-dashed border-border p-6 text-center">
                     No appointments today
                   </p>
                 ) : (
@@ -552,7 +552,7 @@ const Admin = () => {
           {activeTab === "staff" && (
             <div className="space-y-4">
               {visibleStaff.map((staff) => (
-                <div key={staff.id} className="bg-card rounded-xl border border-border p-5">
+                <div key={staff.id} className="bg-card rounded-xl border-2 border-border p-5 shadow-sm">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                       <span className="text-primary font-semibold text-lg">{staff.avatar}</span>
@@ -600,13 +600,13 @@ function BookingCard({
   showDate?: boolean;
 }) {
   return (
-    <div className="bg-card rounded-xl border border-border p-4 mb-2">
-      <div className="flex items-start justify-between mb-2">
+    <div className="bg-card rounded-xl border-2 border-border p-4 mb-3 shadow-sm">
+      <div className="flex items-start justify-between mb-3">
         <div>
-          <p className="font-medium text-foreground">{booking.clientName}</p>
+          <p className="font-semibold text-foreground text-base">{booking.clientName}</p>
           <p className="text-sm text-primary font-medium">{getServiceName(booking.serviceId)}</p>
         </div>
-        <span className={cn("px-2 py-1 rounded-full text-xs font-medium capitalize", statusColors[booking.status])}>
+        <span className={cn("px-2.5 py-1 rounded-full text-xs font-semibold capitalize", statusColors[booking.status])}>
           {booking.status}
         </span>
       </div>
@@ -623,13 +623,15 @@ function BookingCard({
           <Users className="h-3.5 w-3.5" /> {getStaffName(booking.staffId)}
         </span>
       </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground mb-3">
-        <a href={`tel:${booking.clientPhone}`} className="flex items-center gap-1 hover:text-primary">
-          <Phone className="h-3 w-3" /> {booking.clientPhone}
-        </a>
-        <a href={`mailto:${booking.clientEmail}`} className="flex items-center gap-1 hover:text-primary">
-          <MailIcon className="h-3 w-3" /> {booking.clientEmail}
-        </a>
+      <div className="bg-muted/50 rounded-lg border border-border px-3 py-2 mb-3">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+          <a href={`tel:${booking.clientPhone}`} className="flex items-center gap-1 hover:text-primary">
+            <Phone className="h-3 w-3" /> {booking.clientPhone}
+          </a>
+          <a href={`mailto:${booking.clientEmail}`} className="flex items-center gap-1 hover:text-primary">
+            <MailIcon className="h-3 w-3" /> {booking.clientEmail}
+          </a>
+        </div>
       </div>
       <div className="flex flex-wrap gap-2">
         {booking.status === "pending" && (
