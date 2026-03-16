@@ -19,6 +19,8 @@ import {
   Eye,
   EyeOff,
   ShieldCheck,
+  RotateCcw,
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +32,12 @@ import {
   mockBookings,
   type Booking,
 } from "@/lib/booking-data";
+import {
+  getBookings,
+  saveBookings,
+  updateBookingStatus,
+  deleteBooking as deleteBookingFromStore,
+} from "@/lib/bookings-store";
 import logo from "@/assets/logo.png";
 
 const ADMIN_EMAIL = "admin@lapassion.com";
@@ -54,7 +62,13 @@ const Admin = () => {
   const [loginError, setLoginError] = useState("");
 
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
-  const [bookings, setBookings] = useState<Booking[]>(mockBookings);
+  const [bookings, setBookings] = useState<Booking[]>(() => {
+    const stored = getBookings();
+    const mockIds = new Set(mockBookings.map((b) => b.id));
+    const storedIds = new Set(stored.map((b) => b.id));
+    const mergedMock = mockBookings.filter((b) => !storedIds.has(b.id));
+    return [...mergedMock, ...stored];
+  });
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -82,9 +96,19 @@ const Admin = () => {
   }, [staffFilteredBookings, statusFilter]);
 
   const updateStatus = (id: string, status: Booking["status"]) => {
-    setBookings((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, status } : b))
-    );
+    setBookings((prev) => {
+      const updated = prev.map((b) => (b.id === id ? { ...b, status } : b));
+      saveBookings(updated);
+      return updated;
+    });
+  };
+
+  const removeBooking = (id: string) => {
+    setBookings((prev) => {
+      const updated = prev.filter((b) => b.id !== id);
+      saveBookings(updated);
+      return updated;
+    });
   };
 
   const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
@@ -247,9 +271,12 @@ const Admin = () => {
         ))}
       </nav>
       <div className="p-4 border-t border-border">
-        <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" onClick={handleLogout}>
-          <LogOut className="h-4 w-4 mr-2" /> Log Out
-        </Button>
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+        >
+          <LogOut className="h-4 w-4" /> Log Out
+        </button>
       </div>
     </div>
   );
@@ -332,6 +359,7 @@ const Admin = () => {
                         getServiceName={getServiceName}
                         getStaffName={getStaffName}
                         onUpdateStatus={updateStatus}
+                        onDelete={removeBooking}
                       />
                     ))}
                   </div>
@@ -367,6 +395,7 @@ const Admin = () => {
                     getServiceName={getServiceName}
                     getStaffName={getStaffName}
                     onUpdateStatus={updateStatus}
+                    onDelete={removeBooking}
                     showDate
                   />
                 ))}
@@ -444,6 +473,7 @@ const Admin = () => {
                       getServiceName={getServiceName}
                       getStaffName={getStaffName}
                       onUpdateStatus={updateStatus}
+                      onDelete={removeBooking}
                     />
                   ))}
                 {!staffFilteredBookings.some((b) => isSameDay(parseISO(b.date), selectedDate)) && (
@@ -489,18 +519,19 @@ const Admin = () => {
   );
 };
 
-// Booking card component
 function BookingCard({
   booking,
   getServiceName,
   getStaffName,
   onUpdateStatus,
+  onDelete,
   showDate,
 }: {
   booking: Booking;
   getServiceName: (id: string) => string;
   getStaffName: (id: string) => string;
   onUpdateStatus: (id: string, status: Booking["status"]) => void;
+  onDelete: (id: string) => void;
   showDate?: boolean;
 }) {
   return (
@@ -535,36 +566,60 @@ function BookingCard({
           <MailIcon className="h-3 w-3" /> {booking.clientEmail}
         </a>
       </div>
-      {(booking.status === "pending" || booking.status === "confirmed") && (
-        <div className="flex gap-2">
-          {booking.status === "pending" && (
-            <Button
-              variant="gold"
-              size="sm"
-              onClick={() => onUpdateStatus(booking.id, "confirmed")}
-            >
-              <Check className="h-3.5 w-3.5 mr-1" /> Confirm
-            </Button>
-          )}
-          {booking.status === "confirmed" && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onUpdateStatus(booking.id, "completed")}
-            >
-              <Check className="h-3.5 w-3.5 mr-1" /> Complete
-            </Button>
-          )}
+      <div className="flex flex-wrap gap-2">
+        {booking.status === "pending" && (
+          <Button
+            variant="gold"
+            size="sm"
+            onClick={() => onUpdateStatus(booking.id, "confirmed")}
+            data-testid={`button-confirm-${booking.id}`}
+          >
+            <Check className="h-3.5 w-3.5 mr-1" /> Confirm
+          </Button>
+        )}
+        {booking.status === "confirmed" && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onUpdateStatus(booking.id, "completed")}
+            data-testid={`button-complete-${booking.id}`}
+          >
+            <Check className="h-3.5 w-3.5 mr-1" /> Complete
+          </Button>
+        )}
+        {(booking.status === "pending" || booking.status === "confirmed") && (
           <Button
             variant="outline"
             size="sm"
             onClick={() => onUpdateStatus(booking.id, "cancelled")}
             className="text-destructive hover:text-destructive"
+            data-testid={`button-cancel-${booking.id}`}
           >
             <X className="h-3.5 w-3.5 mr-1" /> Cancel
           </Button>
-        </div>
-      )}
+        )}
+        {booking.status === "cancelled" && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onUpdateStatus(booking.id, "pending")}
+            data-testid={`button-revert-${booking.id}`}
+          >
+            <RotateCcw className="h-3.5 w-3.5 mr-1" /> Revert
+          </Button>
+        )}
+        {(booking.status === "cancelled" || booking.status === "completed") && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onDelete(booking.id)}
+            className="text-destructive hover:text-destructive"
+            data-testid={`button-delete-${booking.id}`}
+          >
+            <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
