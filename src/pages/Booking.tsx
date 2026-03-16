@@ -80,8 +80,30 @@ const Booking = () => {
     if (prev) setCurrentStep(prev.key);
   };
 
-  const handleSubmit = () => {
-    // Save booking to localStorage
+  const handleSubmit = async () => {
+    const bookingData = {
+      clientName,
+      clientPhone,
+      clientEmail,
+      serviceId: selectedService?.id || "",
+      staffId: selectedStaff?.id || "",
+      date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
+      time: selectedTime || "",
+      status: "pending",
+      notes: notes || null,
+    };
+
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookingData),
+      });
+      if (res.ok) {
+        setIsSubmitted(true);
+        return;
+      }
+    } catch {}
     addBooking({
       id: `b_${Date.now()}`,
       clientName,

@@ -7,9 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 
-const ADMIN_EMAIL = "admin@lapassion.com";
-const ADMIN_PASSWORD = "admin123";
-
 const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState("");
@@ -21,7 +18,7 @@ const Login = () => {
   const { login, register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -41,16 +38,22 @@ const Login = () => {
         setError("Please fill in all fields");
         return;
       }
-      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        localStorage.setItem("lp_admin_auth", "true");
-        navigate("/admin");
-        return;
-      }
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        if (res.ok) {
+          navigate("/admin");
+          return;
+        }
+      } catch {}
       const result = login(email, password);
       if (result.success) {
         navigate("/booking");
       } else {
-        setError(result.error || "Login failed");
+        setError(result.error || "Invalid credentials");
       }
     }
   };

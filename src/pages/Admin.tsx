@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { format, isSameDay, parseISO, startOfWeek, addDays, setMonth, setYear } from "date-fns";
 import { motion } from "framer-motion";
 import {
@@ -29,23 +29,34 @@ import { cn } from "@/lib/utils";
 import {
   services,
   staffMembers,
-  mockBookings,
-  type Booking,
 } from "@/lib/booking-data";
-import {
-  getBookings,
-  saveBookings,
-  updateBookingStatus,
-  deleteBooking as deleteBookingFromStore,
-} from "@/lib/bookings-store";
 import logo from "@/assets/logo.png";
-
-const ADMIN_EMAIL = "admin@lapassion.com";
-const ADMIN_PASSWORD = "admin123";
 
 type Tab = "dashboard" | "bookings" | "calendar" | "staff";
 
-const statusColors: Record<Booking["status"], string> = {
+interface AdminBooking {
+  id: number;
+  clientName: string;
+  clientPhone: string;
+  clientEmail: string;
+  serviceId: string;
+  staffId: string;
+  date: string;
+  time: string;
+  status: string;
+  notes: string | null;
+  createdAt: string;
+}
+
+interface StaffUser {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  staffDataId: string;
+}
+
+const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
   confirmed: "bg-green-100 text-green-800",
   cancelled: "bg-red-100 text-red-800",
@@ -53,34 +64,61 @@ const statusColors: Record<Booking["status"], string> = {
 };
 
 const Admin = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    () => localStorage.getItem("lp_admin_auth") === "true"
-  );
+  const [staffUser, setStaffUser] = useState<StaffUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState("");
 
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
-  const [bookings, setBookings] = useState<Booking[]>(() => {
-    const stored = getBookings();
-    const mockIds = new Set(mockBookings.map((b) => b.id));
-    const storedIds = new Set(stored.map((b) => b.id));
-    const mergedMock = mockBookings.filter((b) => !storedIds.has(b.id));
-    return [...mergedMock, ...stored];
-  });
+  const [bookings, setBookings] = useState<AdminBooking[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedStaffId, setSelectedStaffId] = useState<string>("all");
 
+  const isAdmin = staffUser?.role === "admin";
+
+  const checkAuth = useCallback(async () => {
+    try {
+      const res = await fetch("/api/auth/me");
+      if (res.ok) {
+        const user = await res.json();
+        setStaffUser(user);
+      }
+    } catch {}
+    setIsLoading(false);
+  }, []);
+
+  const fetchBookings = useCallback(async () => {
+    try {
+      const res = await fetch("/api/bookings");
+      if (res.ok) {
+        const data = await res.json();
+        setBookings(data);
+      }
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  useEffect(() => {
+    if (staffUser) fetchBookings();
+  }, [staffUser, fetchBookings]);
+
   const getServiceName = (id: string) => services.find((s) => s.id === id)?.name || id;
   const getStaffName = (id: string) => staffMembers.find((s) => s.id === id)?.name || id;
 
+  const visibleStaff = isAdmin ? staffMembers : staffMembers.filter((s) => s.id === staffUser?.staffDataId);
+
   const staffFilteredBookings = useMemo(() => {
-    if (selectedStaffId === "all") return bookings;
-    return bookings.filter((b) => b.staffId === selectedStaffId);
-  }, [bookings, selectedStaffId]);
+    if (isAdmin && selectedStaffId === "all") return bookings;
+    if (isAdmin) return bookings.filter((b) => b.staffId === selectedStaffId);
+    return bookings;
+  }, [bookings, selectedStaffId, isAdmin]);
 
   const todayBookings = useMemo(
     () => staffFilteredBookings.filter((b) => isSameDay(parseISO(b.date), new Date())),
@@ -92,23 +130,29 @@ const Admin = () => {
     if (statusFilter !== "all") {
       filtered = filtered.filter((b) => b.status === statusFilter);
     }
-    return filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return [...filtered].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [staffFilteredBookings, statusFilter]);
 
-  const updateStatus = (id: string, status: Booking["status"]) => {
-    setBookings((prev) => {
-      const updated = prev.map((b) => (b.id === id ? { ...b, status } : b));
-      saveBookings(updated);
-      return updated;
-    });
+  const updateStatus = async (id: number, status: string) => {
+    try {
+      const res = await fetch(`/api/bookings/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (res.ok) {
+        setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
+      }
+    } catch {}
   };
 
-  const removeBooking = (id: string) => {
-    setBookings((prev) => {
-      const updated = prev.filter((b) => b.id !== id);
-      saveBookings(updated);
-      return updated;
-    });
+  const removeBooking = async (id: number) => {
+    try {
+      const res = await fetch(`/api/bookings/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setBookings((prev) => prev.filter((b) => b.id !== id));
+      }
+    } catch {}
   };
 
   const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
@@ -121,57 +165,78 @@ const Admin = () => {
     { key: "staff", label: "Staff", icon: Users },
   ];
 
-  const StaffFilter = () => (
-    <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-      <button
-        onClick={() => setSelectedStaffId("all")}
-        className={cn(
-          "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
-          selectedStaffId === "all"
-            ? "bg-primary text-primary-foreground"
-            : "bg-muted text-muted-foreground hover:bg-accent"
-        )}
-      >
-        All
-      </button>
-      {staffMembers.map((staff) => (
+  const StaffFilter = () => {
+    if (!isAdmin) return null;
+    return (
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none mb-4">
         <button
-          key={staff.id}
-          onClick={() => setSelectedStaffId(staff.id)}
+          onClick={() => setSelectedStaffId("all")}
           className={cn(
             "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
-            selectedStaffId === staff.id
+            selectedStaffId === "all"
               ? "bg-primary text-primary-foreground"
               : "bg-muted text-muted-foreground hover:bg-accent"
           )}
         >
-          {staff.name}
+          All
         </button>
-      ))}
-    </div>
-  );
+        {staffMembers.map((staff) => (
+          <button
+            key={staff.id}
+            onClick={() => setSelectedStaffId(staff.id)}
+            className={cn(
+              "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
+              selectedStaffId === staff.id
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted text-muted-foreground hover:bg-accent"
+            )}
+          >
+            {staff.name}
+          </button>
+        ))}
+      </div>
+    );
+  };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError("");
     if (!loginEmail || !loginPassword) {
       setLoginError("Please fill in all fields");
       return;
     }
-    if (loginEmail === ADMIN_EMAIL && loginPassword === ADMIN_PASSWORD) {
-      localStorage.setItem("lp_admin_auth", "true");
-      setIsAuthenticated(true);
-    } else {
-      setLoginError("Invalid admin credentials");
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+      });
+      if (res.ok) {
+        const user = await res.json();
+        setStaffUser(user);
+      } else {
+        setLoginError("Invalid credentials");
+      }
+    } catch {
+      setLoginError("Connection error. Please try again.");
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("lp_admin_auth");
-    setIsAuthenticated(false);
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    setStaffUser(null);
+    setBookings([]);
   };
 
-  if (!isAuthenticated) {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
+  if (!staffUser) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-4">
         <motion.div
@@ -183,11 +248,11 @@ const Admin = () => {
             <img src={logo} alt="La Passion" className="h-16 w-auto mx-auto mb-4" />
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-medium mb-4">
               <ShieldCheck className="h-4 w-4" />
-              Admin Access
+              Staff Access
             </div>
           </div>
           <div className="bg-card rounded-2xl border border-border p-8 shadow-card">
-            <h1 className="heading-card text-foreground text-center mb-6">Admin Login</h1>
+            <h1 className="heading-card text-foreground text-center mb-6">Staff Login</h1>
             {loginError && (
               <div className="bg-destructive/10 text-destructive text-sm rounded-lg p-3 mb-6">
                 {loginError}
@@ -201,7 +266,7 @@ const Admin = () => {
                   <Input
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
-                    placeholder="admin@lapassion.com"
+                    placeholder="your.email@lapassion.com"
                     type="email"
                     className="pl-10"
                     data-testid="input-admin-email"
@@ -248,7 +313,7 @@ const Admin = () => {
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border">
         <img src={logo} alt="La Passion" className="h-14 w-auto" />
-        <p className="text-xs text-muted-foreground mt-1">Admin Panel</p>
+        <p className="text-xs text-muted-foreground mt-1">{isAdmin ? "Admin Panel" : staffUser?.name}</p>
       </div>
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
         {tabs.map((tab) => (
@@ -486,7 +551,7 @@ const Admin = () => {
           {/* Staff */}
           {activeTab === "staff" && (
             <div className="space-y-4">
-              {staffMembers.map((staff) => (
+              {visibleStaff.map((staff) => (
                 <div key={staff.id} className="bg-card rounded-xl border border-border p-5">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -527,11 +592,11 @@ function BookingCard({
   onDelete,
   showDate,
 }: {
-  booking: Booking;
+  booking: AdminBooking;
   getServiceName: (id: string) => string;
   getStaffName: (id: string) => string;
-  onUpdateStatus: (id: string, status: Booking["status"]) => void;
-  onDelete: (id: string) => void;
+  onUpdateStatus: (id: number, status: string) => void;
+  onDelete: (id: number) => void;
   showDate?: boolean;
 }) {
   return (
