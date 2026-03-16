@@ -496,7 +496,7 @@ const Admin = () => {
                 </select>
               </div>
 
-              <div className="bg-card rounded-xl border border-border p-6">
+              <div className="bg-card rounded-xl border border-black/20 p-6">
                 <Calendar
                   mode="single"
                   selected={selectedDate}
@@ -516,13 +516,34 @@ const Admin = () => {
                     head_row: "flex w-full",
                     head_cell: "text-muted-foreground rounded-md flex-1 font-medium text-sm py-2",
                     row: "flex w-full mt-1",
-                    cell: "flex-1 text-center text-sm p-1 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                    day: "h-12 w-full p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md inline-flex items-center justify-center transition-colors",
-                    day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+                    cell: "flex-1 text-center text-sm p-0.5 relative [&:has([aria-selected])]:bg-transparent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                    day: "h-14 w-full p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md inline-flex items-start justify-start transition-colors relative",
+                    day_selected: "bg-primary/10 text-foreground ring-2 ring-primary hover:bg-primary/15",
                     day_today: "bg-accent text-accent-foreground font-semibold",
                     day_outside: "text-muted-foreground opacity-50",
                     day_disabled: "text-muted-foreground opacity-50",
                     day_hidden: "invisible",
+                  }}
+                  components={{
+                    DayContent: ({ date }) => {
+                      const count = staffFilteredBookings.filter((b) => isSameDay(parseISO(b.date), date)).length;
+                      return (
+                        <div className="relative w-full h-full flex flex-col items-start p-1">
+                          <span className="text-sm">{date.getDate()}</span>
+                          {count > 0 && (
+                            <span className="absolute top-0.5 right-1 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold">
+                              {count}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    },
+                  }}
+                  modifiers={{
+                    hasBookings: (date: Date) => staffFilteredBookings.some((b) => isSameDay(parseISO(b.date), date)),
+                  }}
+                  modifiersClassNames={{
+                    hasBookings: "bg-primary/10 font-semibold",
                   }}
                 />
               </div>
