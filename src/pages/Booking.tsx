@@ -199,14 +199,14 @@ const Booking = () => {
                   <p className="text-body text-sm mb-6">Select the service you'd like to book</p>
 
                   {/* Category filter */}
-                  <div className="flex flex-wrap gap-2 mb-6">
+                  <div className="flex flex-nowrap gap-2 mb-6 overflow-x-auto">
                     <button
                       onClick={() => setSelectedCategory(null)}
                       className={cn(
-                        "px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
+                        "px-4 py-2 rounded-full text-sm font-medium transition-colors border-2 whitespace-nowrap",
                         !selectedCategory
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground hover:bg-muted/80"
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-card text-foreground border-black hover:bg-muted/80"
                       )}
                     >
                       All
@@ -216,10 +216,10 @@ const Booking = () => {
                         key={cat.id}
                         onClick={() => setSelectedCategory(cat.id)}
                         className={cn(
-                          "px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
+                          "px-4 py-2 rounded-full text-sm font-medium transition-colors border-2 whitespace-nowrap",
                           selectedCategory === cat.id
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground hover:bg-muted/80"
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-card text-foreground border-black hover:bg-muted/80"
                         )}
                       >
                         {cat.label}
@@ -236,10 +236,10 @@ const Booking = () => {
                           goNext();
                         }}
                         className={cn(
-                          "w-full flex items-center justify-between p-4 rounded-xl border transition-all text-left",
+                          "w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left",
                           selectedService?.id === service.id
                             ? "border-primary bg-primary/5"
-                            : "border-border hover:border-primary/50 bg-card"
+                            : "border-black hover:border-primary bg-card"
                         )}
                       >
                         <div>
@@ -274,10 +274,10 @@ const Booking = () => {
                           goNext();
                         }}
                         className={cn(
-                          "w-full flex items-center gap-4 p-4 rounded-xl border transition-all text-left",
+                          "w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left",
                           selectedStaff?.id === staff.id
                             ? "border-primary bg-primary/5"
-                            : "border-border hover:border-primary/50 bg-card"
+                            : "border-black hover:border-primary bg-card"
                         )}
                       >
                         <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -296,7 +296,7 @@ const Booking = () => {
                         setSelectedStaff(null);
                         goNext();
                       }}
-                      className="w-full flex items-center gap-4 p-4 rounded-xl border border-border hover:border-primary/50 bg-card transition-all text-left"
+                      className="w-full flex items-center gap-4 p-4 rounded-xl border-2 border-black hover:border-primary bg-card transition-all text-left"
                     >
                       <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
                         <User className="h-5 w-5 text-muted-foreground" />

@@ -148,10 +148,10 @@ const HeroSection = () => {
                           onClick={() => {
                             setSelectedCategory(isActive ? null : cat.id);
                           }}
-                          className={`flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 border ${
+                          className={`flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 border-2 ${
                             isActive
                               ? "bg-primary text-primary-foreground border-primary shadow-md"
-                              : "bg-background/60 text-foreground border-border hover:border-primary/50 hover:bg-background"
+                              : "bg-background/60 text-foreground border-black hover:border-primary hover:bg-background"
                           }`}
                         >
                           <Icon className="h-4 w-4 shrink-0" />

@@ -157,9 +157,9 @@ const Services = () => {
                     </div>
                     <p className="text-body mb-6">{service.description}</p>
                     
-                    <div className="space-y-3 mb-6">
+                    <div className="space-y-2 mb-6">
                       {service.items.map((item, i) => (
-                        <div key={i} className="flex items-center justify-between py-3 border-b border-border">
+                        <div key={i} className="flex items-center justify-between p-4 rounded-xl border-2 border-black bg-card">
                           <div>
                             <span className="text-foreground font-medium">{item.name}</span>
                             {item.note && (
