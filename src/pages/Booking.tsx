@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
+import { useSearchParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check, Clock, User, CalendarIcon, Phone, Mail, ChevronRight } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -32,8 +33,10 @@ const steps: { key: Step; label: string }[] = [
 
 const Booking = () => {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const initialCategory = searchParams.get("category");
   const [currentStep, setCurrentStep] = useState<Step>("service");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
