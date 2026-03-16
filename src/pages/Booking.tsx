@@ -317,7 +317,7 @@ const Booking = () => {
                   <h2 className="heading-card text-foreground mb-2">Pick Date & Time</h2>
                   <p className="text-body text-sm mb-6">Choose your preferred appointment time</p>
 
-                  <div className="bg-card rounded-xl border border-border p-4 mb-6">
+                  <div className="bg-card rounded-xl border-2 border-black p-4 mb-6">
                     <Calendar
                       mode="single"
                       selected={selectedDate}
@@ -505,43 +505,43 @@ const Booking = () => {
                   <h2 className="heading-card text-foreground mb-2">Review & Confirm</h2>
                   <p className="text-body text-sm mb-6">Please confirm your appointment details</p>
 
-                  <div className="bg-card rounded-xl border border-border p-5 space-y-4 mb-6">
+                  <div className="bg-card rounded-xl border-2 border-black p-5 space-y-4 mb-6">
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground text-sm">Service</span>
                       <span className="font-medium text-foreground">{selectedService?.name}</span>
                     </div>
-                    <div className="border-t border-border" />
+                    <div className="border-t border-black/20" />
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground text-sm">Stylist</span>
                       <span className="font-medium text-foreground">
                         {selectedStaff?.name || "No Preference"}
                       </span>
                     </div>
-                    <div className="border-t border-border" />
+                    <div className="border-t border-black/20" />
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground text-sm">Date</span>
                       <span className="font-medium text-foreground">
                         {selectedDate && format(selectedDate, "EEE, MMM d, yyyy")}
                       </span>
                     </div>
-                    <div className="border-t border-border" />
+                    <div className="border-t border-black/20" />
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground text-sm">Time</span>
                       <span className="font-medium text-foreground">{selectedTime}</span>
                     </div>
-                    <div className="border-t border-border" />
+                    <div className="border-t border-black/20" />
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground text-sm">Duration</span>
                       <span className="font-medium text-foreground">{selectedService?.duration} min</span>
                     </div>
-                    <div className="border-t border-border" />
+                    <div className="border-t border-black/20" />
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground text-sm">Price</span>
                       <span className="font-semibold text-primary text-lg">{selectedService?.price}</span>
                     </div>
                   </div>
 
-                  <div className="bg-card rounded-xl border border-border p-5 space-y-2 mb-6">
+                  <div className="bg-card rounded-xl border-2 border-black p-5 space-y-2 mb-6">
                     <p className="text-sm font-medium text-foreground">{clientName}</p>
                     <p className="text-sm text-muted-foreground">{clientPhone}</p>
                     <p className="text-sm text-muted-foreground">{clientEmail}</p>
