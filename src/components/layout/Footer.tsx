@@ -149,6 +149,9 @@ const Footer = () => {
               <Link to="/terms" className="hover:text-primary transition-colors">
                 Terms of Service
               </Link>
+              <Link to="/admin/login" className="hover:text-primary transition-colors">
+                Staff Login
+              </Link>
             </div>
           </div>
         </div>
