@@ -21,6 +21,8 @@ import {
   ShieldCheck,
   RotateCcw,
   Trash2,
+  StickyNote,
+  Save,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -151,6 +153,19 @@ const Admin = () => {
       const res = await fetch(`/api/bookings/${id}`, { method: "DELETE" });
       if (res.ok) {
         setBookings((prev) => prev.filter((b) => b.id !== id));
+      }
+    } catch {}
+  };
+
+  const updateNotes = async (id: number, notes: string) => {
+    try {
+      const res = await fetch(`/api/bookings/${id}/notes`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notes }),
+      });
+      if (res.ok) {
+        setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, notes: notes || null } : b)));
       }
     } catch {}
   };
@@ -428,6 +443,7 @@ const Admin = () => {
                         getStaffName={getStaffName}
                         onUpdateStatus={updateStatus}
                         onDelete={removeBooking}
+                        onUpdateNotes={updateNotes}
                       />
                     ))}
                   </div>
@@ -464,6 +480,7 @@ const Admin = () => {
                     getStaffName={getStaffName}
                     onUpdateStatus={updateStatus}
                     onDelete={removeBooking}
+                    onUpdateNotes={updateNotes}
                     showDate
                   />
                 ))}
@@ -563,6 +580,7 @@ const Admin = () => {
                       getStaffName={getStaffName}
                       onUpdateStatus={updateStatus}
                       onDelete={removeBooking}
+                      onUpdateNotes={updateNotes}
                     />
                   ))}
                 {!staffFilteredBookings.some((b) => isSameDay(parseISO(b.date), selectedDate)) && (
@@ -614,6 +632,7 @@ function BookingCard({
   getStaffName,
   onUpdateStatus,
   onDelete,
+  onUpdateNotes,
   showDate,
 }: {
   booking: AdminBooking;
@@ -621,8 +640,12 @@ function BookingCard({
   getStaffName: (id: string) => string;
   onUpdateStatus: (id: number, status: string) => void;
   onDelete: (id: number) => void;
+  onUpdateNotes: (id: number, notes: string) => void;
   showDate?: boolean;
 }) {
+  const [editingNotes, setEditingNotes] = useState(false);
+  const [notesValue, setNotesValue] = useState(booking.notes || "");
+
   return (
     <div className="bg-card rounded-xl border border-black/20 p-4 mb-3">
       <div className="flex items-start justify-between mb-3">
@@ -656,6 +679,63 @@ function BookingCard({
             <MailIcon className="h-3 w-3" /> {booking.clientEmail}
           </a>
         </div>
+      </div>
+      <div className="mb-3">
+        {editingNotes ? (
+          <div className="space-y-2">
+            <textarea
+              value={notesValue}
+              onChange={(e) => setNotesValue(e.target.value)}
+              placeholder="Add notes about this client..."
+              className="w-full text-sm border border-black/20 rounded-lg px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+              rows={3}
+              data-testid={`textarea-notes-${booking.id}`}
+            />
+            <div className="flex gap-2">
+              <Button
+                variant="gold"
+                size="sm"
+                onClick={() => {
+                  onUpdateNotes(booking.id, notesValue);
+                  setEditingNotes(false);
+                }}
+                data-testid={`button-save-notes-${booking.id}`}
+              >
+                <Save className="h-3.5 w-3.5 mr-1" /> Save
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setNotesValue(booking.notes || "");
+                  setEditingNotes(false);
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setEditingNotes(true)}
+            className="w-full text-left"
+            data-testid={`button-edit-notes-${booking.id}`}
+          >
+            {booking.notes ? (
+              <div className="bg-amber-50 rounded-lg border border-black/10 px-3 py-2">
+                <div className="flex items-start gap-2">
+                  <StickyNote className="h-3.5 w-3.5 text-amber-600 mt-0.5 shrink-0" />
+                  <p className="text-sm text-foreground whitespace-pre-wrap">{booking.notes}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors">
+                <StickyNote className="h-3.5 w-3.5" />
+                <span>Add notes...</span>
+              </div>
+            )}
+          </button>
+        )}
       </div>
       <div className="flex flex-wrap gap-2">
         {booking.status === "pending" && (

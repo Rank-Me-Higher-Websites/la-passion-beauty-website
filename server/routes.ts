@@ -125,6 +125,33 @@ router.patch("/api/bookings/:id", async (req: Request, res: Response) => {
   res.json(booking);
 });
 
+router.patch("/api/bookings/:id/notes", async (req: Request, res: Response) => {
+  const sessionStaffId = (req.session as any)?.staffId;
+  if (!sessionStaffId) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  const staff = await storage.getStaffById(sessionStaffId);
+  if (!staff) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  const id = parseInt(req.params.id);
+  const { notes } = req.body;
+
+  const existing = await storage.getBookingById(id);
+  if (!existing) {
+    return res.status(404).json({ error: "Booking not found" });
+  }
+
+  if (staff.role !== "admin" && existing.staffId !== staff.staffDataId) {
+    return res.status(403).json({ error: "Not authorized" });
+  }
+
+  const booking = await storage.updateBookingNotes(id, notes || null);
+  res.json(booking);
+});
+
 router.delete("/api/bookings/:id", async (req: Request, res: Response) => {
   const sessionStaffId = (req.session as any)?.staffId;
   if (!sessionStaffId) {

@@ -60,6 +60,11 @@ export class DatabaseStorage implements IStorage {
     return updated;
   }
 
+  async updateBookingNotes(id: number, notes: string | null): Promise<Booking | undefined> {
+    const [updated] = await db.update(bookings).set({ notes }).where(eq(bookings.id, id)).returning();
+    return updated;
+  }
+
   async deleteBooking(id: number): Promise<void> {
     await db.delete(bookings).where(eq(bookings.id, id));
   }
