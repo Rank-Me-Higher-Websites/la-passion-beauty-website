@@ -414,7 +414,7 @@ const Booking = () => {
                           value={clientName}
                           onChange={(e) => setClientName(e.target.value)}
                           placeholder="Jane Smith"
-                          className="pl-10"
+                          className="pl-10 border-2 border-black"
                         />
                       </div>
                     </div>
@@ -427,7 +427,7 @@ const Booking = () => {
                           onChange={(e) => setClientPhone(e.target.value)}
                           placeholder="(312) 555-0100"
                           type="tel"
-                          className="pl-10"
+                          className="pl-10 border-2 border-black"
                         />
                       </div>
                     </div>
@@ -440,7 +440,7 @@ const Booking = () => {
                           onChange={(e) => setClientEmail(e.target.value)}
                           placeholder="jane@example.com"
                           type="email"
-                          className="pl-10"
+                          className="pl-10 border-2 border-black"
                         />
                       </div>
                     </div>
@@ -450,7 +450,7 @@ const Booking = () => {
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                         placeholder="Any special requests..."
-                        className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[80px]"
+                        className="flex w-full rounded-md border-2 border-black bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[80px]"
                       />
                     </div>
                   </div>
