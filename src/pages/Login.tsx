@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 
+const ADMIN_EMAIL = "admin@lapassion.com";
+const ADMIN_PASSWORD = "admin123";
+
 const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState("");
@@ -36,6 +39,11 @@ const Login = () => {
     } else {
       if (!email || !password) {
         setError("Please fill in all fields");
+        return;
+      }
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        localStorage.setItem("lp_admin_auth", "true");
+        navigate("/admin");
         return;
       }
       const result = login(email, password);
