@@ -2,8 +2,8 @@ import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { useSearchParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Clock, User, CalendarIcon, Phone, Mail, ChevronRight } from "lucide-react";
-import Layout from "@/components/layout/Layout";
+import { ArrowLeft, ArrowRight, Check, Clock, User, CalendarIcon, Phone, Mail, ChevronRight, Home } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
@@ -100,62 +100,65 @@ const Booking = () => {
 
   if (isSubmitted) {
     return (
-      <Layout>
-        <section className="pt-32 pb-20 min-h-screen bg-background">
-          <div className="container-custom max-w-lg">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center"
-            >
-              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
-                <Check className="h-10 w-10 text-primary" />
+      <div className="min-h-screen bg-background">
+        <div className="container-custom max-w-lg pt-8 pb-20">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8">
+            <Home className="h-4 w-4" /> Back to Home
+          </Link>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center"
+          >
+            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+              <Check className="h-10 w-10 text-primary" />
+            </div>
+            <h1 className="heading-section text-foreground mb-4">Booking Confirmed!</h1>
+            <p className="text-body mb-2">
+              Thank you, <strong>{clientName}</strong>. Your appointment has been booked.
+            </p>
+            <div className="bg-card rounded-xl p-6 mt-6 text-left space-y-3 shadow-card">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Service</span>
+                <span className="font-medium text-foreground">{selectedService?.name}</span>
               </div>
-              <h1 className="heading-section text-foreground mb-4">Booking Confirmed!</h1>
-              <p className="text-body mb-2">
-                Thank you, <strong>{clientName}</strong>. Your appointment has been booked.
-              </p>
-              <div className="bg-card rounded-xl p-6 mt-6 text-left space-y-3 shadow-card">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Service</span>
-                  <span className="font-medium text-foreground">{selectedService?.name}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Stylist</span>
-                  <span className="font-medium text-foreground">{selectedStaff?.name}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Date</span>
-                  <span className="font-medium text-foreground">
-                    {selectedDate && format(selectedDate, "EEEE, MMMM d, yyyy")}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Time</span>
-                  <span className="font-medium text-foreground">{selectedTime}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Price</span>
-                  <span className="font-semibold text-primary">{selectedService?.price}</span>
-                </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Stylist</span>
+                <span className="font-medium text-foreground">{selectedStaff?.name}</span>
               </div>
-              <p className="text-sm text-muted-foreground mt-6">
-                A confirmation email will be sent to {clientEmail}
-              </p>
-              <Button variant="gold" size="lg" className="mt-6" asChild>
-                <a href="/">Back to Home</a>
-              </Button>
-            </motion.div>
-          </div>
-        </section>
-      </Layout>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Date</span>
+                <span className="font-medium text-foreground">
+                  {selectedDate && format(selectedDate, "EEEE, MMMM d, yyyy")}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Time</span>
+                <span className="font-medium text-foreground">{selectedTime}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Price</span>
+                <span className="font-semibold text-primary">{selectedService?.price}</span>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground mt-6">
+              A confirmation email will be sent to {clientEmail}
+            </p>
+            <Button variant="gold" size="lg" className="mt-6" asChild>
+              <a href="/">Back to Home</a>
+            </Button>
+          </motion.div>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Layout>
-      <section className="pt-28 pb-16 min-h-screen bg-background">
-        <div className="container-custom max-w-2xl">
+    <div className="min-h-screen bg-background">
+      <div className="container-custom max-w-2xl pt-8 pb-16">
+        <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
+          <Home className="h-4 w-4" /> Back to Home
+        </Link>
           {/* Progress bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-3">
@@ -560,9 +563,8 @@ const Booking = () => {
               )}
             </motion.div>
           </AnimatePresence>
-        </div>
-      </section>
-    </Layout>
+      </div>
+    </div>
   );
 };
 
