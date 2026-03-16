@@ -455,6 +455,34 @@ const Booking = () => {
                     </div>
                   </div>
 
+                  <div className="bg-card rounded-xl border-2 border-black p-4 mt-6">
+                    <p className="text-sm font-semibold text-foreground mb-3">Your Booking Summary</p>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Service</span>
+                        <span className="font-medium text-foreground">{selectedService?.name}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Stylist</span>
+                        <span className="font-medium text-foreground">{selectedStaff?.name || "No Preference"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Date</span>
+                        <span className="font-medium text-foreground">
+                          {selectedDate ? format(selectedDate, "EEE, MMM d, yyyy") : "—"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Time</span>
+                        <span className="font-medium text-foreground">{selectedTime || "—"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Price</span>
+                        <span className="font-semibold text-primary">{selectedService?.price}</span>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="mt-6 flex gap-3">
                     <Button variant="outline" onClick={goBack} className="flex-1">
                       <ArrowLeft className="h-4 w-4 mr-2" /> Back
