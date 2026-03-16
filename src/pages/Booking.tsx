@@ -160,10 +160,10 @@ const Booking = () => {
                 <div key={step.key} className="flex items-center">
                   <div
                     className={cn(
-                      "w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-colors",
+                      "w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-colors border-2",
                       i <= currentStepIndex
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-card text-foreground border-black"
                     )}
                   >
                     {i < currentStepIndex ? <Check className="h-4 w-4" /> : i + 1}
@@ -172,7 +172,7 @@ const Booking = () => {
                     <div
                       className={cn(
                         "hidden sm:block w-12 md:w-20 h-0.5 mx-1",
-                        i < currentStepIndex ? "bg-primary" : "bg-muted"
+                        i < currentStepIndex ? "bg-primary" : "bg-black/30"
                       )}
                     />
                   )}
@@ -199,7 +199,7 @@ const Booking = () => {
                   <p className="text-body text-sm mb-6">Select the service you'd like to book</p>
 
                   {/* Category filter */}
-                  <div className="flex flex-nowrap gap-2 mb-6 overflow-x-auto">
+                  <div className="flex flex-wrap justify-center gap-2 mb-6">
                     <button
                       onClick={() => setSelectedCategory(null)}
                       className={cn(
