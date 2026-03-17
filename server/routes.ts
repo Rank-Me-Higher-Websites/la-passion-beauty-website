@@ -130,6 +130,21 @@ router.get("/api/staff", async (req: Request, res: Response) => {
   res.json(safeStaff);
 });
 
+router.get("/api/bookings/availability", async (req: Request, res: Response) => {
+  const { staffId, date } = req.query;
+  if (!staffId || !date) {
+    return res.status(400).json({ error: "staffId and date are required" });
+  }
+
+  const existing = await storage.getBookingsByStaffAndDate(String(staffId), String(date));
+  const booked = existing
+    .filter((b) => b.status !== "cancelled")
+    .map((b) => ({ time: b.time, serviceId: b.serviceId }));
+
+  log("AVAILABILITY_CHECK", `staffId=${staffId} date=${date} → ${booked.length} booked slots, ip=${req.ip}`);
+  res.json({ booked });
+});
+
 router.get("/api/auth/me", async (req: Request, res: Response) => {
   const staffId = (req.session as any)?.staffId;
   if (!staffId) {
@@ -180,7 +195,24 @@ router.post("/api/bookings", async (req: Request, res: Response) => {
 
     data.status = "pending";
 
-    const booking = await storage.createBooking(data);
+    const existing = await storage.getBookingsByStaffAndDate(data.staffId, data.date);
+    const activeBookings = existing.filter((b) => b.status !== "cancelled");
+    const conflict = activeBookings.find((b) => b.time === data.time);
+    if (conflict) {
+      log("BOOKING_CONFLICT", `Double-booking blocked: staff=${data.staffId} date=${data.date} time=${data.time} client="${data.clientName}" ip=${req.ip}`);
+      return res.status(409).json({ error: "This time slot is already booked. Please choose a different time." });
+    }
+
+    let booking;
+    try {
+      booking = await storage.createBooking(data);
+    } catch (dbErr: any) {
+      if (dbErr.code === "23505") {
+        log("BOOKING_CONFLICT", `DB unique constraint blocked: staff=${data.staffId} date=${data.date} time=${data.time} client="${data.clientName}" ip=${req.ip}`);
+        return res.status(409).json({ error: "This time slot is already booked. Please choose a different time." });
+      }
+      throw dbErr;
+    }
     const sessionStaffId = (req.session as any)?.staffId;
     const staffAccount = sessionStaffId ? await storage.getStaffById(sessionStaffId) : null;
     const who = staffAccount ? `${staffAccount.name} (staff)` : `public client`;

@@ -69,6 +69,11 @@ export class DatabaseStorage implements IStorage {
     await db.delete(bookings).where(eq(bookings.id, id));
   }
 
+  async getBookingsByStaffAndDate(staffId: string, date: string): Promise<Booking[]> {
+    return db.select().from(bookings)
+      .where(and(eq(bookings.staffId, staffId), eq(bookings.date, date)));
+  }
+
   async updateStaffPassword(id: number, passwordHash: string): Promise<void> {
     await db.update(staffAccounts).set({ passwordHash }).where(eq(staffAccounts.id, id));
   }

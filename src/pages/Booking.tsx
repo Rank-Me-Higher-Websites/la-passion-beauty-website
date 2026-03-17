@@ -61,13 +61,46 @@ const Booking = () => {
     ? services.filter((s) => s.category === selectedCategory)
     : services;
 
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+
   const availableStaff = selectedService
     ? staffMembers.filter((s) => s.services.includes(selectedService.category))
     : staffMembers;
 
-  const staffTimeSlots = useMemo(
+  const allTimeSlots = useMemo(
     () => (selectedDate && selectedStaff ? getStaffTimeSlots(selectedStaff, selectedDate) : []),
     [selectedDate, selectedStaff]
+  );
+
+  useEffect(() => {
+    if (selectedDate && selectedStaff) {
+      setLoadingSlots(true);
+      setSelectedTime(null);
+      const controller = new AbortController();
+      const dateStr = format(selectedDate, "yyyy-MM-dd");
+      fetch(`/api/bookings/availability?staffId=${selectedStaff.id}&date=${dateStr}`, { signal: controller.signal })
+        .then((r) => {
+          if (!r.ok) throw new Error("Failed to check availability");
+          return r.json();
+        })
+        .then((data) => {
+          const taken = (data.booked || []).map((b: { time: string }) => b.time);
+          setBookedSlots(taken);
+        })
+        .catch((err) => {
+          if (err.name !== "AbortError") setBookedSlots([]);
+        })
+        .finally(() => setLoadingSlots(false));
+      return () => controller.abort();
+    } else {
+      setBookedSlots([]);
+    }
+  }, [selectedDate, selectedStaff]);
+
+  const staffTimeSlots = useMemo(
+    () => allTimeSlots.filter((t) => !bookedSlots.includes(t)),
+    [allTimeSlots, bookedSlots]
   );
 
   const goNext = () => {
@@ -80,7 +113,10 @@ const Booking = () => {
     if (prev) setCurrentStep(prev.key);
   };
 
+  const [submitError, setSubmitError] = useState("");
+
   const handleSubmit = async () => {
+    setSubmitError("");
     const bookingData = {
       clientName,
       clientPhone,
@@ -103,21 +139,15 @@ const Booking = () => {
         setIsSubmitted(true);
         return;
       }
-    } catch {}
-    addBooking({
-      id: `b_${Date.now()}`,
-      clientName,
-      clientPhone,
-      clientEmail,
-      serviceId: selectedService?.id || "",
-      staffId: selectedStaff?.id || "",
-      date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
-      time: selectedTime || "",
-      status: "pending",
-      notes: notes || undefined,
-      createdAt: new Date().toISOString(),
-    });
-    setIsSubmitted(true);
+      const err = await res.json();
+      if (res.status === 409) {
+        setSubmitError(err.error || "This time slot was just booked by someone else. Please go back and choose a different time.");
+        return;
+      }
+      setSubmitError(err.error || "Something went wrong. Please try again.");
+    } catch {
+      setSubmitError("Unable to connect. Please check your internet connection and try again.");
+    }
   };
 
   if (isSubmitted) {
@@ -385,24 +415,36 @@ const Booking = () => {
                       <p className="font-medium text-foreground mb-3">
                         Available times for {format(selectedDate, "EEEE, MMM d")}
                       </p>
-                      {staffTimeSlots.length === 0 ? (
+                      {loadingSlots ? (
+                        <p className="text-muted-foreground text-sm">Checking availability...</p>
+                      ) : allTimeSlots.length === 0 ? (
                         <p className="text-muted-foreground text-sm">{selectedStaff?.name} is not available on this day</p>
+                      ) : staffTimeSlots.length === 0 ? (
+                        <p className="text-muted-foreground text-sm">{selectedStaff?.name} is fully booked on this day. Please choose another date.</p>
                       ) : (
-                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                          {staffTimeSlots.map((time) => (
-                            <button
-                              key={time}
-                              onClick={() => setSelectedTime(time)}
-                              className={cn(
-                                "py-2.5 px-2 rounded-lg text-sm font-medium transition-all",
-                                selectedTime === time
-                                  ? "bg-primary text-primary-foreground shadow-glow"
-                                  : "bg-card border border-border hover:border-primary text-foreground"
-                              )}
-                            >
-                              {time}
-                            </button>
-                          ))}
+                        <div>
+                          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                            {staffTimeSlots.map((time) => (
+                              <button
+                                key={time}
+                                onClick={() => setSelectedTime(time)}
+                                className={cn(
+                                  "py-2.5 px-2 rounded-lg text-sm font-medium transition-all",
+                                  selectedTime === time
+                                    ? "bg-primary text-primary-foreground shadow-glow"
+                                    : "bg-card border border-border hover:border-primary text-foreground"
+                                )}
+                                data-testid={`button-timeslot-${time.replace(/\s/g, "-")}`}
+                              >
+                                {time}
+                              </button>
+                            ))}
+                          </div>
+                          {bookedSlots.length > 0 && (
+                            <p className="text-xs text-muted-foreground mt-2">
+                              {bookedSlots.length} time slot{bookedSlots.length > 1 ? "s" : ""} already booked
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
@@ -573,6 +615,11 @@ const Booking = () => {
                     {notes && <p className="text-sm text-muted-foreground italic">"{notes}"</p>}
                   </div>
 
+                  {submitError && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-3">
+                      <p className="text-sm text-red-700 font-medium" data-testid="text-submit-error">{submitError}</p>
+                    </div>
+                  )}
                   <div className="flex gap-3">
                     <Button variant="outline" onClick={goBack} className="flex-1">
                       <ArrowLeft className="h-4 w-4 mr-2" /> Back
