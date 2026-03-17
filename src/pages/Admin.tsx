@@ -24,6 +24,7 @@ import {
   StickyNote,
   Save,
   KeyRound,
+  DollarSign,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -129,6 +130,7 @@ const Admin = () => {
 
   const getServiceName = (id: string) => services.find((s) => s.id === id)?.name || id;
   const getStaffName = (id: string) => staffMembers.find((s) => s.id === id)?.name || id;
+  const getServicePrice = (id: string) => services.find((s) => s.id === id)?.price || "—";
 
   const visibleStaff = isAdmin ? staffMembers : staffMembers.filter((s) => s.id === staffUser?.staffDataId);
 
@@ -507,6 +509,7 @@ const Admin = () => {
                         booking={booking}
                         getServiceName={getServiceName}
                         getStaffName={getStaffName}
+                        getServicePrice={getServicePrice}
                         onUpdateStatus={updateStatus}
                         onDelete={removeBooking}
                         onUpdateNotes={updateNotes}
@@ -544,6 +547,7 @@ const Admin = () => {
                     booking={booking}
                     getServiceName={getServiceName}
                     getStaffName={getStaffName}
+                    getServicePrice={getServicePrice}
                     onUpdateStatus={updateStatus}
                     onDelete={removeBooking}
                     onUpdateNotes={updateNotes}
@@ -644,6 +648,7 @@ const Admin = () => {
                       booking={booking}
                       getServiceName={getServiceName}
                       getStaffName={getStaffName}
+                      getServicePrice={getServicePrice}
                       onUpdateStatus={updateStatus}
                       onDelete={removeBooking}
                       onUpdateNotes={updateNotes}
@@ -799,6 +804,7 @@ function BookingCard({
   booking,
   getServiceName,
   getStaffName,
+  getServicePrice,
   onUpdateStatus,
   onDelete,
   onUpdateNotes,
@@ -807,6 +813,7 @@ function BookingCard({
   booking: AdminBooking;
   getServiceName: (id: string) => string;
   getStaffName: (id: string) => string;
+  getServicePrice: (id: string) => string;
   onUpdateStatus: (id: number, status: string) => void;
   onDelete: (id: number) => void;
   onUpdateNotes: (id: number, notes: string) => void;
@@ -814,13 +821,17 @@ function BookingCard({
 }) {
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesValue, setNotesValue] = useState(booking.notes || "");
+  const price = getServicePrice(booking.serviceId);
 
   return (
     <div className="bg-card rounded-xl border border-black/20 p-4 mb-3">
       <div className="flex items-start justify-between mb-3">
         <div>
           <p className="font-semibold text-foreground text-base">{booking.clientName}</p>
-          <p className="text-sm text-primary font-medium">{getServiceName(booking.serviceId)}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-primary font-medium">{getServiceName(booking.serviceId)}</p>
+            <span className="text-sm font-semibold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded" data-testid={`text-price-${booking.id}`}>{price}</span>
+          </div>
         </div>
         <span className={cn("px-2.5 py-1 rounded-full text-xs font-semibold capitalize", statusColors[booking.status])}>
           {booking.status}
