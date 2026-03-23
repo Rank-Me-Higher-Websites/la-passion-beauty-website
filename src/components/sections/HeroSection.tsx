@@ -24,19 +24,19 @@ const HeroSection = () => {
       {/* Background Collage */}
       <div className="absolute inset-0 -z-10 grid grid-cols-2 grid-rows-2 gap-[1px] bg-black/80">
         <div className="overflow-hidden">
-          <img src={heroImg1} alt="Salon waiting area" className="w-full h-full object-cover scale-105" />
-        </div>
-        <div className="overflow-hidden">
-          <img src={heroImg2} alt="Salon stations" className="w-full h-full object-cover scale-105" />
-        </div>
-        <div className="overflow-hidden">
           <img src={heroImg3} alt="Salon storefront" className="w-full h-full object-cover scale-105" />
         </div>
         <div className="overflow-hidden">
           <img src={heroImg4} alt="Salon chairs" className="w-full h-full object-cover scale-105" />
         </div>
+        <div className="overflow-hidden">
+          <img src={heroImg1} alt="Salon waiting area" className="w-full h-full object-cover scale-105" />
+        </div>
+        <div className="overflow-hidden">
+          <img src={heroImg2} alt="Salon stations" className="w-full h-full object-cover scale-105" />
+        </div>
       </div>
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/75 via-black/60 to-black/45" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/80 via-black/65 to-black/45" />
 
       <div className="container-custom relative z-10 pt-24 pb-16">
         <div className="grid lg:grid-cols-5 gap-10 lg:gap-14 items-center">
@@ -46,7 +46,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className="heading-hero text-white mb-6"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-semibold leading-tight text-white mb-6"
             >
               Chicago's Top-Rated{" "}
               <span className="text-primary italic">Beauty & Hair Salon</span>{" "}
@@ -57,7 +57,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.15 }}
-              className="text-xl text-white/80 mb-6 max-w-2xl"
+              className="text-2xl md:text-3xl text-white/85 mb-6 max-w-2xl font-light"
             >
               Exceptional Hair. Stunning Color. Timeless Beauty.
             </motion.p>
@@ -66,7 +66,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.25 }}
-              className="text-lg text-white/70 mb-8 max-w-2xl"
+              className="text-lg md:text-xl text-white/75 mb-8 max-w-2xl"
             >
               Elevating beauty in Chicago, La Passion offers expert haircuts, stunning color,
               and premium extensions — all in one luxurious beauty salon experience.
