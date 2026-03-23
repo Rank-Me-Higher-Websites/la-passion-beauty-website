@@ -282,11 +282,6 @@ router.patch("/api/bookings/:id", async (req: Request, res: Response) => {
   if (status && !date && !time && !serviceId) {
     const booking = await storage.updateBookingStatus(id, status);
     log("BOOKING_STATUS", `${staff.name} changed booking ${id} ("${existing.clientName}") status: ${existing.status} → ${status}`);
-    if (booking) {
-      fireWebhooks(booking.staffId, "booking.status_changed", booking, {
-        status: { from: existing.status, to: status },
-      }).catch(() => {});
-    }
     return res.json(booking);
   }
 
@@ -315,13 +310,6 @@ router.patch("/api/bookings/:id", async (req: Request, res: Response) => {
   const booking = await storage.updateBooking(id, updateData);
   const changes = Object.entries(updateData).map(([k, v]) => `${k}=${v}`).join(", ");
   log("BOOKING_UPDATED", `${staff.name} updated booking ${id} ("${existing.clientName}"): ${changes}`);
-  if (booking) {
-    const changeMap: Record<string, { from: string; to: string }> = {};
-    if (date) changeMap.date = { from: existing.date, to: date };
-    if (time) changeMap.time = { from: existing.time, to: time };
-    if (serviceId) changeMap.serviceId = { from: existing.serviceId, to: serviceId };
-    fireWebhooks(booking.staffId, "booking.updated", booking, changeMap).catch(() => {});
-  }
   res.json(booking);
 });
 
@@ -384,7 +372,6 @@ router.delete("/api/bookings/:id", async (req: Request, res: Response) => {
 
   await storage.deleteBooking(id);
   log("BOOKING_DELETED", `${staff.name} deleted booking ${id} ("${existing.clientName}" - ${existing.date} ${existing.time})`);
-  fireWebhooks(existing.staffId, "booking.deleted", existing).catch(() => {});
   res.json({ ok: true });
 });
 

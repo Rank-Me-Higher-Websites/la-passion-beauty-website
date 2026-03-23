@@ -103,7 +103,7 @@ const Admin = () => {
   const [showWebhookForm, setShowWebhookForm] = useState(false);
   const [webhookStaffId, setWebhookStaffId] = useState("all");
   const [webhookUrl, setWebhookUrl] = useState("");
-  const [webhookEvents, setWebhookEvents] = useState<string[]>(["booking.created", "booking.status_changed", "booking.updated", "booking.deleted"]);
+  const [webhookEvents, setWebhookEvents] = useState<string[]>(["booking.created"]);
   const [webhookTestResult, setWebhookTestResult] = useState<any>(null);
 
   const isAdmin = staffUser?.role === "admin";
@@ -334,7 +334,7 @@ const Admin = () => {
         setShowWebhookForm(false);
         setWebhookUrl("");
         setWebhookStaffId("all");
-        setWebhookEvents(["booking.created", "booking.status_changed", "booking.updated", "booking.deleted"]);
+        setWebhookEvents(["booking.created"]);
       }
     } catch {}
   };
@@ -372,7 +372,7 @@ const Admin = () => {
     }
   };
 
-  const allWebhookEvents = ["booking.created", "booking.status_changed", "booking.updated", "booking.deleted"];
+  const allWebhookEvents = ["booking.created"];
 
   const tabs: { key: Tab; label: string; icon: React.ElementType }[] = [
     { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -1013,7 +1013,7 @@ const Admin = () => {
 
               <div className="bg-card rounded-xl border border-black/20 p-4">
                 <p className="text-sm text-muted-foreground mb-3">
-                  Webhooks send a POST request to your URL whenever a booking event happens. Use them with Make, Zapier, or any automation tool.
+                  Webhooks send a POST request to your URL when a new booking comes in. Use with Make, Zapier, or any automation tool to get Telegram notifications.
                 </p>
                 <div className="bg-muted/50 rounded-lg border border-black/10 p-3">
                   <p className="text-xs font-semibold text-foreground mb-2">Webhook Payload Example:</p>
@@ -1039,7 +1039,7 @@ const Admin = () => {
                     },
                   }, null, 2)}</pre>
                   <p className="text-[10px] text-muted-foreground mt-2 italic">
-                    For status changes and edits, a "changes" field is also included showing what changed (from → to).
+                    Fires only when a new booking is submitted (status = pending). No spam from edits or status changes.
                   </p>
                 </div>
               </div>
@@ -1060,25 +1060,7 @@ const Admin = () => {
                       ))}
                     </select>
                   </div>
-                  <div>
-                    <label className="text-xs text-muted-foreground block mb-1">Events</label>
-                    <div className="flex flex-wrap gap-2">
-                      {allWebhookEvents.map((evt) => (
-                        <label key={evt} className="flex items-center gap-1.5 text-xs">
-                          <input
-                            type="checkbox"
-                            checked={webhookEvents.includes(evt)}
-                            onChange={(e) => {
-                              if (e.target.checked) setWebhookEvents([...webhookEvents, evt]);
-                              else setWebhookEvents(webhookEvents.filter((x) => x !== evt));
-                            }}
-                            className="rounded border-border"
-                          />
-                          {evt.replace("booking.", "")}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
+                  <p className="text-xs text-muted-foreground">Triggers on: New booking (pending)</p>
                   <div className="flex gap-2">
                     <Button variant="gold" size="sm" onClick={createWebhook} data-testid="button-save-webhook">
                       <Save className="h-3.5 w-3.5 mr-1" /> Save
@@ -1098,7 +1080,7 @@ const Admin = () => {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">{wh.url}</p>
                       <p className="text-xs text-muted-foreground">
-                        {wh.staffId === "all" ? "All Stylists" : getStaffName(wh.staffId)} · {wh.events?.join(", ")}
+                        {wh.staffId === "all" ? "All Stylists" : getStaffName(wh.staffId)} · New bookings only
                       </p>
                     </div>
                     <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-semibold", wh.enabled ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-500")}>

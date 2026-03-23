@@ -24,11 +24,7 @@ const STAFF_MAP: Record<string, string> = {
   st8: "Birute Francis",
 };
 
-export type WebhookEvent =
-  | "booking.created"
-  | "booking.status_changed"
-  | "booking.updated"
-  | "booking.deleted";
+export type WebhookEvent = "booking.created";
 
 interface WebhookPayload {
   event: WebhookEvent;
