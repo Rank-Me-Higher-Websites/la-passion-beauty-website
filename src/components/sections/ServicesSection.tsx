@@ -22,48 +22,51 @@ const ServicesSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding bg-cream-dark">
-      <div className="container-custom">
+    <section ref={ref} className="bg-cream-dark overflow-hidden">
+      <div className="grid lg:grid-cols-2 items-stretch">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="grid lg:grid-cols-2 items-stretch rounded-2xl border border-black/15 bg-card overflow-hidden shadow-soft"
+          initial={{ opacity: 0, x: -30 }}
+          animate={isInView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="flex flex-col justify-center px-8 py-16 lg:px-16 lg:py-20"
         >
-          <div className="relative group overflow-hidden">
-            <img
-              src={hairStylingImage}
-              alt="Hair styling at La Passion Beauty Salon"
-              className="w-full h-72 lg:h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
+          <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">What We Offer</p>
+          <h2 className="heading-section text-foreground mb-6">Our Services</h2>
+
+          <div className="mb-6">
+            {services.map((service, index) => (
+              <motion.div
+                key={service.title}
+                initial={{ opacity: 0, x: -10 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.3, delay: 0.15 + index * 0.04 }}
+                className="flex items-center justify-between py-3 border-b border-black/10 last:border-b-0"
+              >
+                <span className="font-serif text-lg text-foreground">{service.title}</span>
+                <span className="text-sm font-semibold text-primary ml-4 whitespace-nowrap">{service.price}</span>
+              </motion.div>
+            ))}
           </div>
 
-          <div className="flex flex-col justify-center p-8 lg:p-10">
-            <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">What We Offer</p>
-            <h2 className="heading-section text-foreground mb-6">Our Services</h2>
+          <Button variant="gold" size="lg" asChild>
+            <Link to="/booking">
+              Book an Appointment
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </motion.div>
 
-            <div className="space-y-0 mb-6">
-              {services.map((service, index) => (
-                <motion.div
-                  key={service.title}
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.3, delay: 0.1 + index * 0.04 }}
-                  className="flex items-center justify-between py-3 border-b border-black/10 last:border-b-0"
-                >
-                  <span className="font-serif text-lg text-foreground">{service.title}</span>
-                  <span className="text-sm font-semibold text-primary ml-4 whitespace-nowrap">{service.price}</span>
-                </motion.div>
-              ))}
-            </div>
-
-            <Button variant="gold" size="lg" asChild className="w-full">
-              <Link to="/booking">
-                Book an Appointment
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={isInView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="relative overflow-hidden"
+        >
+          <img
+            src={hairStylingImage}
+            alt="Hair styling at La Passion Beauty Salon"
+            className="w-full h-72 lg:h-full object-cover"
+          />
         </motion.div>
       </div>
     </section>
