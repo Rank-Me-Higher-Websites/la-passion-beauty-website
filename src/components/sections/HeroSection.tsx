@@ -99,10 +99,10 @@ const HeroSection = () => {
                       key={service.id}
                       data-testid={`hero-service-${service.id}`}
                       onClick={() => setSelectedService(isActive ? null : service.id)}
-                      className={`flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 border-2 ${
+                      className={`flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 border ${
                         isActive
                           ? "bg-primary text-primary-foreground border-primary shadow-md"
-                          : "bg-background/60 text-foreground border-black/20 hover:border-primary/50 hover:bg-background"
+                          : "bg-background/60 text-foreground border-black/15 hover:border-primary/50 hover:bg-background"
                       }`}
                     >
                       <span className="text-left">{service.name}</span>

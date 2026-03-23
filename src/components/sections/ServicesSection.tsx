@@ -66,27 +66,29 @@ const ServicesSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: index * 0.15 }}
-              className={`grid lg:grid-cols-2 gap-8 lg:gap-12 items-center ${
+              className={`grid lg:grid-cols-2 items-stretch rounded-2xl border border-black/15 bg-card overflow-hidden shadow-soft ${
                 index % 2 === 1 ? 'lg:flex-row-reverse' : ''
               }`}
             >
               {/* Image */}
               <div className={`relative group ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
-                <div className="overflow-hidden rounded-xl border-2 border-black/20">
+                <div className="overflow-hidden h-full">
                   <img
                     src={service.image}
                     alt={`${service.title} at La Passion Beauty Salon`}
-                    className="w-full h-72 lg:h-96 object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-72 lg:h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                </div>
-                <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-primary rounded-full flex items-center justify-center shadow-card">
-                  <service.icon className="h-8 w-8 text-primary-foreground" />
                 </div>
               </div>
 
               {/* Content */}
-              <div className={`${index % 2 === 1 ? 'lg:order-1' : ''}`}>
-                <h3 className="heading-card text-foreground mb-4">{service.title}</h3>
+              <div className={`flex flex-col justify-center p-8 lg:p-10 ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                    <service.icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="heading-card text-foreground">{service.title}</h3>
+                </div>
                 <p className="text-body mb-6">{service.description}</p>
                 <Link
                   to={service.link}

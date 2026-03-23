@@ -12,31 +12,23 @@ const AboutSection = () => {
   return (
     <section ref={ref} className="section-padding bg-cream-dark">
       <div className="container-custom">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="grid lg:grid-cols-2 items-stretch rounded-2xl border border-black/15 bg-card overflow-hidden shadow-soft"
+        >
           {/* Image */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="relative"
-          >
-            <div className="relative rounded-2xl overflow-hidden shadow-elevated border-2 border-black/20">
-              <img
-                src={aboutImage}
-                alt="La Passion Beauty Salon interior in Lemont, IL"
-                className="w-full h-auto"
-              />
-            </div>
-            {/* Decorative element */}
-            <div className="absolute -bottom-6 -right-6 w-48 h-48 border-4 border-primary/30 rounded-2xl -z-10" />
-          </motion.div>
+          <div>
+            <img
+              src={aboutImage}
+              alt="La Passion Beauty Salon interior in Lemont, IL"
+              className="w-full h-72 lg:h-full object-cover"
+            />
+          </div>
 
           {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
+          <div className="flex flex-col justify-center p-8 lg:p-10">
             <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">About Us</p>
             <h2 className="heading-section text-foreground mb-3">
               About Us
@@ -64,8 +56,8 @@ const AboutSection = () => {
                 </a>
               </Button>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
