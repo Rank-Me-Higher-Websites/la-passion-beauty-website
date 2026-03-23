@@ -408,7 +408,7 @@ const Booking = () => {
                         setSelectedTime(null);
                       }}
                       fromDate={new Date()}
-                      toDate={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)}
+                      toDate={new Date(Date.now() + 31 * 24 * 60 * 60 * 1000)}
                       disabled={(date) => {
                         const today = new Date();
                         today.setHours(0, 0, 0, 0);
@@ -426,8 +426,8 @@ const Booking = () => {
                         day: "h-9 w-full p-0 font-medium text-foreground aria-selected:opacity-100 hover:bg-primary/10 hover:text-primary rounded-md transition-colors",
                         day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground font-bold",
                         day_today: "bg-primary/15 text-primary font-bold",
-                        day_outside: "day-outside text-muted-foreground/30 pointer-events-none",
-                        day_disabled: "text-muted-foreground/30 pointer-events-none",
+                        day_outside: "day-outside text-muted-foreground opacity-30",
+                        day_disabled: "text-muted-foreground opacity-40 cursor-not-allowed",
                         caption: "flex justify-center pt-1 relative items-center",
                         caption_label: "text-sm font-medium",
                         nav: "space-x-1 flex items-center",
