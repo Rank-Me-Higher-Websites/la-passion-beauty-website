@@ -113,23 +113,23 @@ const HeroSection = () => {
           {/* Right column — booking card (shows on all sizes) */}
           <div className="lg:col-span-2">
             {/* Mobile copy block — sits above the form on small screens */}
-            <div className="lg:hidden mb-4">
-              <h1 className="text-[26px] leading-tight font-serif font-semibold text-foreground mb-1">
+            <div className="lg:hidden mb-6">
+              <h1 className="text-[30px] leading-tight font-serif font-semibold text-foreground mb-2">
                 Chicago's Top-Rated{" "}
                 <span className="text-primary italic">Beauty & Hair Salon</span>{" "}
                 in Lemont, IL
               </h1>
-              <p className="text-sm text-muted-foreground mb-2">
+              <p className="text-base text-muted-foreground mb-2">
                 Exceptional Hair. Stunning Color. Timeless Beauty.
               </p>
-              <p className="text-xs text-muted-foreground mb-3">
+              <p className="text-sm text-muted-foreground mb-3">
                 Elevating beauty in Chicago, La Passion offers expert haircuts, stunning color,
                 and premium extensions — all in one luxurious beauty salon experience.
               </p>
               <div className="flex items-center justify-between mb-3">
-                <Button variant="outline" size="sm" asChild className="border-2 border-foreground text-foreground hover:bg-foreground/5 text-xs h-8">
+                <Button variant="outline" size="sm" asChild className="border-2 border-foreground text-foreground hover:bg-foreground/5 text-sm h-9">
                   <a href="tel:+13313188113" className="gap-1.5">
-                    <Phone className="h-3 w-3" />
+                    <Phone className="h-3.5 w-3.5" />
                     Call +1 331-318-8113
                   </a>
                 </Button>
