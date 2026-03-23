@@ -584,9 +584,9 @@ const Admin = () => {
       )}
 
       {/* Main content */}
-      <main className="flex-1 md:ml-60">
+      <main className="flex-1 md:ml-60 pb-20 md:pb-0">
         {/* Top bar */}
-        <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-black/20 px-4 py-3 flex items-center justify-between">
+        <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-black/20 px-3 md:px-4 py-2.5 md:py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
               className="md:hidden p-2 -ml-2"
@@ -595,7 +595,7 @@ const Admin = () => {
               <MenuIcon className="h-5 w-5" />
             </button>
             <div>
-              <h1 className="font-serif text-lg font-semibold text-foreground capitalize">
+              <h1 className="font-serif text-base md:text-lg font-semibold text-foreground capitalize">
                 {activeTab}
               </h1>
               {selectedStaffId !== "all" && (
@@ -605,10 +605,39 @@ const Admin = () => {
               )}
             </div>
           </div>
-          <p className="text-sm text-muted-foreground">{format(new Date(), "EEEE, MMM d")}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs md:text-sm text-muted-foreground">{format(new Date(), "EEE, MMM d")}</p>
+            <button
+              onClick={handleLogout}
+              className="md:hidden p-2 text-muted-foreground hover:text-foreground"
+              data-testid="button-mobile-logout"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
         </header>
 
-        <div className="p-4 md:p-6 max-w-5xl">
+        <div className="p-3 md:p-6 max-w-5xl">
+
+        {/* Mobile bottom tab bar */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-black/20 flex items-center justify-around px-1 py-1.5 safe-area-bottom">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={cn(
+                "flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg text-[10px] font-medium transition-colors min-w-0 flex-1",
+                activeTab === tab.key
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              )}
+              data-testid={`tab-${tab.key}`}
+            >
+              <tab.icon className="h-5 w-5" />
+              <span className="truncate">{tab.label}</span>
+            </button>
+          ))}
+        </div>
           <StaffFilter />
           {/* Dashboard */}
           {activeTab === "dashboard" && (
@@ -719,28 +748,28 @@ const Admin = () => {
                 </select>
               </div>
 
-              <div className="bg-card rounded-xl border border-black/20 p-6 flex justify-center">
+              <div className="bg-card rounded-xl border border-black/20 p-2 md:p-6 flex justify-center">
                 <Calendar
                   mode="single"
                   selected={selectedDate}
                   onSelect={(d) => d && setSelectedDate(d)}
                   month={selectedDate}
                   onMonthChange={setSelectedDate}
-                  className="p-0 pointer-events-auto"
+                  className="p-0 pointer-events-auto w-full"
                   classNames={{
-                    months: "flex flex-col",
-                    month: "space-y-6",
+                    months: "flex flex-col w-full",
+                    month: "space-y-4 md:space-y-6 w-full",
                     caption: "flex justify-center pt-1 relative items-center",
-                    caption_label: "text-lg font-semibold",
-                    nav_button: "h-9 w-9 bg-transparent p-0 opacity-50 hover:opacity-100 border border-input rounded-md inline-flex items-center justify-center",
+                    caption_label: "text-base md:text-lg font-semibold",
+                    nav_button: "h-8 w-8 md:h-9 md:w-9 bg-transparent p-0 opacity-50 hover:opacity-100 border border-input rounded-md inline-flex items-center justify-center",
                     nav_button_previous: "absolute left-1",
                     nav_button_next: "absolute right-1",
-                    table: "border-collapse",
-                    head_row: "flex",
-                    head_cell: "text-muted-foreground rounded-md w-14 font-medium text-sm py-2",
-                    row: "flex mt-1",
-                    cell: "w-14 text-center text-sm p-0.5 relative [&:has([aria-selected])]:bg-transparent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                    day: "h-14 w-14 p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md inline-flex items-start justify-start transition-colors relative border border-black/10",
+                    table: "border-collapse w-full",
+                    head_row: "flex w-full justify-between",
+                    head_cell: "text-muted-foreground rounded-md flex-1 font-medium text-xs md:text-sm py-2 text-center",
+                    row: "flex w-full justify-between mt-1",
+                    cell: "flex-1 text-center text-sm p-0.5 relative [&:has([aria-selected])]:bg-transparent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                    day: "h-10 w-full md:h-14 md:w-14 p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md inline-flex items-start justify-start transition-colors relative border border-black/10",
                     day_selected: "bg-primary/10 text-foreground ring-2 ring-primary hover:bg-primary/15",
                     day_today: "bg-accent text-accent-foreground font-semibold",
                     day_outside: "text-muted-foreground opacity-50",
@@ -928,27 +957,28 @@ const Admin = () => {
               {visibleStaff.map((staff) => {
                 const dbStaff = dbStaffList.find((s) => s.staffDataId === staff.id);
                 return (
-                  <div key={staff.id} className="bg-card rounded-xl border border-black/20 p-5">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-primary font-semibold text-lg">{staff.avatar}</span>
+                  <div key={staff.id} className="bg-card rounded-xl border border-black/20 p-3 md:p-5">
+                    <div className="flex items-center gap-3 md:gap-4 mb-3 md:mb-4">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-primary font-semibold text-base md:text-lg">{staff.avatar}</span>
                       </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-foreground">{staff.name}</p>
-                        <p className="text-sm text-muted-foreground">{staff.role}</p>
-                        {isAdmin && dbStaff && <p className="text-xs text-muted-foreground">{dbStaff.email}</p>}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm md:text-base text-foreground">{staff.name}</p>
+                        <p className="text-xs md:text-sm text-muted-foreground">{staff.role}</p>
+                        {isAdmin && dbStaff && <p className="text-xs text-muted-foreground truncate">{dbStaff.email}</p>}
                       </div>
                       {isAdmin && dbStaff && (
                         <Button
                           variant="outline"
                           size="sm"
+                          className="text-xs px-2 md:px-3"
                           onClick={() => {
                             resetPasswordForm();
                             setPasswordChangeTarget(dbStaff.id);
                           }}
                           data-testid={`button-change-password-${staff.id}`}
                         >
-                          <KeyRound className="h-3.5 w-3.5 mr-1" /> Reset Password
+                          <KeyRound className="h-3.5 w-3.5 md:mr-1" /> <span className="hidden md:inline">Reset Password</span><span className="md:hidden">Reset</span>
                         </Button>
                       )}
                     </div>
@@ -1152,38 +1182,38 @@ function BookingCard({
   const price = getServicePrice(booking.serviceId);
 
   return (
-    <div className="bg-card rounded-xl border border-black/20 p-4 mb-3">
-      <div className="flex items-start justify-between mb-3">
-        <div>
-          <p className="font-semibold text-foreground text-base">{booking.clientName}</p>
-          <div className="flex items-center gap-2">
-            <p className="text-sm text-primary font-medium">{getServiceName(booking.serviceId)}</p>
-            <span className="text-sm font-semibold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded" data-testid={`text-price-${booking.id}`}>{price}</span>
+    <div className="bg-card rounded-xl border border-black/20 p-3 md:p-4 mb-2 md:mb-3">
+      <div className="flex items-start justify-between mb-2 md:mb-3">
+        <div className="min-w-0 flex-1 mr-2">
+          <p className="font-semibold text-foreground text-sm md:text-base truncate">{booking.clientName}</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="text-xs md:text-sm text-primary font-medium">{getServiceName(booking.serviceId)}</p>
+            <span className="text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded" data-testid={`text-price-${booking.id}`}>{price}</span>
           </div>
         </div>
-        <span className={cn("px-2.5 py-1 rounded-full text-xs font-semibold capitalize", statusColors[booking.status])}>
+        <span className={cn("px-2 py-0.5 md:px-2.5 md:py-1 rounded-full text-[10px] md:text-xs font-semibold capitalize shrink-0", statusColors[booking.status])}>
           {booking.status}
         </span>
       </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground mb-3">
+      <div className="flex flex-wrap gap-x-3 md:gap-x-4 gap-y-1 text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">
         <span className="flex items-center gap-1">
-          <Clock className="h-3.5 w-3.5" /> {booking.time}
+          <Clock className="h-3 w-3 md:h-3.5 md:w-3.5" /> {booking.time}
         </span>
         {showDate && (
           <span className="flex items-center gap-1">
-            <CalendarIcon className="h-3.5 w-3.5" /> {format(parseISO(booking.date), "MMM d")}
+            <CalendarIcon className="h-3 w-3 md:h-3.5 md:w-3.5" /> {format(parseISO(booking.date), "MMM d")}
           </span>
         )}
         <span className="flex items-center gap-1">
-          <Users className="h-3.5 w-3.5" /> {getStaffName(booking.staffId)}
+          <Users className="h-3 w-3 md:h-3.5 md:w-3.5" /> {getStaffName(booking.staffId)}
         </span>
       </div>
-      <div className="bg-muted/50 rounded-lg border border-black/15 px-3 py-2 mb-3">
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+      <div className="bg-muted/50 rounded-lg border border-black/15 px-2 md:px-3 py-1.5 md:py-2 mb-2 md:mb-3">
+        <div className="flex flex-wrap gap-x-3 md:gap-x-4 gap-y-1 text-[11px] md:text-xs text-muted-foreground">
           <a href={`tel:${booking.clientPhone}`} className="flex items-center gap-1 hover:text-primary">
             <Phone className="h-3 w-3" /> {booking.clientPhone}
           </a>
-          <a href={`mailto:${booking.clientEmail}`} className="flex items-center gap-1 hover:text-primary">
+          <a href={`mailto:${booking.clientEmail}`} className="flex items-center gap-1 hover:text-primary truncate">
             <MailIcon className="h-3 w-3" /> {booking.clientEmail}
           </a>
         </div>
@@ -1248,7 +1278,7 @@ function BookingCard({
       {editing && onUpdateBooking && (
         <div className="bg-blue-50 rounded-lg border border-blue-200 p-3 mb-3 space-y-2">
           <p className="text-xs font-semibold text-blue-800">Edit Booking</p>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             <div>
               <label className="text-[10px] text-muted-foreground block mb-0.5">Date</label>
               <Input type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} className="text-sm h-8" />
@@ -1259,7 +1289,7 @@ function BookingCard({
                 {["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM"].map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
-            <div>
+            <div className="col-span-2 md:col-span-1">
               <label className="text-[10px] text-muted-foreground block mb-0.5">Service</label>
               <select value={editServiceId} onChange={(e) => setEditServiceId(e.target.value)} className="w-full px-2 py-1 rounded-lg border border-border bg-card text-sm h-8">
                 {services.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -1288,35 +1318,38 @@ function BookingCard({
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5 md:gap-2">
         {(booking.status === "pending" || booking.status === "confirmed") && onUpdateBooking && (
           <Button
             variant="outline"
             size="sm"
+            className="text-xs md:text-sm h-7 md:h-8 px-2 md:px-3"
             onClick={() => setEditing(!editing)}
             data-testid={`button-edit-${booking.id}`}
           >
-            <Pencil className="h-3.5 w-3.5 mr-1" /> Edit
+            <Pencil className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1" /> Edit
           </Button>
         )}
         {booking.status === "pending" && (
           <Button
             variant="gold"
             size="sm"
+            className="text-xs md:text-sm h-7 md:h-8 px-2 md:px-3"
             onClick={() => onUpdateStatus(booking.id, "confirmed")}
             data-testid={`button-confirm-${booking.id}`}
           >
-            <Check className="h-3.5 w-3.5 mr-1" /> Confirm
+            <Check className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1" /> Confirm
           </Button>
         )}
         {booking.status === "confirmed" && (
           <Button
             variant="outline"
             size="sm"
+            className="text-xs md:text-sm h-7 md:h-8 px-2 md:px-3"
             onClick={() => onUpdateStatus(booking.id, "completed")}
             data-testid={`button-complete-${booking.id}`}
           >
-            <Check className="h-3.5 w-3.5 mr-1" /> Complete
+            <Check className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1" /> Complete
           </Button>
         )}
         {(booking.status === "pending" || booking.status === "confirmed") && (
@@ -1324,20 +1357,21 @@ function BookingCard({
             variant="outline"
             size="sm"
             onClick={() => onUpdateStatus(booking.id, "cancelled")}
-            className="text-destructive hover:text-destructive"
+            className="text-destructive hover:text-destructive text-xs md:text-sm h-7 md:h-8 px-2 md:px-3"
             data-testid={`button-cancel-${booking.id}`}
           >
-            <X className="h-3.5 w-3.5 mr-1" /> Cancel
+            <X className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1" /> Cancel
           </Button>
         )}
         {booking.status === "cancelled" && (
           <Button
             variant="outline"
             size="sm"
+            className="text-xs md:text-sm h-7 md:h-8 px-2 md:px-3"
             onClick={() => onUpdateStatus(booking.id, "pending")}
             data-testid={`button-revert-${booking.id}`}
           >
-            <RotateCcw className="h-3.5 w-3.5 mr-1" /> Revert
+            <RotateCcw className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1" /> Revert
           </Button>
         )}
         {(booking.status === "cancelled" || booking.status === "completed") && (
@@ -1345,10 +1379,10 @@ function BookingCard({
             variant="outline"
             size="sm"
             onClick={() => onDelete(booking.id)}
-            className="text-destructive hover:text-destructive"
+            className="text-destructive hover:text-destructive text-xs md:text-sm h-7 md:h-8 px-2 md:px-3"
             data-testid={`button-delete-${booking.id}`}
           >
-            <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete
+            <Trash2 className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1" /> Delete
           </Button>
         )}
       </div>
