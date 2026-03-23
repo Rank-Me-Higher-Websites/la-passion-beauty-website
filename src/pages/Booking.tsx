@@ -409,9 +409,11 @@ const Booking = () => {
                       }}
                       fromDate={new Date()}
                       toDate={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)}
-                      disabled={(date) =>
-                        date < new Date() || date.getDay() === 0 || (selectedStaff ? !staffWorksOnDate(selectedStaff, date) : date.getDay() === 1)
-                      }
+                      disabled={(date) => {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        return date < today || date.getDay() === 0 || (selectedStaff ? !staffWorksOnDate(selectedStaff, date) : date.getDay() === 1);
+                      }}
                       className="p-0 pointer-events-auto w-full"
                       classNames={{
                         months: "flex flex-col w-full",
