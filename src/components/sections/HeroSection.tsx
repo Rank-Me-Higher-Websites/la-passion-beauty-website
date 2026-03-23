@@ -17,14 +17,14 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+    <section className="relative min-h-[85vh] flex items-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <img src={heroBg} alt="La Passion Beauty Salon" className="w-full h-full object-cover opacity-70" />
       </div>
       <div className="absolute inset-0 -z-10 bg-white/10" />
 
-      <div className="container-custom relative z-10 pt-24 pb-16">
+      <div className="container-custom relative z-10 pt-20 pb-10">
         <div className="grid lg:grid-cols-5 gap-10 lg:gap-14 items-center">
           {/* Left - Copy */}
           <div className="lg:col-span-3">
