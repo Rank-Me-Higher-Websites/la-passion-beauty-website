@@ -60,12 +60,12 @@ const ServicesSection = () => {
           initial={{ opacity: 0, x: 30 }}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="relative overflow-hidden"
+          className="flex items-center justify-center p-8 lg:p-12"
         >
           <img
             src={hairStylingImage}
             alt="Hair styling at La Passion Beauty Salon"
-            className="w-full h-72 lg:h-full object-cover"
+            className="w-full h-72 lg:h-[450px] object-cover rounded-2xl opacity-90"
           />
         </motion.div>
       </div>
