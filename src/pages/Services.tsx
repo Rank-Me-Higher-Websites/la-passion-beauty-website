@@ -44,13 +44,21 @@ const serviceCategories = [
 const Services = () => {
   return (
     <Layout>
-      <section className="pt-32 pb-16 bg-cream-dark">
-        <div className="container-custom">
+      <section className="relative pt-32 pb-16">
+        <div className="absolute inset-0">
+          <img
+            src={salonImage}
+            alt="La Passion Beauty Salon"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/50" />
+        </div>
+        <div className="container-custom relative z-10">
           <div className="max-w-4xl">
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-primary uppercase tracking-[0.2em] text-sm mb-3"
+              className="text-white/80 uppercase tracking-[0.2em] text-sm mb-3"
             >
               What We Offer
             </motion.p>
@@ -58,7 +66,7 @@ const Services = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="heading-hero text-foreground mb-6"
+              className="heading-hero text-white mb-6"
             >
               Our Beauty Services
             </motion.h1>
@@ -66,7 +74,7 @@ const Services = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-body max-w-2xl"
+              className="text-white/80 max-w-2xl text-sm md:text-base leading-relaxed"
             >
               Whether it's a new color, a fresh cut, or extensions for instant length, our stylists 
               use techniques and products that keep your hair healthy and styled just for you.
@@ -77,9 +85,9 @@ const Services = () => {
               transition={{ delay: 0.3 }}
               className="flex items-center gap-2 text-sm mt-6"
             >
-              <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
-              <span className="text-muted-foreground">/</span>
-              <span className="text-foreground">Services</span>
+              <Link to="/" className="text-white/60 hover:text-white transition-colors">Home</Link>
+              <span className="text-white/40">/</span>
+              <span className="text-white">Services</span>
             </motion.nav>
           </div>
         </div>
@@ -87,16 +95,7 @@ const Services = () => {
 
       <section className="section-padding bg-background">
         <div className="container-custom">
-          <div className="rounded-2xl overflow-hidden border border-black/15 shadow-soft mb-10 max-w-2xl mx-auto">
-            <img
-              src={salonImage}
-              alt="La Passion Beauty Salon"
-              className="w-full h-auto object-contain"
-            />
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-10">
-            <div className="lg:col-span-2 space-y-10">
+          <div className="space-y-10">
               {serviceCategories.map((category, catIndex) => (
                 <motion.div
                   key={category.id}
@@ -127,14 +126,13 @@ const Services = () => {
                 </motion.div>
               ))}
 
-              <div className="mt-8">
-                <Button variant="gold" size="lg" asChild className="w-full">
-                  <Link to="/booking">
-                    Book an Appointment
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
+            <div className="mt-8">
+              <Button variant="gold" size="lg" asChild className="w-full max-w-md mx-auto block">
+                <Link to="/booking">
+                  Book an Appointment
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
