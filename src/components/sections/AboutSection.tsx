@@ -10,7 +10,7 @@ const AboutSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="bg-background overflow-hidden">
+    <section ref={ref} className="bg-card overflow-hidden">
       <div className="grid lg:grid-cols-2 items-stretch">
         <motion.div
           initial={{ opacity: 0, x: -30 }}

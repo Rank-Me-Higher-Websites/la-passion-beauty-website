@@ -8,7 +8,7 @@ const ReviewsSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding bg-cream-dark">
+    <section ref={ref} className="section-padding bg-background">
       <div className="container-custom">
         {/* Section Header */}
         <motion.div

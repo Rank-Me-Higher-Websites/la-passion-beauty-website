@@ -40,7 +40,7 @@ const FAQSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding bg-cream-dark/80">
+    <section ref={ref} className="section-padding bg-background">
       <div className="container-custom max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
