@@ -4,7 +4,7 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import storefrontImage from "@/assets/services-storefront.webp";
+import storefrontImage from "@/assets/services-storefront.png";
 
 const services = [
   { title: "Haircut", price: "$45+" },
