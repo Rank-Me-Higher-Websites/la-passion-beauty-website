@@ -20,7 +20,7 @@ const HeroSection = () => {
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
-        <img src={heroBg} alt="La Passion Beauty Salon" className="w-full h-full object-cover" />
+        <img src={heroBg} alt="La Passion Beauty Salon" className="w-full h-full object-cover opacity-50" />
       </div>
       <div className="absolute inset-0 -z-10 bg-white/10" />
 
