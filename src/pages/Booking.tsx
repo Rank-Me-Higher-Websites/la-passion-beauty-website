@@ -407,6 +407,8 @@ const Booking = () => {
                         setSelectedDate(date);
                         setSelectedTime(null);
                       }}
+                      fromDate={new Date()}
+                      toDate={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)}
                       disabled={(date) =>
                         date < new Date() || date.getDay() === 0 || (selectedStaff ? !staffWorksOnDate(selectedStaff, date) : date.getDay() === 1)
                       }
