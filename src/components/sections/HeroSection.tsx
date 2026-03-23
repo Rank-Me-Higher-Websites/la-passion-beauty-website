@@ -17,20 +17,95 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-svh md:min-h-[85vh] flex items-center overflow-hidden">
+    <section className="relative md:min-h-[85vh] md:flex md:items-center overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <img src={heroBg} alt="La Passion Beauty Salon" className="w-full h-full object-cover opacity-70" />
       </div>
       <div className="absolute inset-0 -z-10 bg-white/10" />
 
-      <div className="w-full relative z-10 pt-[56px] md:pt-24 pb-4 md:pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-5 gap-4 md:gap-10 lg:gap-14 items-center">
-          <div className="lg:col-span-3 order-2 lg:order-1">
+      <div className="w-full relative z-10 pt-[48px] md:pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        {/* Mobile layout: stacked top-to-bottom, no centering, no min-height */}
+        <div className="md:hidden pb-4">
+          <div className="pt-3 pb-2">
+            <h1 className="text-[22px] leading-tight font-serif font-semibold text-foreground">
+              Chicago's Top-Rated{" "}
+              <span className="text-primary italic">Beauty & Hair Salon</span>
+            </h1>
+            <div className="flex items-center gap-3 mt-2">
+              <div className="flex items-center gap-1">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                <span className="text-xs font-semibold">5.0</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="#1877F2">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                <span className="text-xs font-semibold">5.0</span>
+              </div>
+              <a href="tel:+13313188113" className="text-xs font-semibold text-primary ml-auto flex items-center gap-1">
+                <Phone className="h-3 w-3" />
+                331-318-8113
+              </a>
+            </div>
+          </div>
+
+          <div className="bg-card/95 backdrop-blur-md rounded-xl border-2 border-black p-3 shadow-elevated">
+            <h3 className="font-serif text-lg font-semibold text-foreground mb-0.5">
+              Book Now
+            </h3>
+            <p className="text-xs text-muted-foreground mb-2">
+              Select a service to get started
+            </p>
+
+            <div className="flex flex-col gap-1 mb-2">
+              {services.map((service) => {
+                const isActive = selectedService === service.id;
+                return (
+                  <button
+                    key={service.id}
+                    data-testid={`hero-service-${service.id}`}
+                    onClick={() => setSelectedService(isActive ? null : service.id)}
+                    className={`flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200 border ${
+                      isActive
+                        ? "bg-primary text-primary-foreground border-primary shadow-md"
+                        : "bg-background/60 text-foreground border-black/15 hover:border-primary/50 hover:bg-background"
+                    }`}
+                  >
+                    <span className="text-left">{service.name}</span>
+                    <span className={`text-xs ${isActive ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                      {service.price}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <Button
+              variant="gold"
+              size="lg"
+              className="w-full h-10 text-sm"
+              data-testid="hero-book-now"
+              onClick={handleBook}
+            >
+              Book Now
+              <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Desktop layout: side by side */}
+        <div className="hidden md:grid lg:grid-cols-5 gap-10 lg:gap-14 items-center pb-10">
+          <div className="lg:col-span-3">
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className="hidden md:block text-4xl md:text-5xl lg:text-7xl font-serif font-semibold leading-tight text-foreground mb-6"
+              className="text-4xl md:text-5xl lg:text-7xl font-serif font-semibold leading-tight text-foreground mb-6"
             >
               Chicago's Top-Rated{" "}
               <span className="text-primary italic">Beauty & Hair Salon</span>{" "}
@@ -41,7 +116,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.15 }}
-              className="hidden md:block text-2xl lg:text-3xl text-muted-foreground mb-6 max-w-2xl font-light"
+              className="text-2xl lg:text-3xl text-muted-foreground mb-6 max-w-2xl font-light"
             >
               Exceptional Hair. Stunning Color. Timeless Beauty.
             </motion.p>
@@ -50,7 +125,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.25 }}
-              className="hidden md:block text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl"
+              className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl"
             >
               Elevating beauty in Chicago, La Passion offers expert haircuts, stunning color,
               and premium extensions — all in one luxurious beauty salon experience.
@@ -60,7 +135,6 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.35 }}
-              className="hidden md:block"
             >
               <Button variant="outline" size="lg" asChild className="border-2 border-foreground text-foreground hover:bg-foreground/5 text-base h-11">
                 <a href="tel:+13313188113" className="gap-2">
@@ -74,7 +148,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.45 }}
-              className="hidden md:flex flex-wrap items-center gap-6 mt-8"
+              className="flex flex-wrap items-center gap-6 mt-8"
             >
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
@@ -111,48 +185,20 @@ const HeroSection = () => {
           </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="lg:col-span-2 order-1 lg:order-2"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="lg:col-span-2"
           >
-            <div className="md:hidden mb-2">
-              <h1 className="text-lg font-serif font-semibold leading-snug text-foreground">
-                Chicago's Top-Rated{" "}
-                <span className="text-primary italic">Beauty & Hair Salon</span>
-              </h1>
-              <div className="flex items-center gap-3 mt-1.5">
-                <div className="flex items-center gap-1">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                  </svg>
-                  <span className="text-[11px] font-semibold">5.0</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#1877F2">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                  </svg>
-                  <span className="text-[11px] font-semibold">5.0</span>
-                </div>
-                <a href="tel:+13313188113" className="text-[11px] font-semibold text-primary ml-auto flex items-center gap-1">
-                  <Phone className="h-3 w-3" />
-                  331-318-8113
-                </a>
-              </div>
-            </div>
-
-            <div className="bg-card/95 backdrop-blur-md rounded-xl md:rounded-2xl border-2 border-black p-3 md:p-6 shadow-elevated">
-              <h3 className="font-serif text-lg md:text-2xl font-semibold text-foreground mb-0.5 md:mb-1">
+            <div className="bg-card/95 backdrop-blur-md rounded-2xl border-2 border-black p-6 shadow-elevated">
+              <h3 className="font-serif text-2xl font-semibold text-foreground mb-1">
                 Book Now
               </h3>
-              <p className="text-[11px] md:text-sm text-muted-foreground mb-2 md:mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 Select a service to get started
               </p>
 
-              <div className="flex flex-col gap-1 md:gap-1.5 mb-2 md:mb-4">
+              <div className="flex flex-col gap-1.5 mb-4">
                 {services.map((service) => {
                   const isActive = selectedService === service.id;
                   return (
@@ -160,7 +206,7 @@ const HeroSection = () => {
                       key={service.id}
                       data-testid={`hero-service-${service.id}`}
                       onClick={() => setSelectedService(isActive ? null : service.id)}
-                      className={`flex items-center justify-between px-3 md:px-4 py-2 md:py-2.5 rounded-lg text-[13px] md:text-sm font-medium transition-all duration-200 border ${
+                      className={`flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 border ${
                         isActive
                           ? "bg-primary text-primary-foreground border-primary shadow-md"
                           : "bg-background/60 text-foreground border-black/15 hover:border-primary/50 hover:bg-background"
@@ -178,7 +224,7 @@ const HeroSection = () => {
               <Button
                 variant="gold"
                 size="lg"
-                className="w-full h-10 md:h-11 text-sm md:text-base"
+                className="w-full h-11 text-base"
                 data-testid="hero-book-now"
                 onClick={handleBook}
               >
