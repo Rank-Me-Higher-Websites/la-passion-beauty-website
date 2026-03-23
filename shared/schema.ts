@@ -35,9 +35,19 @@ export const timeBlocks = pgTable("time_blocks", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const webhooks = pgTable("webhooks", {
+  id: serial("id").primaryKey(),
+  staffId: varchar("staff_id", { length: 20 }).notNull(),
+  url: text("url").notNull(),
+  events: text("events").array().notNull(),
+  enabled: integer("enabled").notNull().default(1),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const insertStaffAccountSchema = createInsertSchema(staffAccounts).omit({ id: true });
 export const insertBookingSchema = createInsertSchema(bookings).omit({ id: true, createdAt: true });
 export const insertTimeBlockSchema = createInsertSchema(timeBlocks).omit({ id: true, createdAt: true });
+export const insertWebhookSchema = createInsertSchema(webhooks).omit({ id: true, createdAt: true });
 
 export type StaffAccount = typeof staffAccounts.$inferSelect;
 export type InsertStaffAccount = z.infer<typeof insertStaffAccountSchema>;
@@ -45,3 +55,5 @@ export type Booking = typeof bookings.$inferSelect;
 export type InsertBooking = z.infer<typeof insertBookingSchema>;
 export type TimeBlock = typeof timeBlocks.$inferSelect;
 export type InsertTimeBlock = z.infer<typeof insertTimeBlockSchema>;
+export type Webhook = typeof webhooks.$inferSelect;
+export type InsertWebhook = z.infer<typeof insertWebhookSchema>;

@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { staffAccounts, bookings, timeBlocks } from "../shared/schema";
-import type { StaffAccount, InsertStaffAccount, Booking, InsertBooking, TimeBlock, InsertTimeBlock } from "../shared/schema";
+import { staffAccounts, bookings, timeBlocks, webhooks } from "../shared/schema";
+import type { StaffAccount, InsertStaffAccount, Booking, InsertBooking, TimeBlock, InsertTimeBlock, Webhook, InsertWebhook } from "../shared/schema";
 import { eq, and, desc } from "drizzle-orm";
 
 export interface IStorage {
@@ -23,6 +23,12 @@ export interface IStorage {
   getAllTimeBlocks(): Promise<TimeBlock[]>;
   createTimeBlock(block: InsertTimeBlock): Promise<TimeBlock>;
   deleteTimeBlock(id: number): Promise<void>;
+
+  getWebhooksByStaffId(staffId: string): Promise<Webhook[]>;
+  getAllWebhooks(): Promise<Webhook[]>;
+  createWebhook(webhook: InsertWebhook): Promise<Webhook>;
+  updateWebhook(id: number, data: Partial<InsertWebhook>): Promise<Webhook | undefined>;
+  deleteWebhook(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -116,6 +122,28 @@ export class DatabaseStorage implements IStorage {
 
   async deleteTimeBlock(id: number): Promise<void> {
     await db.delete(timeBlocks).where(eq(timeBlocks.id, id));
+  }
+
+  async getWebhooksByStaffId(staffId: string): Promise<Webhook[]> {
+    return db.select().from(webhooks).where(eq(webhooks.staffId, staffId)).orderBy(desc(webhooks.createdAt));
+  }
+
+  async getAllWebhooks(): Promise<Webhook[]> {
+    return db.select().from(webhooks).orderBy(desc(webhooks.createdAt));
+  }
+
+  async createWebhook(webhook: InsertWebhook): Promise<Webhook> {
+    const [created] = await db.insert(webhooks).values(webhook).returning();
+    return created;
+  }
+
+  async updateWebhook(id: number, data: Partial<InsertWebhook>): Promise<Webhook | undefined> {
+    const [updated] = await db.update(webhooks).set(data).where(eq(webhooks.id, id)).returning();
+    return updated;
+  }
+
+  async deleteWebhook(id: number): Promise<void> {
+    await db.delete(webhooks).where(eq(webhooks.id, id));
   }
 }
 

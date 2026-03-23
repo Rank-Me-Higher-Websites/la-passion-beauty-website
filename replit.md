@@ -66,6 +66,11 @@ Service IDs: s1=Haircut, s2=Root Touch-Up, s3=Full Color, s4=Full Color+Cut, s5=
 - `POST /api/time-blocks` - Create time block (auth, admin or own staff only)
 - `DELETE /api/time-blocks/:id` - Delete time block (auth, admin or owner only)
 - `PATCH /api/bookings/:id` - Also supports date/time/serviceId changes with conflict + block checks
+- `GET /api/webhooks` - Get webhooks (admin sees all, stylists see own)
+- `POST /api/webhooks` - Create webhook (admin only)
+- `PATCH /api/webhooks/:id` - Update webhook (admin only)
+- `DELETE /api/webhooks/:id` - Delete webhook (admin only)
+- `POST /api/webhooks/test` - Send test webhook payload (admin only)
 
 ## Server Logging
 All API actions are logged with timestamps, including:

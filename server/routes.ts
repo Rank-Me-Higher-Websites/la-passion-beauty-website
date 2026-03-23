@@ -1,7 +1,8 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { storage } from "./storage";
-import { insertBookingSchema, insertTimeBlockSchema } from "../shared/schema";
+import { insertBookingSchema, insertTimeBlockSchema, insertWebhookSchema } from "../shared/schema";
+import { fireWebhooks } from "./webhooks";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -243,6 +244,7 @@ router.post("/api/bookings", async (req: Request, res: Response) => {
     const staffAccount = sessionStaffId ? await storage.getStaffById(sessionStaffId) : null;
     const who = staffAccount ? `${staffAccount.name} (staff)` : `public client`;
     log("BOOKING_CREATED", `${who} created booking id=${booking.id} client="${booking.clientName}" service=${booking.serviceId} staff=${booking.staffId} date=${booking.date} time=${booking.time} ip=${req.ip}`);
+    fireWebhooks(booking.staffId, "booking.created", booking).catch(() => {});
     res.status(201).json(booking);
   } catch (err: any) {
     log("BOOKING_CREATE_FAIL", `Error from ${req.ip}: ${err.message}`);
@@ -280,6 +282,11 @@ router.patch("/api/bookings/:id", async (req: Request, res: Response) => {
   if (status && !date && !time && !serviceId) {
     const booking = await storage.updateBookingStatus(id, status);
     log("BOOKING_STATUS", `${staff.name} changed booking ${id} ("${existing.clientName}") status: ${existing.status} → ${status}`);
+    if (booking) {
+      fireWebhooks(booking.staffId, "booking.status_changed", booking, {
+        status: { from: existing.status, to: status },
+      }).catch(() => {});
+    }
     return res.json(booking);
   }
 
@@ -308,6 +315,13 @@ router.patch("/api/bookings/:id", async (req: Request, res: Response) => {
   const booking = await storage.updateBooking(id, updateData);
   const changes = Object.entries(updateData).map(([k, v]) => `${k}=${v}`).join(", ");
   log("BOOKING_UPDATED", `${staff.name} updated booking ${id} ("${existing.clientName}"): ${changes}`);
+  if (booking) {
+    const changeMap: Record<string, { from: string; to: string }> = {};
+    if (date) changeMap.date = { from: existing.date, to: date };
+    if (time) changeMap.time = { from: existing.time, to: time };
+    if (serviceId) changeMap.serviceId = { from: existing.serviceId, to: serviceId };
+    fireWebhooks(booking.staffId, "booking.updated", booking, changeMap).catch(() => {});
+  }
   res.json(booking);
 });
 
@@ -370,6 +384,7 @@ router.delete("/api/bookings/:id", async (req: Request, res: Response) => {
 
   await storage.deleteBooking(id);
   log("BOOKING_DELETED", `${staff.name} deleted booking ${id} ("${existing.clientName}" - ${existing.date} ${existing.time})`);
+  fireWebhooks(existing.staffId, "booking.deleted", existing).catch(() => {});
   res.json({ ok: true });
 });
 
@@ -447,6 +462,122 @@ router.delete("/api/time-blocks/:id", async (req: Request, res: Response) => {
   await storage.deleteTimeBlock(id);
   log("TIME_BLOCK_DELETED", `${staff.name} removed time block ${id}`);
   res.json({ ok: true });
+});
+
+router.get("/api/webhooks", async (req: Request, res: Response) => {
+  const sessionStaffId = (req.session as any)?.staffId;
+  if (!sessionStaffId) return res.status(401).json({ error: "Not authenticated" });
+  const staff = await storage.getStaffById(sessionStaffId);
+  if (!staff) return res.status(401).json({ error: "Not authenticated" });
+
+  if (staff.role === "admin") {
+    const all = await storage.getAllWebhooks();
+    return res.json(all);
+  }
+  const own = await storage.getWebhooksByStaffId(staff.staffDataId);
+  res.json(own);
+});
+
+router.post("/api/webhooks", async (req: Request, res: Response) => {
+  const sessionStaffId = (req.session as any)?.staffId;
+  if (!sessionStaffId) return res.status(401).json({ error: "Not authenticated" });
+  const staff = await storage.getStaffById(sessionStaffId);
+  if (!staff) return res.status(401).json({ error: "Not authenticated" });
+
+  if (staff.role !== "admin") {
+    return res.status(403).json({ error: "Only admin can manage webhooks" });
+  }
+
+  try {
+    const { staffId, url, events, enabled } = req.body;
+    if (!staffId || !url || !events || !Array.isArray(events) || events.length === 0) {
+      return res.status(400).json({ error: "staffId, url, and events[] are required" });
+    }
+    const webhook = await storage.createWebhook({ staffId, url, events, enabled: enabled ?? 1 });
+    log("WEBHOOK_CREATED", `${staff.name} created webhook id=${webhook.id} for staff=${staffId} url=${url}`);
+    res.status(201).json(webhook);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Invalid data" });
+  }
+});
+
+router.patch("/api/webhooks/:id", async (req: Request, res: Response) => {
+  const sessionStaffId = (req.session as any)?.staffId;
+  if (!sessionStaffId) return res.status(401).json({ error: "Not authenticated" });
+  const staff = await storage.getStaffById(sessionStaffId);
+  if (!staff) return res.status(401).json({ error: "Not authenticated" });
+  if (staff.role !== "admin") return res.status(403).json({ error: "Only admin can manage webhooks" });
+
+  const id = parseInt(req.params.id);
+  const { url, events, enabled, staffId } = req.body;
+  const data: any = {};
+  if (url !== undefined) data.url = url;
+  if (events !== undefined) data.events = events;
+  if (enabled !== undefined) data.enabled = enabled;
+  if (staffId !== undefined) data.staffId = staffId;
+
+  const webhook = await storage.updateWebhook(id, data);
+  if (!webhook) return res.status(404).json({ error: "Webhook not found" });
+  log("WEBHOOK_UPDATED", `${staff.name} updated webhook ${id}`);
+  res.json(webhook);
+});
+
+router.delete("/api/webhooks/:id", async (req: Request, res: Response) => {
+  const sessionStaffId = (req.session as any)?.staffId;
+  if (!sessionStaffId) return res.status(401).json({ error: "Not authenticated" });
+  const staff = await storage.getStaffById(sessionStaffId);
+  if (!staff) return res.status(401).json({ error: "Not authenticated" });
+  if (staff.role !== "admin") return res.status(403).json({ error: "Only admin can manage webhooks" });
+
+  const id = parseInt(req.params.id);
+  await storage.deleteWebhook(id);
+  log("WEBHOOK_DELETED", `${staff.name} deleted webhook ${id}`);
+  res.json({ ok: true });
+});
+
+router.post("/api/webhooks/test", async (req: Request, res: Response) => {
+  const sessionStaffId = (req.session as any)?.staffId;
+  if (!sessionStaffId) return res.status(401).json({ error: "Not authenticated" });
+  const staff = await storage.getStaffById(sessionStaffId);
+  if (!staff) return res.status(401).json({ error: "Not authenticated" });
+  if (staff.role !== "admin") return res.status(403).json({ error: "Only admin can manage webhooks" });
+
+  const { url } = req.body;
+  if (!url) return res.status(400).json({ error: "url is required" });
+
+  const { buildPayload } = await import("./webhooks");
+  const testBooking = {
+    id: 0,
+    clientName: "Test Client",
+    clientPhone: "(555) 123-4567",
+    clientEmail: "test@example.com",
+    serviceId: "s1",
+    staffId: staff.staffDataId,
+    date: new Date().toISOString().slice(0, 10),
+    time: "10:00 AM",
+    status: "pending",
+    notes: "This is a test webhook",
+    createdAt: new Date(),
+  };
+
+  const payload = buildPayload("booking.created", testBooking as any);
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    const r = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    log("WEBHOOK_TEST", `${staff.name} tested webhook → ${url} (status ${r.status})`);
+    res.json({ ok: true, status: r.status, payload });
+  } catch (err: any) {
+    log("WEBHOOK_TEST_FAIL", `${staff.name} tested webhook → ${url} error="${err.message}"`);
+    res.json({ ok: false, error: err.message, payload });
+  }
 });
 
 export default router;

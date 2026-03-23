@@ -38,7 +38,7 @@ import {
 } from "@/lib/booking-data";
 import logo from "@/assets/logo.png";
 
-type Tab = "dashboard" | "bookings" | "calendar" | "staff";
+type Tab = "dashboard" | "bookings" | "calendar" | "staff" | "webhooks";
 
 interface AdminBooking {
   id: number;
@@ -99,6 +99,13 @@ const Admin = () => {
   const [blockEndTime, setBlockEndTime] = useState("5:00 PM");
   const [blockReason, setBlockReason] = useState("");
 
+  const [webhooksList, setWebhooksList] = useState<any[]>([]);
+  const [showWebhookForm, setShowWebhookForm] = useState(false);
+  const [webhookStaffId, setWebhookStaffId] = useState("all");
+  const [webhookUrl, setWebhookUrl] = useState("");
+  const [webhookEvents, setWebhookEvents] = useState<string[]>(["booking.created", "booking.status_changed", "booking.updated", "booking.deleted"]);
+  const [webhookTestResult, setWebhookTestResult] = useState<any>(null);
+
   const isAdmin = staffUser?.role === "admin";
 
   const checkAuth = useCallback(async () => {
@@ -130,6 +137,13 @@ const Admin = () => {
     if (staffUser) fetchBookings();
   }, [staffUser, fetchBookings]);
 
+  const fetchWebhooks = useCallback(async () => {
+    try {
+      const res = await fetch("/api/webhooks");
+      if (res.ok) setWebhooksList(await res.json());
+    } catch {}
+  }, []);
+
   const fetchTimeBlocks = useCallback(async () => {
     try {
       const res = await fetch("/api/time-blocks");
@@ -139,7 +153,8 @@ const Admin = () => {
 
   useEffect(() => {
     if (staffUser) fetchTimeBlocks();
-  }, [staffUser, fetchTimeBlocks]);
+    if (staffUser) fetchWebhooks();
+  }, [staffUser, fetchTimeBlocks, fetchWebhooks]);
 
   useEffect(() => {
     if (staffUser?.role === "admin") {
@@ -306,11 +321,65 @@ const Admin = () => {
   const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
+  const createWebhook = async () => {
+    if (!webhookUrl) return;
+    try {
+      const res = await fetch("/api/webhooks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ staffId: webhookStaffId, url: webhookUrl, events: webhookEvents }),
+      });
+      if (res.ok) {
+        fetchWebhooks();
+        setShowWebhookForm(false);
+        setWebhookUrl("");
+        setWebhookStaffId("all");
+        setWebhookEvents(["booking.created", "booking.status_changed", "booking.updated", "booking.deleted"]);
+      }
+    } catch {}
+  };
+
+  const toggleWebhook = async (id: number, enabled: number) => {
+    try {
+      await fetch(`/api/webhooks/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled: enabled ? 0 : 1 }),
+      });
+      fetchWebhooks();
+    } catch {}
+  };
+
+  const deleteWebhook = async (id: number) => {
+    try {
+      await fetch(`/api/webhooks/${id}`, { method: "DELETE" });
+      setWebhooksList((prev) => prev.filter((w) => w.id !== id));
+    } catch {}
+  };
+
+  const testWebhook = async (url: string) => {
+    setWebhookTestResult(null);
+    try {
+      const res = await fetch("/api/webhooks/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const data = await res.json();
+      setWebhookTestResult(data);
+    } catch (e: any) {
+      setWebhookTestResult({ ok: false, error: e.message });
+    }
+  };
+
+  const allWebhookEvents = ["booking.created", "booking.status_changed", "booking.updated", "booking.deleted"];
+
   const tabs: { key: Tab; label: string; icon: React.ElementType }[] = [
     { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { key: "bookings", label: "Bookings", icon: List },
     { key: "calendar", label: "Calendar", icon: CalendarIcon },
     { key: "staff", label: "Staff", icon: Users },
+    ...(isAdmin ? [{ key: "webhooks" as Tab, label: "Automations", icon: KeyRound }] : []),
   ];
 
   const StaffFilter = () => {
@@ -930,6 +999,139 @@ const Admin = () => {
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {activeTab === "webhooks" && isAdmin && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-foreground text-lg">Webhook Automations</h3>
+                <Button variant="gold" size="sm" onClick={() => setShowWebhookForm(true)} data-testid="button-add-webhook">
+                  + Add Webhook
+                </Button>
+              </div>
+
+              <div className="bg-card rounded-xl border border-black/20 p-4">
+                <p className="text-sm text-muted-foreground mb-3">
+                  Webhooks send a POST request to your URL whenever a booking event happens. Use them with Make, Zapier, or any automation tool.
+                </p>
+                <div className="bg-muted/50 rounded-lg border border-black/10 p-3">
+                  <p className="text-xs font-semibold text-foreground mb-2">Webhook Payload Example:</p>
+                  <pre className="text-[11px] text-muted-foreground overflow-x-auto whitespace-pre">{JSON.stringify({
+                    event: "booking.created",
+                    timestamp: "2025-01-15T14:30:00.000Z",
+                    booking: {
+                      id: 42,
+                      client_name: "Jane Smith",
+                      client_phone: "(630) 555-1234",
+                      client_email: "jane@example.com",
+                      service_id: "s3",
+                      service_name: "Full Color",
+                      service_duration_minutes: 120,
+                      service_price: "$110+",
+                      staff_id: "st1",
+                      staff_name: "Laima",
+                      date: "2025-01-20",
+                      time: "10:00 AM",
+                      status: "pending",
+                      notes: null,
+                      created_at: "2025-01-15T14:30:00.000Z",
+                    },
+                  }, null, 2)}</pre>
+                  <p className="text-[10px] text-muted-foreground mt-2 italic">
+                    For status changes and edits, a "changes" field is also included showing what changed (from → to).
+                  </p>
+                </div>
+              </div>
+
+              {showWebhookForm && (
+                <div className="bg-card rounded-xl border border-primary/30 p-4 space-y-3">
+                  <p className="text-sm font-semibold text-foreground">New Webhook</p>
+                  <div>
+                    <label className="text-xs text-muted-foreground block mb-1">Webhook URL</label>
+                    <Input value={webhookUrl} onChange={(e) => setWebhookUrl(e.target.value)} placeholder="https://hooks.zapier.com/..." className="text-sm" data-testid="input-webhook-url" />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground block mb-1">Stylist</label>
+                    <select value={webhookStaffId} onChange={(e) => setWebhookStaffId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border bg-card text-sm" data-testid="select-webhook-staff">
+                      <option value="all">All Stylists</option>
+                      {staffMembers.map((s) => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground block mb-1">Events</label>
+                    <div className="flex flex-wrap gap-2">
+                      {allWebhookEvents.map((evt) => (
+                        <label key={evt} className="flex items-center gap-1.5 text-xs">
+                          <input
+                            type="checkbox"
+                            checked={webhookEvents.includes(evt)}
+                            onChange={(e) => {
+                              if (e.target.checked) setWebhookEvents([...webhookEvents, evt]);
+                              else setWebhookEvents(webhookEvents.filter((x) => x !== evt));
+                            }}
+                            className="rounded border-border"
+                          />
+                          {evt.replace("booking.", "")}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="gold" size="sm" onClick={createWebhook} data-testid="button-save-webhook">
+                      <Save className="h-3.5 w-3.5 mr-1" /> Save
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => setShowWebhookForm(false)}>Cancel</Button>
+                  </div>
+                </div>
+              )}
+
+              {webhooksList.length === 0 && !showWebhookForm && (
+                <p className="text-sm text-muted-foreground text-center py-8">No webhooks configured yet</p>
+              )}
+
+              {webhooksList.map((wh) => (
+                <div key={wh.id} className={cn("bg-card rounded-xl border p-4", wh.enabled ? "border-black/20" : "border-black/10 opacity-60")}>
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{wh.url}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {wh.staffId === "all" ? "All Stylists" : getStaffName(wh.staffId)} · {wh.events?.join(", ")}
+                      </p>
+                    </div>
+                    <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-semibold", wh.enabled ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-500")}>
+                      {wh.enabled ? "Active" : "Paused"}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button variant="outline" size="sm" onClick={() => toggleWebhook(wh.id, wh.enabled)} data-testid={`button-toggle-webhook-${wh.id}`}>
+                      {wh.enabled ? "Pause" : "Enable"}
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => testWebhook(wh.url)} data-testid={`button-test-webhook-${wh.id}`}>
+                      Send Test
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => deleteWebhook(wh.id)} className="text-destructive hover:text-destructive" data-testid={`button-delete-webhook-${wh.id}`}>
+                      <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+
+              {webhookTestResult && (
+                <div className={cn("rounded-xl border p-4", webhookTestResult.ok ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200")}>
+                  <p className="text-sm font-semibold mb-1">{webhookTestResult.ok ? "Test webhook sent successfully" : "Test webhook failed"}</p>
+                  {webhookTestResult.error && <p className="text-xs text-red-600">{webhookTestResult.error}</p>}
+                  {webhookTestResult.status && <p className="text-xs text-muted-foreground">Response status: {webhookTestResult.status}</p>}
+                  {webhookTestResult.payload && (
+                    <details className="mt-2">
+                      <summary className="text-xs text-muted-foreground cursor-pointer">View sent payload</summary>
+                      <pre className="text-[10px] text-muted-foreground mt-1 overflow-x-auto">{JSON.stringify(webhookTestResult.payload, null, 2)}</pre>
+                    </details>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
