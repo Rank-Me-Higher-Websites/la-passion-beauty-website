@@ -91,7 +91,7 @@ const HeroSection = () => {
                 Select a service to get started
               </p>
 
-              <div className="flex flex-col gap-2 mb-4 max-h-[320px] overflow-y-auto pr-1">
+              <div className="flex flex-col gap-1.5 mb-4">
                 {services.map((service) => {
                   const isActive = selectedService === service.id;
                   return (
@@ -99,7 +99,7 @@ const HeroSection = () => {
                       key={service.id}
                       data-testid={`hero-service-${service.id}`}
                       onClick={() => setSelectedService(isActive ? null : service.id)}
-                      className={`flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 border ${
+                      className={`flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 border ${
                         isActive
                           ? "bg-primary text-primary-foreground border-primary shadow-md"
                           : "bg-background/60 text-foreground border-border hover:border-primary/50 hover:bg-background"
