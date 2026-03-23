@@ -16,7 +16,6 @@ const allServices = [
     description: "Our professional stylists specialize in personalized haircuts that enhance your natural beauty. Whether you're looking for a fresh new style or a simple trim, we make sure your hair looks flawless and feels its best.",
     image: hairStylingImage,
     icon: Scissors,
-    link: "/services#hair",
   },
   {
     title: "Root Touch-Up",
@@ -25,7 +24,6 @@ const allServices = [
     description: "Keep your color looking fresh with a seamless root touch-up. We carefully match your existing shade to blend new growth naturally, leaving you with vibrant, even color from root to tip.",
     image: hairColoringImage,
     icon: Palette,
-    link: "/services#coloring",
   },
   {
     title: "Full Color",
@@ -34,7 +32,6 @@ const allServices = [
     description: "Transform your look with a full, all-over color application. From rich brunettes and warm blondes to bold fashion shades, our colorists create stunning, long-lasting results tailored to your skin tone.",
     image: hairColoringImage,
     icon: Palette,
-    link: "/services#coloring",
   },
   {
     title: "Full Color + Cut",
@@ -43,7 +40,6 @@ const allServices = [
     description: "The ultimate combo — a complete color transformation paired with a precision haircut. Save time and leave the salon with a fully refreshed look, from color to shape.",
     image: hairColoringImage,
     icon: Palette,
-    link: "/services#coloring",
   },
   {
     title: "Partial Highlights",
@@ -52,7 +48,6 @@ const allServices = [
     description: "Add dimension and brightness with strategically placed partial highlights. Perfect for a subtle, sun-kissed effect that adds depth without committing to a full head of highlights.",
     image: hairColoringImage,
     icon: Palette,
-    link: "/services#coloring",
   },
   {
     title: "Full Highlights",
@@ -61,7 +56,6 @@ const allServices = [
     description: "Make a statement with full highlights that add multi-tonal dimension throughout your entire head. Our colorists use expert foiling techniques to create natural movement and gorgeous depth.",
     image: hairColoringImage,
     icon: Palette,
-    link: "/services#coloring",
   },
   {
     title: "Highlights + Cut + Toner",
@@ -70,7 +64,6 @@ const allServices = [
     description: "Our most comprehensive color package — full highlights refined with a custom toner for the perfect shade, finished with a precision cut. Walk out with a completely polished, salon-fresh look.",
     image: hairColoringImage,
     icon: Palette,
-    link: "/services#coloring",
   },
   {
     title: "Extensions",
@@ -79,7 +72,6 @@ const allServices = [
     description: "Looking for instant length or volume? Our high-quality hair extensions blend seamlessly with your natural hair, giving you a fuller, longer look that feels comfortable and effortless. Available with Kamila Janik and Veronika Dadek.",
     image: hairExtensionsImage,
     icon: Cable,
-    link: "/services#extensions",
   },
 ];
 
@@ -88,76 +80,75 @@ const ServicesSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding bg-secondary/30">
-      <div className="container-custom">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-2xl mx-auto mb-10"
-        >
-          <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">What We Offer</p>
-          <h2 className="heading-section text-foreground mb-4">Our Services</h2>
-          <p className="text-body">
-            At La Passion Beauty Salon, we create styles that blend beauty with everyday ease. 
-            Expert haircuts, rich color, and premium extensions — all in one place.
-          </p>
-        </motion.div>
-
-        <div className="space-y-8">
-          {allServices.map((service, index) => (
-            <motion.div
-              key={service.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.08 }}
-              className={`grid lg:grid-cols-5 items-stretch rounded-2xl border border-black/15 bg-card overflow-hidden shadow-soft`}
-            >
-              <div className={`relative group lg:col-span-2 ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
-                <div className="overflow-hidden h-full">
-                  <img
-                    src={service.image}
-                    alt={`${service.title} at La Passion Beauty Salon`}
-                    className="w-full h-56 lg:h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
-              </div>
-
-              <div className={`flex flex-col justify-center p-8 lg:p-10 lg:col-span-3 ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center">
-                    <service.icon className="h-4 w-4 text-primary" />
-                  </div>
-                  <h3 className="heading-card text-foreground">{service.title}</h3>
-                </div>
-                <div className="flex items-center gap-3 mb-4 ml-12">
-                  <span className="text-sm font-semibold text-primary">{service.price}</span>
-                  <span className="text-xs text-muted-foreground">·</span>
-                  <span className="text-sm text-muted-foreground">{service.duration}</span>
-                </div>
-                <p className="text-body mb-5">{service.description}</p>
-                <Link
-                  to="/booking"
-                  className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all"
-                >
-                  Book {service.title}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </motion.div>
-          ))}
+    <section ref={ref}>
+      <div className="section-padding bg-secondary/30">
+        <div className="container-custom">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-2xl mx-auto"
+          >
+            <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">What We Offer</p>
+            <h2 className="heading-section text-foreground mb-4">Our Services</h2>
+            <p className="text-body">
+              At La Passion Beauty Salon, we create styles that blend beauty with everyday ease.
+              Expert haircuts, rich color, and premium extensions — all in one place.
+            </p>
+          </motion.div>
         </div>
+      </div>
 
+      {allServices.map((service, index) => (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          key={service.title}
+          initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-center mt-10"
+          transition={{ duration: 0.6, delay: index * 0.08 }}
+          className={`grid lg:grid-cols-2 items-stretch ${index % 2 === 0 ? 'bg-card' : 'bg-secondary/20'}`}
         >
+          <div className={`relative group ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
+            <div className="overflow-hidden h-full">
+              <img
+                src={service.image}
+                alt={`${service.title} at La Passion Beauty Salon`}
+                className="w-full h-64 lg:h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </div>
+          </div>
+
+          <div className={`flex flex-col justify-center px-8 py-12 lg:px-16 lg:py-16 ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+            <div className="max-w-lg">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center">
+                  <service.icon className="h-4 w-4 text-primary" />
+                </div>
+                <h3 className="heading-card text-foreground">{service.title}</h3>
+              </div>
+              <div className="flex items-center gap-3 mb-4 ml-12">
+                <span className="text-sm font-semibold text-primary">{service.price}</span>
+                <span className="text-xs text-muted-foreground">·</span>
+                <span className="text-sm text-muted-foreground">{service.duration}</span>
+              </div>
+              <p className="text-body mb-5">{service.description}</p>
+              <Link
+                to="/booking"
+                className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all"
+              >
+                Book {service.title}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+
+      <div className="section-padding bg-secondary/30">
+        <div className="container-custom text-center">
           <Button variant="gold" size="lg" asChild>
             <Link to="/booking">Book an Appointment</Link>
           </Button>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
