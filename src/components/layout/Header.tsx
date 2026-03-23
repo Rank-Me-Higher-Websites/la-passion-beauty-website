@@ -4,7 +4,7 @@ import { Menu, X, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo-cropped.png";
 
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -44,11 +44,11 @@ const Header = () => {
       <div className="container-custom">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center justify-center overflow-hidden h-14 w-48 md:w-56">
+          <Link to="/" className="flex items-center">
             <img 
               src={logo} 
               alt="La Passion Beauty Salon" 
-              className="w-full scale-125 -translate-y-0.5 brightness-0 invert contrast-200"
+              className="h-14 md:h-16 w-auto brightness-0 invert contrast-200"
             />
           </Link>
 
