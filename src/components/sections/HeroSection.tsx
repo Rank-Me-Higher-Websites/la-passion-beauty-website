@@ -24,9 +24,9 @@ const HeroSection = () => {
       <div className="absolute inset-0 -z-10 bg-white/10" />
 
       <div className="w-full relative z-10 pt-[48px] md:pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        {/* Mobile layout: stacked top-to-bottom, no centering, no min-height */}
-        <div className="md:hidden pb-4">
-          <div className="pt-3 pb-2">
+        {/* Mobile layout: fills viewport, content flows top-to-bottom */}
+        <div className="md:hidden min-h-[calc(100svh-48px)] flex flex-col pb-3">
+          <div className="pt-2 pb-2">
             <h1 className="text-[22px] leading-tight font-serif font-semibold text-foreground">
               Chicago's Top-Rated{" "}
               <span className="text-primary italic">Beauty & Hair Salon</span>
@@ -54,7 +54,7 @@ const HeroSection = () => {
             </div>
           </div>
 
-          <div className="bg-card/95 backdrop-blur-md rounded-xl border-2 border-black p-3 shadow-elevated">
+          <div className="flex-1 flex flex-col bg-card/95 backdrop-blur-md rounded-xl border-2 border-black p-3 shadow-elevated">
             <h3 className="font-serif text-lg font-semibold text-foreground mb-0.5">
               Book Now
             </h3>
@@ -62,7 +62,7 @@ const HeroSection = () => {
               Select a service to get started
             </p>
 
-            <div className="flex flex-col gap-1 mb-2">
+            <div className="flex-1 flex flex-col gap-1 mb-2 justify-center">
               {services.map((service) => {
                 const isActive = selectedService === service.id;
                 return (
@@ -88,7 +88,7 @@ const HeroSection = () => {
             <Button
               variant="gold"
               size="lg"
-              className="w-full h-10 text-sm"
+              className="w-full h-10 text-sm mt-auto"
               data-testid="hero-book-now"
               onClick={handleBook}
             >
