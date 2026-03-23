@@ -135,7 +135,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased font-medium;
     font-feature-settings: "kern" 1, "liga" 1;
   }
 
