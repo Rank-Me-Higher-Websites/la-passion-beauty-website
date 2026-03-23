@@ -385,11 +385,11 @@ const Admin = () => {
   const StaffFilter = () => {
     if (!isAdmin) return null;
     return (
-      <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto pb-1 scrollbar-none mb-3 md:mb-4 -mx-1 px-1">
+      <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mb-3 md:mb-4">
         <button
           onClick={() => setSelectedStaffId("all")}
           className={cn(
-            "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
+            "px-2.5 md:px-3 py-1 md:py-1.5 rounded-full text-xs md:text-sm font-medium transition-colors",
             selectedStaffId === "all"
               ? "bg-primary text-primary-foreground"
               : "bg-muted text-muted-foreground hover:bg-accent"
@@ -402,7 +402,7 @@ const Admin = () => {
             key={staff.id}
             onClick={() => setSelectedStaffId(staff.id)}
             className={cn(
-              "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
+              "px-2.5 md:px-3 py-1 md:py-1.5 rounded-full text-xs md:text-sm font-medium transition-colors",
               selectedStaffId === staff.id
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-muted-foreground hover:bg-accent"
