@@ -584,7 +584,7 @@ const Admin = () => {
       )}
 
       {/* Main content */}
-      <main className="flex-1 md:ml-60 pb-20 md:pb-0">
+      <main className="flex-1 md:ml-60 pb-20 md:pb-0 min-w-0">
         {/* Top bar */}
         <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-black/20 px-3 md:px-4 py-2.5 md:py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
