@@ -8,7 +8,7 @@ const MapSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding bg-card">
+    <section ref={ref} className="section-padding bg-primary">
       <div className="container-custom">
         {/* Section Header */}
         <motion.div
@@ -17,9 +17,9 @@ const MapSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center max-w-3xl mx-auto mb-6"
         >
-          <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">Location</p>
-          <h2 className="heading-section text-foreground mb-4">Visit Our Salon</h2>
-          <p className="text-body">
+          <p className="text-white/80 uppercase tracking-[0.2em] text-sm mb-3">Location</p>
+          <h2 className="heading-section text-white mb-4">Visit Our Salon</h2>
+          <p className="text-white/80">
             Conveniently located in Lemont, IL, our salon offers a relaxing atmosphere 
             where you can unwind and feel your best.
           </p>
@@ -34,7 +34,7 @@ const MapSection = () => {
             className="lg:col-span-1 space-y-6"
           >
             {/* Address */}
-            <div className="bg-background rounded-xl p-6 shadow-soft border border-black/15">
+            <div className="bg-white rounded-xl p-6 shadow-soft border border-white/30">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <MapPin className="h-6 w-6 text-primary" />
@@ -55,7 +55,7 @@ const MapSection = () => {
             </div>
 
             {/* Phone */}
-            <div className="bg-background rounded-xl p-6 shadow-soft border border-black/15">
+            <div className="bg-white rounded-xl p-6 shadow-soft border border-white/30">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <Phone className="h-6 w-6 text-primary" />
@@ -73,7 +73,7 @@ const MapSection = () => {
             </div>
 
             {/* Hours */}
-            <div className="bg-background rounded-xl p-6 shadow-soft border border-black/15">
+            <div className="bg-white rounded-xl p-6 shadow-soft border border-white/30">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <Clock className="h-6 w-6 text-primary" />

@@ -4,7 +4,7 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import hairStylingImage from "@/assets/hair-styling.jpg";
+import storefrontImage from "@/assets/services-storefront.webp";
 
 const services = [
   { title: "Haircut", price: "$45+" },
@@ -63,9 +63,9 @@ const ServicesSection = () => {
           className="flex items-center justify-center p-8 lg:p-12"
         >
           <img
-            src={hairStylingImage}
-            alt="Hair styling at La Passion Beauty Salon"
-            className="w-full h-72 lg:h-[450px] object-cover rounded-2xl opacity-90"
+            src={storefrontImage}
+            alt="La Passion Beauty Salon storefront"
+            className="w-full h-72 lg:h-[450px] object-cover rounded-2xl opacity-90 border-2 border-black/15"
           />
         </motion.div>
       </div>
