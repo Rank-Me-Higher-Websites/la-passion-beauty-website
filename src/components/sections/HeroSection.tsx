@@ -5,16 +5,14 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { Phone, ChevronRight, ChevronLeft, Scissors, Palette, Sparkles, Cable, PenTool, CalendarIcon, Clock, User } from "lucide-react";
+import { Phone, ChevronRight, ChevronLeft, Scissors, Palette, Cable, CalendarIcon, Clock, User } from "lucide-react";
 import heroImage from "@/assets/hero-salon.jpg";
 import { serviceCategories, services, staffMembers, getStaffTimeSlots, staffWorksOnDate } from "@/lib/booking-data";
 
 const categoryIcons: Record<string, React.ElementType> = {
   hair: Scissors,
   coloring: Palette,
-  treatments: Sparkles,
   extensions: Cable,
-  "permanent-makeup": PenTool,
 };
 
 type Step = "service" | "date" | "stylist";
@@ -93,7 +91,7 @@ const HeroSection = () => {
               transition={{ duration: 0.7, delay: 0.15 }}
               className="text-xl text-muted-foreground mb-6 max-w-2xl"
             >
-              Exceptional Hair. Luxurious Treatments. Timeless Beauty.
+              Exceptional Hair. Stunning Color. Timeless Beauty.
             </motion.p>
 
             <motion.p
@@ -102,8 +100,8 @@ const HeroSection = () => {
               transition={{ duration: 0.7, delay: 0.25 }}
               className="text-lg text-muted-foreground mb-8 max-w-2xl"
             >
-              Elevating beauty in Chicago, La Passion offers expert hair care, nourishing treatments,
-              and flawless permanent makeup — all in one luxurious beauty salon experience.
+              Elevating beauty in Chicago, La Passion offers expert haircuts, stunning color,
+              and premium extensions — all in one luxurious beauty salon experience.
             </motion.p>
 
             <motion.div

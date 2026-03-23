@@ -20,8 +20,8 @@ const Footer = () => {
               />
             </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed mb-6">
-              Elevating beauty in Chicago. Expert hair care, nourishing treatments, and flawless 
-              permanent makeup — all in one luxurious beauty salon experience.
+              Elevating beauty in Chicago. Expert haircuts, stunning color, and premium 
+              extensions — all in one luxurious beauty salon experience.
             </p>
             {/* Social Links */}
             <div className="flex gap-4">
@@ -73,11 +73,9 @@ const Footer = () => {
             <h4 className="font-serif text-lg font-semibold mb-6">Our Services</h4>
             <nav className="flex flex-col gap-3">
               {[
-                "Hair Styling",
+                "Haircuts",
                 "Hair Coloring",
                 "Hair Extensions",
-                "Hair Treatments",
-                "Permanent Makeup",
               ].map((service) => (
                 <Link
                   key={service}

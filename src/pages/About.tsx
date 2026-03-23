@@ -12,7 +12,7 @@ const commitments = [
   "Expert stylists with advanced training – always improving skills to give you the best results.",
   "Exclusive Kérastase haircare products – luxury formulas that keep your hair healthy and radiant.",
   "Personalized styles for every client – looks that reflect your personality and lifestyle.",
-  "Restorative treatments for shine and strength – tailored care to revive and protect your hair.",
+  "Premium hair extensions for instant length and volume – available with select stylists.",
   "A modern, clean, and relaxing salon – a space designed for comfort and self-care.",
   "Honest advice and guidance – helping you choose what truly works for your hair.",
 ];
@@ -98,7 +98,7 @@ const About = () => {
                   <div>
                     <h4 className="font-semibold text-foreground">Certifications</h4>
                     <p className="text-sm text-muted-foreground">
-                      Our technicians are certified and licensed to provide professional hair services and permanent makeup.
+                      Our technicians are certified and licensed to provide professional hair services, coloring, and extensions.
                     </p>
                   </div>
                 </div>

@@ -44,7 +44,7 @@ const AboutSection = () => {
             <p className="text-body mb-4">
               At La Passion Beauty Salon, every visit is about more than just great hair — it's about 
               feeling amazing. Our stylists specialize in precision haircuts, dimensional color, 
-              nourishing hair treatments, and expert permanent makeup that enhance your natural 
+              and premium hair extensions that enhance your natural 
               beauty and keep your hair healthy. Located in Lemont, IL, we blend creativity with 
               personalized care to deliver results that make you look and feel your absolute best.
             </p>

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { ArrowRight, Scissors, Sparkles, Heart, Palette } from "lucide-react";
+import { ArrowRight, Scissors, Palette, Cable } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import hairStylingImage from "@/assets/hair-styling.jpg";
@@ -14,7 +14,7 @@ import hairTreatmentImage from "@/assets/hair-treatment.jpg";
 const services = [
   {
     title: "Hair Services",
-    description: "Our professional stylists specialize in personalized hair services that enhance your natural beauty. From sleek blowouts to trend-forward styling, we make sure your hair looks flawless and feels its best.",
+    description: "Our professional stylists specialize in personalized haircuts that enhance your natural beauty. Whether you're looking for a fresh new style or a simple trim, we make sure your hair looks flawless and feels its best.",
     image: hairStylingImage,
     icon: Scissors,
     link: "/services#hair",
@@ -28,24 +28,10 @@ const services = [
   },
   {
     title: "Hair Extensions",
-    description: "Looking for instant length or volume? Our high-quality hair extensions blend seamlessly with your natural hair, giving you a fuller, longer look that feels comfortable and effortless.",
+    description: "Looking for instant length or volume? Our high-quality hair extensions blend seamlessly with your natural hair, giving you a fuller, longer look that feels comfortable and effortless. Available with Kamila Janik and Veronika Dadek.",
     image: hairExtensionsImage,
-    icon: Scissors,
+    icon: Cable,
     link: "/services#extensions",
-  },
-  {
-    title: "Hair Treatments",
-    description: "Our nourishing hair treatments are designed to repair, hydrate, and restore shine from root to tip. Using professional-grade formulas, we target dryness, damage, and frizz to leave your hair stronger, smoother, and healthier.",
-    image: hairTreatmentImage,
-    icon: Heart,
-    link: "/services#treatments",
-  },
-  {
-    title: "Permanent Makeup",
-    description: "Our permanent makeup services enhance your natural beauty with expertly applied brows, eyeliner, and lip blush—customized to your features for soft, long-lasting results that simplify your routine.",
-    image: permanentMakeupImage,
-    icon: Sparkles,
-    link: "/services#permanent-makeup",
   },
 ];
 
@@ -67,8 +53,8 @@ const ServicesSection = () => {
           <h2 className="heading-section text-foreground mb-4">Our Services</h2>
           <p className="text-body">
             At La Passion Beauty Salon, we create styles that blend beauty with everyday ease. 
-            Our services include custom cuts, rich, blended hair color, and restorative treatments 
-            that bring back softness, shine, and strength.
+            Our services include expert haircuts, rich and blended hair color, 
+            and premium extensions for instant length and volume.
           </p>
         </motion.div>
 

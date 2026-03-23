@@ -11,7 +11,7 @@ import {
 const faqs = [
   {
     question: "What services does La Passion Beauty Salon offer?",
-    answer: "We offer hair services including custom cuts, styling, and blowouts. Our hair coloring services include balayage, highlights, and full color. We also provide hair treatments to repair, hydrate, and restore shine. Additionally, we offer permanent makeup services including ombre brows, combo brows, and eyeliner.",
+    answer: "We offer expert haircuts, a full range of hair coloring services including highlights, full color, root touch-ups, and combo packages with cuts and toner. We also offer premium hair extensions with select stylists.",
   },
   {
     question: "Do I need an appointment or do you accept walk-ins?",
@@ -22,8 +22,8 @@ const faqs = [
     answer: "Healthy, beautiful hair starts with the right products. That's why we work exclusively with Kérastase, a luxury haircare brand trusted by professionals worldwide. Each formula is crafted with high-performance ingredients to strengthen, nourish, and protect every strand.",
   },
   {
-    question: "How long does permanent makeup last?",
-    answer: "Permanent makeup typically lasts 1-3 years depending on your skin type, lifestyle, and aftercare. We recommend a touch-up 4-6 weeks after the initial procedure, with yearly touch-ups to maintain color richness and shape.",
+    question: "Who does hair extensions?",
+    answer: "Hair extensions are available with Kamila Janik and Veronika Dadek. Contact us for a consultation to discuss the best options for your desired look.",
   },
   {
     question: "Where is La Passion Beauty Salon located?",
@@ -31,7 +31,7 @@ const faqs = [
   },
   {
     question: "What should I expect during my first visit?",
-    answer: "During your first visit, we'll start with a friendly consultation to understand your goals and preferences. Whether it's a haircut, color, or treatment, we'll discuss options that work best for you. Our goal is for you to leave feeling confident, refreshed, and truly yourself.",
+    answer: "During your first visit, we'll start with a friendly consultation to understand your goals and preferences. Whether it's a haircut, color, or extensions, we'll discuss options that work best for you. Our goal is for you to leave feeling confident, refreshed, and truly yourself.",
   },
 ];
 

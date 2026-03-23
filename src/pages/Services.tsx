@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Scissors, Sparkles, Heart, Palette, ArrowRight } from "lucide-react";
+import { Scissors, Palette, Cable, ArrowRight } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import CTASection from "@/components/sections/CTASection";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,12 +16,9 @@ const services = [
     title: "Hair Services",
     icon: Scissors,
     image: hairExtensionsImage,
-    description: "Our professional stylists specialize in personalized hair services that enhance your natural beauty. From sleek blowouts to trend-forward styling, we make sure your hair looks flawless and feels its best.",
+    description: "Our professional stylists specialize in personalized haircuts that enhance your natural beauty. Whether you're looking for a fresh new style or a simple trim, we make sure your hair looks flawless and feels its best.",
     items: [
-      { name: "Women's Haircut & Style", price: "$45+" },
-      { name: "Men's Haircut", price: "$30+" },
-      { name: "Blowout", price: "$35+" },
-      { name: "Updo / Special Occasion Style", price: "$60+" },
+      { name: "Haircut", price: "$45+" },
     ],
   },
   {
@@ -33,47 +30,20 @@ const services = [
     items: [
       { name: "Root Touch-Up", price: "$85+" },
       { name: "Full Color", price: "$110+" },
+      { name: "Full Color + Cut", price: "$140+" },
       { name: "Partial Highlights", price: "$120+" },
       { name: "Full Highlights", price: "$160+" },
-      { name: "Balayage / Ombre", price: "$140+" },
-      { name: "Toner / Gloss Treatment", price: "$45+" },
-    ],
-  },
-  {
-    id: "treatments",
-    title: "Hair Treatments",
-    icon: Heart,
-    image: hairTreatmentImage,
-    description: "Give your hair the care it deserves with our nourishing treatments. Whether it's restoring moisture, repairing damage, or adding shine, we use professional products to leave your hair healthier, stronger, and full of life.",
-    items: [
-      { name: "Deep Conditioning Treatment", price: "$35+" },
-      { name: "Keratin Smoothing Treatment", price: "$150+" },
-      { name: "Botox BTX 2.0 Hair Treatment", price: "$100+" },
-      { name: "Scalp Detox or Hair Repair Mask", price: "Consultation" },
+      { name: "Highlights + Cut + Toner", price: "$190+" },
     ],
   },
   {
     id: "extensions",
     title: "Hair Extensions",
-    icon: Scissors,
+    icon: Cable,
     image: hairExtensionsImage,
-    description: "Looking for instant length or volume? Our high-quality hair extensions blend seamlessly with your natural hair, giving you a fuller, longer look that feels comfortable and effortless. Perfect for a quick style boost or a complete transformation.",
+    description: "Looking for instant length or volume? Our high-quality hair extensions blend seamlessly with your natural hair, giving you a fuller, longer look that feels comfortable and effortless. Available with Kamila Janik and Veronika Dadek.",
     items: [
-      { name: "Hair Extensions Consultation", price: "Free" },
-      { name: "Full Set Installation", price: "Quote" },
-      { name: "Maintenance & Adjustment", price: "Quote" },
-    ],
-  },
-  {
-    id: "permanent-makeup",
-    title: "Permanent Makeup",
-    icon: Sparkles,
-    image: permanentMakeupImage,
-    description: "At La Passion, permanent makeup treatments are designed to enhance your natural beauty with precision and care. Each look is customized to your features, giving you soft, lasting results that simplify your daily routine.",
-    items: [
-      { name: "Ombre / Powder Brows", price: "$500 (1st Session)", note: "Touch-up within 2 months: $100" },
-      { name: "Combo Brows (Hair Strokes + Shading)", price: "$500 (1st Session)", note: "Touch-up within 2 months: $100" },
-      { name: "Eyeliner Enhancement", price: "$400 (1st Session)", note: "Touch-up within 2 months: $100" },
+      { name: "Extensions", price: "Quote" },
     ],
   },
 ];
@@ -106,8 +76,8 @@ const Services = () => {
               transition={{ delay: 0.2 }}
               className="text-body max-w-2xl"
             >
-              Whether it's a new color, a fresh cut, or a treatment to revive your hair, our stylists 
-              use techniques and products that keep it healthy and styled just for you.
+              Whether it's a new color, a fresh cut, or extensions for instant length, our stylists 
+              use techniques and products that keep your hair healthy and styled just for you.
             </motion.p>
             <motion.nav
               initial={{ opacity: 0, y: 20 }}
@@ -196,13 +166,12 @@ const Services = () => {
               <h2 className="heading-section text-foreground mb-6">What to Expect</h2>
               <p className="text-body mb-6">
                 At La Passion Beauty Salon, every visit is designed to be personal, relaxing, and uplifting. 
-                We start with a friendly consultation to understand your goals – whether it's a fresh haircut, 
-                new hair color, a deep treatment to restore shine, or natural-looking permanent makeup.
+                We start with a friendly consultation to understand your goals — whether it's a fresh haircut, 
+                new hair color, highlights, or extensions for instant length and volume.
               </p>
               <p className="text-body">
                 Our stylists use professional techniques and high-quality products to keep your hair healthy 
-                while creating a style that truly fits you. For permanent makeup, we guide you step by step 
-                so the results look soft, balanced, and effortless. More than just a salon appointment, we 
+                while creating a style that truly fits you. More than just a salon appointment, we 
                 want your time with us to feel like self-care.
               </p>
             </motion.div>

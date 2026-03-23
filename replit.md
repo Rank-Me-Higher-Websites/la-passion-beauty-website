@@ -42,6 +42,13 @@ A React/Vite frontend with Express/PostgreSQL backend for La Passion Beauty Salo
 | Kamila G. | kamila.g@lapassion.com | kamilag123 | stylist | st7 |
 | Birute Francis | birute@lapassion.com | birute123 | stylist | st8 |
 
+## Services
+- **Hair Services**: Haircut ($45+)
+- **Hair Coloring**: Root Touch-Up ($85+), Full Color ($110+), Full Color + Cut ($140+), Partial Highlights ($120+), Full Highlights ($160+), Highlights + Cut + Toner ($190+)
+- **Extensions**: Quote (only Kamila Janik st3 and Veronika Dadek st5)
+
+Service IDs: s1=Haircut, s2=Root Touch-Up, s3=Full Color, s4=Full Color+Cut, s5=Partial Highlights, s6=Full Highlights, s7=Highlights+Cut+Toner, s8=Extensions
+
 ## API Routes
 - `POST /api/auth/login` - Staff login
 - `POST /api/auth/logout` - Staff logout
