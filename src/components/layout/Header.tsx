@@ -36,7 +36,7 @@ const Header = () => {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        "bg-primary shadow-soft py-2 md:py-3"
+        "bg-primary shadow-soft py-1.5 md:py-3"
       )}
     >
       <div className="container-custom">
@@ -46,7 +46,7 @@ const Header = () => {
             <img 
               src={logo} 
               alt="La Passion Beauty Salon" 
-              className="h-14 md:h-16 w-auto brightness-0 invert contrast-200"
+              className="h-10 md:h-16 w-auto brightness-0 invert contrast-200"
             />
           </Link>
 

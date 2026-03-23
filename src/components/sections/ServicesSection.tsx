@@ -28,27 +28,27 @@ const ServicesSection = () => {
           initial={{ opacity: 0, x: -30 }}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex flex-col justify-center px-8 py-16 lg:px-16 lg:py-20"
+          className="flex flex-col justify-center px-5 py-8 md:px-8 md:py-16 lg:px-16 lg:py-20 order-2 lg:order-1"
         >
-          <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">What We Offer</p>
-          <h2 className="heading-section text-foreground mb-6">Our Services</h2>
+          <p className="text-primary uppercase tracking-[0.2em] text-xs md:text-sm mb-2 md:mb-3">What We Offer</p>
+          <h2 className="heading-section text-foreground mb-4 md:mb-6 text-2xl md:text-3xl lg:text-4xl">Our Services</h2>
 
-          <div className="mb-6">
+          <div className="mb-5 md:mb-6">
             {services.map((service, index) => (
               <motion.div
                 key={service.title}
                 initial={{ opacity: 0, x: -10 }}
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.3, delay: 0.15 + index * 0.04 }}
-                className="flex items-center justify-between py-3 border-b border-black/10 last:border-b-0"
+                className="flex items-center justify-between py-2.5 md:py-3 border-b border-black/10 last:border-b-0"
               >
-                <span className="font-serif text-lg text-foreground">{service.title}</span>
-                <span className="text-sm font-semibold text-primary ml-4 whitespace-nowrap">{service.price}</span>
+                <span className="font-serif text-base md:text-lg text-foreground">{service.title}</span>
+                <span className="text-xs md:text-sm font-semibold text-primary ml-4 whitespace-nowrap">{service.price}</span>
               </motion.div>
             ))}
           </div>
 
-          <Button variant="gold" size="lg" asChild>
+          <Button variant="gold" size="lg" asChild className="text-sm md:text-base h-10 md:h-11">
             <Link to="/booking">
               Book an Appointment
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -60,7 +60,7 @@ const ServicesSection = () => {
           initial={{ opacity: 0, x: 30 }}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="flex items-center justify-center p-8 lg:p-12"
+          className="flex items-center justify-center p-5 md:p-8 lg:p-12 order-1 lg:order-2"
         >
           <img
             src={storefrontImage}
