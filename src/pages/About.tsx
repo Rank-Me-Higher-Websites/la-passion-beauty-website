@@ -2,8 +2,6 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Check, Award, Heart, Sparkles } from "lucide-react";
 import Layout from "@/components/layout/Layout";
-import StatsSection from "@/components/sections/StatsSection";
-import ReviewsSection from "@/components/sections/ReviewsSection";
 import CTASection from "@/components/sections/CTASection";
 import { Button } from "@/components/ui/button";
 import aboutImage from "@/assets/about-salon.jpg";
@@ -52,8 +50,6 @@ const About = () => {
             </div>
           </div>
         </section>
-
-        <StatsSection />
 
         {/* Masters Section */}
         <section className="section-padding bg-background">
@@ -186,7 +182,6 @@ const About = () => {
           </div>
         </section>
 
-        <ReviewsSection />
         <CTASection />
       </Layout>
   );

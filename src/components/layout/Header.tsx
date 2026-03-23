@@ -88,11 +88,11 @@ const Header = () => {
                 </Button>
               </>
             ) : (
-              <Button variant="gold-outline" size="sm" asChild>
+              <Button size="sm" asChild className="border-2 border-primary text-primary bg-white hover:bg-primary hover:text-white font-semibold">
                 <Link to="/login">Log In</Link>
               </Button>
             )}
-            <Button variant="gold" size="lg" asChild>
+            <Button size="lg" asChild className="bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white font-semibold">
               <a href="tel:+13313188113">
                 <Phone className="h-4 w-4 mr-2" />
                 Call Now

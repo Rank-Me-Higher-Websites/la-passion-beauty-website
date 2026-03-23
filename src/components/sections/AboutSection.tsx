@@ -10,7 +10,7 @@ const AboutSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="bg-cream-dark overflow-hidden">
+    <section ref={ref} className="bg-primary overflow-hidden">
       <div className="grid lg:grid-cols-2 items-stretch">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
@@ -31,11 +31,11 @@ const AboutSection = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="flex flex-col justify-center px-8 py-16 lg:px-16 lg:py-20"
         >
-          <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">About Us</p>
-          <h2 className="heading-section text-foreground mb-4">
+          <p className="text-white/80 uppercase tracking-[0.2em] text-sm mb-3">About Us</p>
+          <h2 className="heading-section text-white mb-4">
             About Us
           </h2>
-          <p className="text-body mb-6">
+          <p className="text-white/80 text-base leading-relaxed mb-6">
             At La Passion Beauty Salon, every visit is about more than just great hair — it's about 
             feeling amazing. Our stylists specialize in precision haircuts, dimensional color, 
             and premium hair extensions that enhance your natural 
@@ -44,13 +44,13 @@ const AboutSection = () => {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Button variant="gold" size="lg" asChild>
+            <Button size="lg" asChild className="bg-white text-primary hover:bg-white/90 font-semibold">
               <a href="https://maps.app.goo.gl/rz34qNsMxhEowymC8" target="_blank" rel="noopener noreferrer">
                 <MapPin className="h-4 w-4 mr-2" />
                 Visit Us
               </a>
             </Button>
-            <Button variant="gold-outline" size="lg" asChild>
+            <Button size="lg" asChild className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-primary font-semibold">
               <a href="tel:+13313188113">
                 <Phone className="h-4 w-4 mr-2" />
                 Call Now
