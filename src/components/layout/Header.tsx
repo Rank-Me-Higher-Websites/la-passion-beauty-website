@@ -48,7 +48,7 @@ const Header = () => {
             <img 
               src={logo} 
               alt="La Passion Beauty Salon" 
-              className="h-14 md:h-16 w-auto brightness-0 invert"
+              className="h-20 md:h-24 w-auto brightness-0 invert contrast-200"
             />
           </Link>
 
