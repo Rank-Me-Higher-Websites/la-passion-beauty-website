@@ -5,21 +5,15 @@ import Layout from "@/components/layout/Layout";
 import CTASection from "@/components/sections/CTASection";
 import { Button } from "@/components/ui/button";
 import hairStylingImage from "@/assets/hair-styling.jpg";
-import rootTouchupImage from "@/assets/root-touchup.jpg";
-import fullColorImage from "@/assets/full-color.jpg";
-import partialHighlightsImage from "@/assets/partial-highlights.jpg";
-import fullHighlightsImage from "@/assets/full-highlights.jpg";
-import highlightsCutTonerImage from "@/assets/highlights-cut-toner.jpg";
-import hairExtensionsImage from "@/assets/hair-extensions.jpg";
 
-const services = [
+const serviceCategories = [
   {
     id: "hair",
     title: "Hair Services",
     icon: Scissors,
     description: "Our professional stylists specialize in personalized haircuts that enhance your natural beauty. Whether you're looking for a fresh new style or a simple trim, we make sure your hair looks flawless and feels its best.",
     items: [
-      { name: "Haircut", price: "$45+", image: hairStylingImage },
+      { name: "Haircut", price: "$45+" },
     ],
   },
   {
@@ -28,12 +22,12 @@ const services = [
     icon: Palette,
     description: "From subtle highlights to bold, vibrant shades, our hair coloring services are tailored to your style and personality. Using professional techniques and quality products, we create colors that look fresh, natural, and keep your hair healthy and radiant.",
     items: [
-      { name: "Root Touch-Up", price: "$85+", image: rootTouchupImage },
-      { name: "Full Color", price: "$110+", image: fullColorImage },
-      { name: "Full Color + Cut", price: "$140+", image: hairStylingImage },
-      { name: "Partial Highlights", price: "$120+", image: partialHighlightsImage },
-      { name: "Full Highlights", price: "$160+", image: fullHighlightsImage },
-      { name: "Highlights + Cut + Toner", price: "$190+", image: highlightsCutTonerImage },
+      { name: "Root Touch-Up", price: "$85+" },
+      { name: "Full Color", price: "$110+" },
+      { name: "Full Color + Cut", price: "$140+" },
+      { name: "Partial Highlights", price: "$120+" },
+      { name: "Full Highlights", price: "$160+" },
+      { name: "Highlights + Cut + Toner", price: "$190+" },
     ],
   },
   {
@@ -42,7 +36,7 @@ const services = [
     icon: Cable,
     description: "Looking for instant length or volume? Our high-quality hair extensions blend seamlessly with your natural hair, giving you a fuller, longer look that feels comfortable and effortless. Available with Kamila Janik and Veronika Dadek.",
     items: [
-      { name: "Extensions", price: "Quote", image: hairExtensionsImage },
+      { name: "Extensions", price: "Quote" },
     ],
   },
 ];
@@ -93,65 +87,56 @@ const Services = () => {
 
       <section className="section-padding bg-background">
         <div className="container-custom">
-          <div className="space-y-16">
-            {services.map((service, index) => (
-              <motion.div
-                key={service.id}
-                id={service.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-                    <service.icon className="h-6 w-6 text-primary-foreground" />
-                  </div>
-                  <h2 className="heading-section text-foreground">{service.title}</h2>
-                </div>
-                <p className="text-body mb-8 max-w-3xl">{service.description}</p>
-                
-                <div className="space-y-4">
-                  {service.items.map((item, i) => (
-                    <div
-                      key={i}
-                      className={`grid lg:grid-cols-2 items-stretch rounded-2xl border border-black/15 bg-card overflow-hidden shadow-soft`}
-                    >
-                      <div className={`relative group overflow-hidden ${i % 2 === 1 ? 'lg:order-2' : ''}`}>
-                        <img
-                          src={item.image}
-                          alt={`${item.name} at La Passion Beauty Salon`}
-                          className="w-full h-48 lg:h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
-                      </div>
-                      <div className={`flex items-center px-8 py-8 lg:px-12 ${i % 2 === 1 ? 'lg:order-1' : ''}`}>
-                        <div className="w-full">
-                          <div className="flex items-center justify-between mb-3">
-                            <h3 className="font-serif text-2xl font-semibold text-foreground">{item.name}</h3>
-                            <span className="text-lg font-semibold text-primary">{item.price}</span>
-                          </div>
-                          <Link
-                            to="/booking"
-                            className="inline-flex items-center gap-2 text-primary font-medium text-sm hover:gap-3 transition-all"
-                          >
-                            Book Now
-                            <ArrowRight className="h-4 w-4" />
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+          <div className="grid lg:grid-cols-5 gap-10">
+            <div className="lg:col-span-2 lg:sticky lg:top-28 lg:self-start">
+              <div className="rounded-2xl overflow-hidden border border-black/15 shadow-soft">
+                <img
+                  src={hairStylingImage}
+                  alt="Hair styling at La Passion Beauty Salon"
+                  className="w-full h-64 lg:h-[500px] object-cover"
+                />
+              </div>
+              <div className="mt-6">
+                <Button variant="gold" size="lg" asChild className="w-full">
+                  <Link to="/booking">
+                    Book an Appointment
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
 
-                <div className="mt-6">
-                  <Button variant="gold" asChild>
-                    <Link to="/pricing">
-                      View Full Pricing
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
-              </motion.div>
-            ))}
+            <div className="lg:col-span-3 space-y-10">
+              {serviceCategories.map((category, catIndex) => (
+                <motion.div
+                  key={category.id}
+                  id={category.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                      <category.icon className="h-5 w-5 text-primary-foreground" />
+                    </div>
+                    <h2 className="font-serif text-2xl font-semibold text-foreground">{category.title}</h2>
+                  </div>
+                  <p className="text-body mb-5">{category.description}</p>
+
+                  <div className="rounded-xl border border-black/15 bg-card overflow-hidden">
+                    {category.items.map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between px-5 py-4 border-b border-black/10 last:border-b-0"
+                      >
+                        <span className="font-serif text-lg text-foreground">{item.name}</span>
+                        <span className="text-sm font-semibold text-primary ml-4">{item.price}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
