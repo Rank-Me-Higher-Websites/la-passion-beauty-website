@@ -40,19 +40,19 @@ const FAQSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding bg-cream-dark">
-      <div className="container-custom max-w-3xl mx-auto">
+    <section ref={ref} className="py-8 md:py-12 px-4 md:px-8 bg-cream-dark">
+      <div className="max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-8"
+          className="text-center mb-6 md:mb-8"
         >
-          <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">FAQ</p>
-          <h2 className="heading-section text-foreground mb-3">
+          <p className="text-primary uppercase tracking-[0.2em] text-xs md:text-sm mb-2">FAQ</p>
+          <h2 className="text-xl md:text-3xl font-serif font-semibold text-foreground mb-2 md:mb-3">
             Frequently Asked Questions
           </h2>
-          <p className="text-body">
+          <p className="text-sm text-muted-foreground">
             Have questions about our services? Here are answers to the most common ones.
           </p>
         </motion.div>
@@ -62,17 +62,17 @@ const FAQSection = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <Accordion type="single" collapsible className="space-y-3">
+          <Accordion type="single" collapsible className="space-y-2 md:space-y-3">
             {faqs.map((faq, index) => (
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="bg-card rounded-lg px-5 border border-black/15 shadow-soft"
+                className="bg-card rounded-lg px-4 md:px-5 border border-black/15 shadow-soft"
               >
-                <AccordionTrigger className="text-left font-serif text-base hover:text-primary hover:no-underline py-4">
+                <AccordionTrigger className="text-left font-serif text-sm md:text-base hover:text-primary hover:no-underline py-3 md:py-4">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground text-sm pb-4">
+                <AccordionContent className="text-muted-foreground text-xs md:text-sm pb-3 md:pb-4">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>

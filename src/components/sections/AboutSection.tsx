@@ -16,12 +16,12 @@ const AboutSection = () => {
           initial={{ opacity: 0, x: -30 }}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="flex items-center justify-center p-5 md:p-8 lg:p-12"
+          className="flex items-center justify-center p-4 pt-6 md:p-8 lg:p-12"
         >
           <img
             src={aboutImage}
             alt="La Passion Beauty Salon interior in Lemont, IL"
-            className="w-full h-52 md:h-72 lg:h-[450px] object-cover rounded-2xl opacity-90"
+            className="w-full h-48 md:h-72 lg:h-[450px] object-cover rounded-xl md:rounded-2xl opacity-90"
           />
         </motion.div>
 
@@ -29,13 +29,13 @@ const AboutSection = () => {
           initial={{ opacity: 0, x: 30 }}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex flex-col justify-center px-5 py-8 md:px-8 md:py-16 lg:px-16 lg:py-20"
+          className="flex flex-col justify-center px-4 py-6 md:px-8 md:py-16 lg:px-16 lg:py-20"
         >
-          <p className="text-white/80 uppercase tracking-[0.2em] text-xs md:text-sm mb-2 md:mb-3">About Us</p>
-          <h2 className="heading-section text-white mb-3 md:mb-4 text-2xl md:text-3xl lg:text-4xl">
+          <p className="text-white/80 uppercase tracking-[0.2em] text-xs md:text-sm mb-2">About Us</p>
+          <h2 className="text-xl md:text-3xl lg:text-4xl font-serif font-semibold text-white mb-3 md:mb-4">
             About Us
           </h2>
-          <p className="text-white/80 text-sm md:text-base leading-relaxed mb-5 md:mb-6">
+          <p className="text-white/80 text-sm md:text-base leading-relaxed mb-4 md:mb-6">
             At La Passion Beauty Salon, every visit is about more than just great hair — it's about 
             feeling amazing. Our stylists specialize in precision haircuts, dimensional color, 
             and premium hair extensions that enhance your natural 
@@ -43,14 +43,14 @@ const AboutSection = () => {
             personalized care to deliver results that make you look and feel your absolute best.
           </p>
 
-          <div className="flex flex-wrap gap-3 md:gap-4">
-            <Button size="lg" asChild className="bg-white text-primary hover:bg-white/90 font-semibold text-sm md:text-base h-10 md:h-11">
+          <div className="flex flex-wrap gap-3">
+            <Button size="lg" asChild className="bg-white text-primary hover:bg-white/90 font-semibold text-sm h-10 md:h-11">
               <a href="https://maps.app.goo.gl/rz34qNsMxhEowymC8" target="_blank" rel="noopener noreferrer">
                 <MapPin className="h-4 w-4 mr-2" />
                 Visit Us
               </a>
             </Button>
-            <Button size="lg" asChild className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-primary font-semibold text-sm md:text-base h-10 md:h-11">
+            <Button size="lg" asChild className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-primary font-semibold text-sm h-10 md:h-11">
               <a href="tel:+13313188113">
                 <Phone className="h-4 w-4 mr-2" />
                 Call Now
