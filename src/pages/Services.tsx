@@ -4,7 +4,7 @@ import { Scissors, Palette, Cable, ArrowRight } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import CTASection from "@/components/sections/CTASection";
 import { Button } from "@/components/ui/button";
-import hairStylingImage from "@/assets/hair-styling.jpg";
+import salonImage from "@/assets/services-storefront.png";
 
 const serviceCategories = [
   {
@@ -87,26 +87,16 @@ const Services = () => {
 
       <section className="section-padding bg-background">
         <div className="container-custom">
-          <div className="grid lg:grid-cols-5 gap-10">
-            <div className="lg:col-span-2 lg:sticky lg:top-28 lg:self-start">
-              <div className="rounded-2xl overflow-hidden border border-black/15 shadow-soft">
-                <img
-                  src={hairStylingImage}
-                  alt="Hair styling at La Passion Beauty Salon"
-                  className="w-full h-64 lg:h-[500px] object-cover"
-                />
-              </div>
-              <div className="mt-6">
-                <Button variant="gold" size="lg" asChild className="w-full">
-                  <Link to="/booking">
-                    Book an Appointment
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
+          <div className="rounded-2xl overflow-hidden border border-black/15 shadow-soft mb-10 max-w-2xl mx-auto">
+            <img
+              src={salonImage}
+              alt="La Passion Beauty Salon"
+              className="w-full h-auto object-contain"
+            />
+          </div>
 
-            <div className="lg:col-span-3 space-y-10">
+          <div className="grid lg:grid-cols-2 gap-10">
+            <div className="lg:col-span-2 space-y-10">
               {serviceCategories.map((category, catIndex) => (
                 <motion.div
                   key={category.id}
@@ -136,6 +126,15 @@ const Services = () => {
                   </div>
                 </motion.div>
               ))}
+
+              <div className="mt-8">
+                <Button variant="gold" size="lg" asChild className="w-full">
+                  <Link to="/booking">
+                    Book an Appointment
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
