@@ -621,7 +621,7 @@ const Admin = () => {
 
         {/* Mobile bottom tab bar */}
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-black/20 flex items-center justify-around px-1 py-1.5 safe-area-bottom">
-          {tabs.map((tab) => (
+          {tabs.filter(t => t.key !== "webhooks").map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
