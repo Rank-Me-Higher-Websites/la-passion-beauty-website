@@ -17,14 +17,14 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[100svh] md:min-h-[85vh] flex items-start md:items-center overflow-hidden">
+    <section className="relative md:min-h-[85vh] flex items-start md:items-center overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <img src={heroBg} alt="La Passion Beauty Salon" className="w-full h-full object-cover opacity-70" />
       </div>
       <div className="absolute inset-0 -z-10 bg-white/10" />
 
-      <div className="container-custom relative z-10 pt-14 md:pt-20 pb-4 md:pb-10">
-        <div className="grid lg:grid-cols-5 gap-4 md:gap-10 lg:gap-14 items-center">
+      <div className="w-full relative z-10 pt-[52px] md:pt-20 pb-3 md:pb-10 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-5 gap-3 md:gap-10 lg:gap-14 items-center">
           <div className="lg:col-span-3 order-2 lg:order-1">
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
@@ -113,19 +113,19 @@ const HeroSection = () => {
           </div>
 
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             className="lg:col-span-2 order-1 lg:order-2"
           >
-            <div className="md:hidden mb-2">
-              <h1 className="text-xl font-serif font-semibold leading-tight text-foreground">
+            <div className="md:hidden mb-1.5">
+              <h1 className="text-[17px] font-serif font-semibold leading-snug text-foreground">
                 Chicago's Top-Rated{" "}
                 <span className="text-primary italic">Beauty & Hair Salon</span>
               </h1>
-              <div className="flex items-center gap-3 mt-1.5">
-                <div className="flex items-center gap-1">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
+              <div className="flex items-center gap-2.5 mt-1">
+                <div className="flex items-center gap-0.5">
+                  <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -133,28 +133,28 @@ const HeroSection = () => {
                   </svg>
                   <span className="text-[10px] font-semibold">5.0</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="#1877F2">
+                <div className="flex items-center gap-0.5">
+                  <svg className="w-3 h-3" viewBox="0 0 24 24" fill="#1877F2">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
                   <span className="text-[10px] font-semibold">5.0</span>
                 </div>
-                <a href="tel:+13313188113" className="text-[10px] font-semibold text-primary ml-auto flex items-center gap-1">
-                  <Phone className="h-3 w-3" />
+                <a href="tel:+13313188113" className="text-[10px] font-semibold text-primary ml-auto flex items-center gap-0.5">
+                  <Phone className="h-2.5 w-2.5" />
                   331-318-8113
                 </a>
               </div>
             </div>
 
-            <div className="bg-card/90 backdrop-blur-md rounded-2xl border-2 border-black p-3 md:p-6 shadow-elevated">
-              <h3 className="font-serif text-lg md:text-2xl font-semibold text-foreground mb-0.5 md:mb-1">
+            <div className="bg-card/95 backdrop-blur-md rounded-xl md:rounded-2xl border-2 border-black p-2.5 md:p-6 shadow-elevated">
+              <h3 className="font-serif text-base md:text-2xl font-semibold text-foreground mb-0.5 md:mb-1">
                 Book Now
               </h3>
-              <p className="text-[10px] md:text-sm text-muted-foreground mb-2 md:mb-4">
+              <p className="text-[10px] md:text-sm text-muted-foreground mb-1.5 md:mb-4">
                 Select a service to get started
               </p>
 
-              <div className="flex flex-col gap-[3px] md:gap-1.5 mb-2 md:mb-4">
+              <div className="flex flex-col gap-[2px] md:gap-1.5 mb-1.5 md:mb-4">
                 {services.map((service) => {
                   const isActive = selectedService === service.id;
                   return (
@@ -162,7 +162,7 @@ const HeroSection = () => {
                       key={service.id}
                       data-testid={`hero-service-${service.id}`}
                       onClick={() => setSelectedService(isActive ? null : service.id)}
-                      className={`flex items-center justify-between px-2.5 md:px-4 py-1.5 md:py-2.5 rounded-md md:rounded-lg text-[11px] md:text-sm font-medium transition-all duration-200 border ${
+                      className={`flex items-center justify-between px-2 md:px-4 py-[5px] md:py-2.5 rounded md:rounded-lg text-[11px] md:text-sm font-medium transition-all duration-200 border ${
                         isActive
                           ? "bg-primary text-primary-foreground border-primary shadow-md"
                           : "bg-background/60 text-foreground border-black/15 hover:border-primary/50 hover:bg-background"
@@ -180,12 +180,12 @@ const HeroSection = () => {
               <Button
                 variant="gold"
                 size="lg"
-                className="w-full h-9 md:h-11 text-sm md:text-base"
+                className="w-full h-8 md:h-11 text-xs md:text-base rounded md:rounded-lg"
                 data-testid="hero-book-now"
                 onClick={handleBook}
               >
                 Book Now
-                <ChevronRight className="h-4 w-4 ml-1" />
+                <ChevronRight className="h-3.5 w-3.5 md:h-4 md:w-4 ml-1" />
               </Button>
             </div>
           </motion.div>
