@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, ChevronRight, Star } from "lucide-react";
-import heroImg3 from "@/assets/hero-storefront.jpg";
-import heroImg4 from "@/assets/hero-chairs.jpg";
+import heroBg from "@/assets/hero-bg.png";
 import { services } from "@/lib/booking-data";
 
 const HeroSection = () => {
@@ -19,16 +18,11 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background Collage */}
-      <div className="absolute inset-0 -z-10 grid grid-cols-2 gap-[1px] bg-black/80">
-        <div className="overflow-hidden">
-          <img src={heroImg3} alt="Salon storefront" className="w-full h-full object-cover" />
-        </div>
-        <div className="overflow-hidden">
-          <img src={heroImg4} alt="Salon chairs" className="w-full h-full object-cover" />
-        </div>
+      {/* Background Image */}
+      <div className="absolute inset-0 -z-10">
+        <img src={heroBg} alt="La Passion Beauty Salon" className="w-full h-full object-cover" />
       </div>
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/80 via-black/65 to-black/45" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/75 via-black/55 to-black/35" />
 
       <div className="container-custom relative z-10 pt-24 pb-16">
         <div className="grid lg:grid-cols-5 gap-10 lg:gap-14 items-center">
