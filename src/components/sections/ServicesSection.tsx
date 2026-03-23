@@ -65,7 +65,7 @@ const ServicesSection = () => {
           <img
             src={storefrontImage}
             alt="La Passion Beauty Salon storefront"
-            className="w-full h-72 lg:h-[450px] object-cover rounded-2xl opacity-90 border-2 border-black/15"
+            className="w-full h-auto object-contain rounded-2xl opacity-90 border-2 border-black/15"
           />
         </motion.div>
       </div>
