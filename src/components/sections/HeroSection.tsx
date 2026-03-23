@@ -22,7 +22,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 -z-10">
         <img src={heroBg} alt="La Passion Beauty Salon" className="w-full h-full object-cover" />
       </div>
-      <div className="absolute inset-0 -z-10 bg-white/30" />
+      <div className="absolute inset-0 -z-10 bg-white/10" />
 
       <div className="container-custom relative z-10 pt-24 pb-16">
         <div className="grid lg:grid-cols-5 gap-10 lg:gap-14 items-center">
