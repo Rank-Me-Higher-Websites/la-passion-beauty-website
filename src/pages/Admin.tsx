@@ -98,6 +98,7 @@ const Admin = () => {
   const [blockStartTime, setBlockStartTime] = useState("9:00 AM");
   const [blockEndTime, setBlockEndTime] = useState("5:00 PM");
   const [blockReason, setBlockReason] = useState("");
+  const [blockStaffId, setBlockStaffId] = useState("");
 
   const [webhooksList, setWebhooksList] = useState<any[]>([]);
   const [showWebhookForm, setShowWebhookForm] = useState(false);
@@ -222,7 +223,7 @@ const Admin = () => {
   };
 
   const createTimeBlock = async () => {
-    const staffId = isAdmin && selectedStaffId !== "all" ? selectedStaffId : staffUser?.staffDataId;
+    const staffId = isAdmin ? (selectedStaffId !== "all" ? selectedStaffId : blockStaffId || null) : staffUser?.staffDataId;
     if (!staffId || !blockDate) return;
     try {
       const res = await fetch("/api/time-blocks", {
@@ -235,6 +236,7 @@ const Admin = () => {
         setShowBlockForm(false);
         setBlockDate("");
         setBlockReason("");
+        setBlockStaffId("");
       }
     } catch {}
   };
@@ -821,6 +823,15 @@ const Admin = () => {
                 {showBlockForm && (
                   <div className="bg-red-50 rounded-xl border border-red-200 p-4 mb-4 space-y-3">
                     <p className="text-sm font-semibold text-red-800">Block Calendar Time</p>
+                    {isAdmin && selectedStaffId === "all" && (
+                      <div>
+                        <label className="text-xs text-muted-foreground block mb-1">Staff Member</label>
+                        <select value={blockStaffId} onChange={(e) => setBlockStaffId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border bg-card text-sm">
+                          <option value="">Select staff...</option>
+                          {staffMembers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                        </select>
+                      </div>
+                    )}
                     <div className="grid grid-cols-2 gap-2">
                       <div>
                         <label className="text-xs text-muted-foreground block mb-1">Date</label>
@@ -856,7 +867,11 @@ const Admin = () => {
 
                 {timeBlocksList
                   .filter((b) => b.date === format(selectedDate, "yyyy-MM-dd"))
-                  .filter((b) => isAdmin || b.staffId === staffUser?.staffDataId)
+                  .filter((b) => {
+                    if (!isAdmin) return b.staffId === staffUser?.staffDataId;
+                    if (selectedStaffId !== "all") return b.staffId === selectedStaffId;
+                    return true;
+                  })
                   .map((block) => (
                     <div key={block.id} className="bg-red-50 rounded-xl border border-red-200 p-3 mb-3 flex items-center justify-between">
                       <div>
