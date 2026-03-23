@@ -32,7 +32,7 @@ const StatsSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="text-center p-8 bg-background rounded-xl border border-border shadow-soft"
+              className="text-center p-8 bg-background rounded-xl border-2 border-black/20 shadow-soft"
             >
               <div className="flex justify-center gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (

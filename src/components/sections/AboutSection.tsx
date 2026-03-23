@@ -20,7 +20,7 @@ const AboutSection = () => {
             transition={{ duration: 0.6 }}
             className="relative"
           >
-            <div className="relative rounded-2xl overflow-hidden shadow-elevated border border-border">
+            <div className="relative rounded-2xl overflow-hidden shadow-elevated border-2 border-black/20">
               <img
                 src={aboutImage}
                 alt="La Passion Beauty Salon interior in Lemont, IL"
