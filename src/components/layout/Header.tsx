@@ -37,8 +37,8 @@ const Header = () => {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         isScrolled
-          ? "bg-background/95 backdrop-blur-md shadow-soft py-1"
-          : "bg-transparent py-2 md:py-3"
+          ? "bg-primary shadow-soft py-1"
+          : "bg-primary py-2 md:py-3"
       )}
     >
       <div className="container-custom">
@@ -48,7 +48,7 @@ const Header = () => {
             <img 
               src={logo} 
               alt="La Passion Beauty Salon" 
-              className="h-12 md:h-14 w-auto"
+              className="h-14 md:h-16 w-auto brightness-0 invert"
             />
           </Link>
 
@@ -61,9 +61,9 @@ const Header = () => {
                 className={cn(
                   "text-sm font-medium transition-colors relative py-2",
                   isActive(link.path)
-                    ? "text-primary"
-                    : "text-foreground/80 hover:text-primary",
-                  "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300",
+                    ? "text-white"
+                    : "text-white/80 hover:text-white",
+                  "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-white after:transition-all after:duration-300",
                   isActive(link.path) ? "after:w-full" : "after:w-0 hover:after:w-full"
                 )}
               >
@@ -88,11 +88,11 @@ const Header = () => {
                 </Button>
               </>
             ) : (
-              <Button size="sm" asChild className="border-2 border-primary text-primary bg-white hover:bg-primary hover:text-white font-semibold">
+              <Button size="sm" asChild className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-primary font-semibold">
                 <Link to="/login">Log In</Link>
               </Button>
             )}
-            <Button size="lg" asChild className="bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white font-semibold">
+            <Button size="lg" asChild className="bg-white text-primary border-2 border-white hover:bg-white/90 font-semibold">
               <a href="tel:+13313188113">
                 <Phone className="h-4 w-4 mr-2" />
                 Call Now
@@ -104,7 +104,7 @@ const Header = () => {
           <div className="lg:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-foreground">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Open menu</span>
                 </Button>
