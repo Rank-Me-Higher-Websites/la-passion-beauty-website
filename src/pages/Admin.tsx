@@ -385,7 +385,7 @@ const Admin = () => {
   const StaffFilter = () => {
     if (!isAdmin) return null;
     return (
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none mb-4">
+      <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto pb-1 scrollbar-none mb-3 md:mb-4 -mx-1 px-1">
         <button
           onClick={() => setSelectedStaffId("all")}
           className={cn(
@@ -617,7 +617,7 @@ const Admin = () => {
           </div>
         </header>
 
-        <div className="p-3 md:p-6 max-w-5xl">
+        <div className="p-3 md:p-6 max-w-5xl w-full overflow-x-hidden">
 
         {/* Mobile bottom tab bar */}
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-black/20 flex items-center justify-around px-1 py-1.5 safe-area-bottom">
@@ -643,16 +643,16 @@ const Admin = () => {
           {activeTab === "dashboard" && (
             <div className="space-y-6">
               {/* Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
                 {[
                   { label: "Today", value: todayBookings.length, color: "text-primary" },
                   { label: "Pending", value: bookings.filter((b) => b.status === "pending").length, color: "text-yellow-600" },
                   { label: "Confirmed", value: bookings.filter((b) => b.status === "confirmed").length, color: "text-green-600" },
                   { label: "Total", value: bookings.length, color: "text-foreground" },
                 ].map((stat) => (
-                  <div key={stat.label} className="bg-card rounded-xl border border-black/20 p-4">
-                    <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
-                    <p className={cn("text-2xl font-semibold mt-1", stat.color)}>{stat.value}</p>
+                  <div key={stat.label} className="bg-card rounded-xl border border-black/20 p-3 md:p-4">
+                    <p className="text-xs md:text-sm text-muted-foreground font-medium">{stat.label}</p>
+                    <p className={cn("text-xl md:text-2xl font-semibold mt-0.5 md:mt-1", stat.color)}>{stat.value}</p>
                   </div>
                 ))}
               </div>
@@ -1182,13 +1182,13 @@ function BookingCard({
   const price = getServicePrice(booking.serviceId);
 
   return (
-    <div className="bg-card rounded-xl border border-black/20 p-3 md:p-4 mb-2 md:mb-3">
+    <div className="bg-card rounded-xl border border-black/20 p-3 md:p-4 mb-2 md:mb-3 overflow-hidden">
       <div className="flex items-start justify-between mb-2 md:mb-3">
         <div className="min-w-0 flex-1 mr-2">
           <p className="font-semibold text-foreground text-sm md:text-base truncate">{booking.clientName}</p>
           <div className="flex items-center gap-2 flex-wrap">
-            <p className="text-xs md:text-sm text-primary font-medium">{getServiceName(booking.serviceId)}</p>
-            <span className="text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded" data-testid={`text-price-${booking.id}`}>{price}</span>
+            <p className="text-xs md:text-sm text-primary font-medium truncate">{getServiceName(booking.serviceId)}</p>
+            <span className="text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded shrink-0" data-testid={`text-price-${booking.id}`}>{price}</span>
           </div>
         </div>
         <span className={cn("px-2 py-0.5 md:px-2.5 md:py-1 rounded-full text-[10px] md:text-xs font-semibold capitalize shrink-0", statusColors[booking.status])}>
@@ -1197,24 +1197,24 @@ function BookingCard({
       </div>
       <div className="flex flex-wrap gap-x-3 md:gap-x-4 gap-y-1 text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">
         <span className="flex items-center gap-1">
-          <Clock className="h-3 w-3 md:h-3.5 md:w-3.5" /> {booking.time}
+          <Clock className="h-3 w-3 shrink-0" /> {booking.time}
         </span>
         {showDate && (
           <span className="flex items-center gap-1">
-            <CalendarIcon className="h-3 w-3 md:h-3.5 md:w-3.5" /> {format(parseISO(booking.date), "MMM d")}
+            <CalendarIcon className="h-3 w-3 shrink-0" /> {format(parseISO(booking.date), "MMM d")}
           </span>
         )}
         <span className="flex items-center gap-1">
-          <Users className="h-3 w-3 md:h-3.5 md:w-3.5" /> {getStaffName(booking.staffId)}
+          <Users className="h-3 w-3 shrink-0" /> {getStaffName(booking.staffId)}
         </span>
       </div>
-      <div className="bg-muted/50 rounded-lg border border-black/15 px-2 md:px-3 py-1.5 md:py-2 mb-2 md:mb-3">
-        <div className="flex flex-wrap gap-x-3 md:gap-x-4 gap-y-1 text-[11px] md:text-xs text-muted-foreground">
-          <a href={`tel:${booking.clientPhone}`} className="flex items-center gap-1 hover:text-primary">
-            <Phone className="h-3 w-3" /> {booking.clientPhone}
+      <div className="bg-muted/50 rounded-lg border border-black/15 px-2 md:px-3 py-1.5 md:py-2 mb-2 md:mb-3 overflow-hidden">
+        <div className="flex flex-col sm:flex-row gap-1 sm:gap-x-4 text-[11px] md:text-xs text-muted-foreground">
+          <a href={`tel:${booking.clientPhone}`} className="flex items-center gap-1 hover:text-primary shrink-0">
+            <Phone className="h-3 w-3 shrink-0" /> {booking.clientPhone}
           </a>
-          <a href={`mailto:${booking.clientEmail}`} className="flex items-center gap-1 hover:text-primary truncate">
-            <MailIcon className="h-3 w-3" /> {booking.clientEmail}
+          <a href={`mailto:${booking.clientEmail}`} className="flex items-center gap-1 hover:text-primary min-w-0">
+            <MailIcon className="h-3 w-3 shrink-0" /> <span className="truncate">{booking.clientEmail}</span>
           </a>
         </div>
       </div>
