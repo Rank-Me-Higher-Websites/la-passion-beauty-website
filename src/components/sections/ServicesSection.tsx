@@ -5,7 +5,11 @@ import { useRef } from "react";
 import { ArrowRight, Scissors, Palette, Cable } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import hairStylingImage from "@/assets/hair-styling.jpg";
-import hairColoringImage from "@/assets/hair-coloring.jpg";
+import rootTouchupImage from "@/assets/root-touchup.jpg";
+import fullColorImage from "@/assets/full-color.jpg";
+import partialHighlightsImage from "@/assets/partial-highlights.jpg";
+import fullHighlightsImage from "@/assets/full-highlights.jpg";
+import highlightsCutTonerImage from "@/assets/highlights-cut-toner.jpg";
 import hairExtensionsImage from "@/assets/hair-extensions.jpg";
 
 const allServices = [
@@ -20,42 +24,42 @@ const allServices = [
     title: "Root Touch-Up",
     price: "$85+",
     description: "Seamless root coverage matched to your existing shade for vibrant, even color.",
-    image: hairColoringImage,
+    image: rootTouchupImage,
     icon: Palette,
   },
   {
     title: "Full Color",
     price: "$110+",
     description: "All-over color transformation — rich brunettes, warm blondes, or bold fashion shades.",
-    image: hairColoringImage,
+    image: fullColorImage,
     icon: Palette,
   },
   {
     title: "Full Color + Cut",
     price: "$140+",
     description: "Complete color and precision cut in one session. Leave fully refreshed.",
-    image: hairColoringImage,
+    image: hairStylingImage,
     icon: Palette,
   },
   {
     title: "Partial Highlights",
     price: "$120+",
     description: "Strategic highlights for a subtle, sun-kissed effect with natural dimension.",
-    image: hairColoringImage,
+    image: partialHighlightsImage,
     icon: Palette,
   },
   {
     title: "Full Highlights",
     price: "$160+",
     description: "Multi-tonal dimension throughout — expert foiling for natural movement and depth.",
-    image: hairColoringImage,
+    image: fullHighlightsImage,
     icon: Palette,
   },
   {
     title: "Highlights + Cut + Toner",
     price: "$190+",
     description: "Our most comprehensive package — highlights, custom toner, and a precision cut.",
-    image: hairColoringImage,
+    image: highlightsCutTonerImage,
     icon: Palette,
   },
   {
