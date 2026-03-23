@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, ChevronRight, Star } from "lucide-react";
-import heroImg1 from "@/assets/hero-waiting.png";
-import heroImg2 from "@/assets/hero-stations.png";
-import heroImg3 from "@/assets/hero-storefront.png";
-import heroImg4 from "@/assets/hero-chairs.png";
+import heroImg1 from "@/assets/hero-waiting.jpg";
+import heroImg2 from "@/assets/hero-stations.jpg";
+import heroImg3 from "@/assets/hero-storefront.jpg";
+import heroImg4 from "@/assets/hero-chairs.jpg";
 import { services } from "@/lib/booking-data";
 
 const HeroSection = () => {
