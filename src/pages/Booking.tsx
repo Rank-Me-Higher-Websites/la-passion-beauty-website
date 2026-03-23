@@ -341,13 +341,13 @@ const Booking = () => {
               {/* Step 2: Staff */}
               {currentStep === "staff" && (
                 <div>
-                  <button onClick={goBack} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-4">
+                  <button onClick={goBack} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-2 md:mb-4">
                     <ArrowLeft className="h-4 w-4" /> Back to Service
                   </button>
-                  <h2 className="heading-card text-foreground mb-2">Choose Your Stylist</h2>
-                  <p className="text-body text-sm mb-6">Select who you'd like to see</p>
+                  <h2 className="heading-card text-foreground mb-1 md:mb-2">Choose Your Stylist</h2>
+                  <p className="text-body text-sm mb-3 md:mb-6">Select who you'd like to see</p>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2 md:space-y-3">
                     {availableStaff.map((staff) => (
                       <button
                         key={staff.id}
@@ -356,20 +356,20 @@ const Booking = () => {
                           goNext();
                         }}
                         className={cn(
-                          "w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left",
+                          "w-full flex items-center gap-3 md:gap-4 p-2.5 md:p-4 rounded-xl border-2 transition-all text-left",
                           selectedStaff?.id === staff.id
                             ? "border-primary bg-primary/5"
                             : "border-black hover:border-primary bg-card"
                         )}
                       >
-                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <span className="text-primary font-semibold text-lg">{staff.avatar}</span>
+                        <div className="w-9 h-9 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <span className="text-primary font-semibold text-sm md:text-lg">{staff.avatar}</span>
                         </div>
                         <div className="flex-1">
-                          <p className="font-medium text-foreground">{staff.name}</p>
-                          <p className="text-sm text-muted-foreground">{staff.role}</p>
+                          <p className="font-medium text-sm md:text-base text-foreground">{staff.name}</p>
+                          <p className="text-xs md:text-sm text-muted-foreground">{staff.role}</p>
                         </div>
-                        <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                        <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
                       </button>
                     ))}
 
@@ -378,14 +378,14 @@ const Booking = () => {
                         setSelectedStaff(null);
                         goNext();
                       }}
-                      className="w-full flex items-center gap-4 p-4 rounded-xl border-2 border-black hover:border-primary bg-card transition-all text-left"
+                      className="w-full flex items-center gap-3 md:gap-4 p-2.5 md:p-4 rounded-xl border-2 border-black hover:border-primary bg-card transition-all text-left"
                     >
-                      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-                        <User className="h-5 w-5 text-muted-foreground" />
+                      <div className="w-9 h-9 md:w-12 md:h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                        <User className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-foreground">No Preference</p>
-                        <p className="text-sm text-muted-foreground">Any available stylist</p>
+                        <p className="font-medium text-sm md:text-base text-foreground">No Preference</p>
+                        <p className="text-xs md:text-sm text-muted-foreground">Any available stylist</p>
                       </div>
                       <ChevronRight className="h-5 w-5 text-muted-foreground" />
                     </button>
