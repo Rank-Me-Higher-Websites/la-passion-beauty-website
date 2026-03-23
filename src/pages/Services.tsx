@@ -139,7 +139,7 @@ const Services = () => {
                   }`}
                 >
                   <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                    <div className="relative rounded-2xl overflow-hidden shadow-elevated">
+                    <div className="relative rounded-2xl overflow-hidden shadow-elevated border border-border">
                       <img
                         src={service.image}
                         alt={`${service.title} at La Passion Beauty Salon`}

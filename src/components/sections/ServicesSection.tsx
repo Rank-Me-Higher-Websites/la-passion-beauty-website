@@ -86,7 +86,7 @@ const ServicesSection = () => {
             >
               {/* Image */}
               <div className={`relative group ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
-                <div className="overflow-hidden rounded-xl">
+                <div className="overflow-hidden rounded-xl border border-border">
                   <img
                     src={service.image}
                     alt={`${service.title} at La Passion Beauty Salon`}

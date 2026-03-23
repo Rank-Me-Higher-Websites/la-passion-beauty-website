@@ -31,7 +31,7 @@ const ReviewsSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="bg-card rounded-2xl p-8 text-center shadow-card hover:shadow-elevated transition-shadow"
+            className="bg-card rounded-2xl p-8 text-center shadow-card hover:shadow-elevated transition-shadow border border-border"
           >
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
               <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
@@ -55,7 +55,7 @@ const ReviewsSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-card rounded-2xl p-8 text-center shadow-card hover:shadow-elevated transition-shadow"
+            className="bg-card rounded-2xl p-8 text-center shadow-card hover:shadow-elevated transition-shadow border border-border"
           >
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
               <svg className="w-8 h-8" viewBox="0 0 24 24" fill="#1877F2">
@@ -76,7 +76,7 @@ const ReviewsSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-card rounded-2xl p-8 text-center shadow-card hover:shadow-elevated transition-shadow"
+            className="bg-card rounded-2xl p-8 text-center shadow-card hover:shadow-elevated transition-shadow border border-border"
           >
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
               <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">

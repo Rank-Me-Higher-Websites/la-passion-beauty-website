@@ -100,7 +100,7 @@ const Contact = () => {
                   {/* Phone */}
                   <a
                     href="tel:+13313188113"
-                    className="flex items-start gap-4 p-4 bg-card rounded-xl shadow-soft hover:shadow-card transition-shadow group"
+                    className="flex items-start gap-4 p-4 bg-card rounded-xl shadow-soft hover:shadow-card transition-shadow group border border-border"
                   >
                     <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                       <Phone className="h-6 w-6 text-primary-foreground" />
@@ -115,7 +115,7 @@ const Contact = () => {
                   {/* Email */}
                   <a
                     href="mailto:info@lapassionbeautysalon.com"
-                    className="flex items-start gap-4 p-4 bg-card rounded-xl shadow-soft hover:shadow-card transition-shadow group"
+                    className="flex items-start gap-4 p-4 bg-card rounded-xl shadow-soft hover:shadow-card transition-shadow group border border-border"
                   >
                     <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                       <Mail className="h-6 w-6 text-primary-foreground" />
@@ -132,7 +132,7 @@ const Contact = () => {
                     href="https://maps.app.goo.gl/rz34qNsMxhEowymC8"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-start gap-4 p-4 bg-card rounded-xl shadow-soft hover:shadow-card transition-shadow group"
+                    className="flex items-start gap-4 p-4 bg-card rounded-xl shadow-soft hover:shadow-card transition-shadow group border border-border"
                   >
                     <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                       <MapPin className="h-6 w-6 text-primary-foreground" />
@@ -145,7 +145,7 @@ const Contact = () => {
                   </a>
 
                   {/* Hours */}
-                  <div className="flex items-start gap-4 p-4 bg-card rounded-xl shadow-soft">
+                  <div className="flex items-start gap-4 p-4 bg-card rounded-xl shadow-soft border border-border">
                     <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                       <Clock className="h-6 w-6 text-primary-foreground" />
                     </div>
@@ -174,7 +174,7 @@ const Contact = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
               >
-                <div className="bg-card rounded-2xl p-8 shadow-card">
+                <div className="bg-card rounded-2xl p-8 shadow-card border border-border">
                   <h3 className="font-serif text-2xl font-semibold text-foreground mb-6">Send Us a Message</h3>
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
@@ -266,7 +266,7 @@ const Contact = () => {
                     <p className="text-muted-foreground">Lemont, IL 60439</p>
                   </div>
                 </div>
-                <div className="rounded-2xl overflow-hidden shadow-card">
+                <div className="rounded-2xl overflow-hidden shadow-card border border-border">
                   <img
                     src={aboutSalon}
                     alt="Inside La Passion Beauty Salon"
@@ -280,7 +280,7 @@ const Contact = () => {
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="bg-card rounded-2xl overflow-hidden shadow-elevated"
+                className="bg-card rounded-2xl overflow-hidden shadow-elevated border border-border"
               >
                 <iframe 
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2887.5534534651215!2d-87.96842082403798!3d41.66221607126628!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e384a230a083d%3A0xfd3d8f5449fd7b9c!2sLa%20Passion%20Beauty%20Salon!5e1!3m2!1sen!2slt!4v1769706988091!5m2!1sen!2slt" 

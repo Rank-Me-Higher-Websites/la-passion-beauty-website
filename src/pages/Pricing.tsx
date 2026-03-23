@@ -130,7 +130,7 @@ const Pricing = () => {
                   transition={{ delay: index * 0.1 }}
                   className="h-full"
                 >
-                  <Card className="h-full flex flex-col shadow-card border-0">
+                  <Card className="h-full flex flex-col shadow-card border border-border">
                     <CardHeader className="bg-primary/5 border-b border-border">
                       <CardTitle className="font-serif text-xl text-foreground text-center">
                         {category.title}
@@ -182,7 +182,7 @@ const Pricing = () => {
                   transition={{ delay: index * 0.1 }}
                   className="h-full"
                 >
-                  <Card className="h-full flex flex-col shadow-card border-0 overflow-hidden">
+                  <Card className="h-full flex flex-col shadow-card border border-border overflow-hidden">
                     <CardHeader className="bg-foreground text-primary-foreground">
                       <CardTitle className="font-serif text-xl text-center">
                         {item.title}
