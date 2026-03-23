@@ -1,62 +1,20 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
-import { Phone, ChevronRight, ChevronLeft, Scissors, Palette, Cable, CalendarIcon, Clock, User } from "lucide-react";
+import { Phone, ChevronRight } from "lucide-react";
 import heroImage from "@/assets/hero-salon.jpg";
-import { serviceCategories, services, staffMembers, getStaffTimeSlots, staffWorksOnDate } from "@/lib/booking-data";
-
-const categoryIcons: Record<string, React.ElementType> = {
-  hair: Scissors,
-  coloring: Palette,
-  extensions: Cable,
-};
-
-type Step = "service" | "date" | "stylist";
+import { services } from "@/lib/booking-data";
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedService, setSelectedService] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [selectedStaff, setSelectedStaff] = useState<string | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [step, setStep] = useState<Step>("service");
-
-  const filteredServices = selectedCategory
-    ? services.filter((s) => s.category === selectedCategory)
-    : [];
-
-  // Staff available for the selected category and date
-  const availableStaff = useMemo(() => {
-    if (!selectedCategory || !selectedDate) return [];
-    return staffMembers.filter(
-      (s) => s.services.includes(selectedCategory) && staffWorksOnDate(s, selectedDate)
-    );
-  }, [selectedCategory, selectedDate]);
-
-  // Time slots for selected staff on selected date
-  const timeSlots = useMemo(() => {
-    if (!selectedStaff || !selectedDate) return [];
-    const staff = staffMembers.find((s) => s.id === selectedStaff);
-    if (!staff) return [];
-    return getStaffTimeSlots(staff, selectedDate);
-  }, [selectedStaff, selectedDate]);
 
   const handleBook = () => {
     const params = new URLSearchParams();
     if (selectedService) params.set("service", selectedService);
-    else if (selectedCategory) params.set("category", selectedCategory);
-    if (selectedDate) params.set("date", format(selectedDate, "yyyy-MM-dd"));
-    if (selectedStaff) params.set("staff", selectedStaff);
-    if (selectedTime) params.set("time", selectedTime);
     navigate(`/booking${params.toString() ? `?${params}` : ""}`);
   };
-
-  const canPickDate = !!selectedService;
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
@@ -126,212 +84,46 @@ const HeroSection = () => {
             className="lg:col-span-2"
           >
             <div className="bg-card/90 backdrop-blur-md rounded-2xl border-2 border-black p-6 shadow-elevated">
-              {step === "service" && (
-                <>
-                  <h3 className="font-serif text-2xl font-semibold text-foreground mb-1">
-                    Book Now
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-5">
-                    Select a service to get started
-                  </p>
+              <h3 className="font-serif text-2xl font-semibold text-foreground mb-1">
+                Book Now
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Select a service to get started
+              </p>
 
-                  {/* Category Grid */}
-                  <div className="grid grid-cols-2 gap-2 mb-4">
-                    {serviceCategories.map((cat) => {
-                      const Icon = categoryIcons[cat.id] || Scissors;
-                      const isActive = selectedCategory === cat.id;
-                      return (
-                        <button
-                          key={cat.id}
-                          onClick={() => {
-                            setSelectedCategory(isActive ? null : cat.id);
-                          }}
-                          className={`flex items-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 border-2 ${
-                            isActive
-                              ? "bg-primary text-primary-foreground border-primary shadow-md"
-                              : "bg-background/60 text-foreground border-black hover:border-primary hover:bg-background"
-                          }`}
-                        >
-                          <Icon className="h-4 w-4 shrink-0" />
-                          <span className="text-left leading-tight">{cat.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <Button
-                    variant="gold"
-                    size="lg"
-                    className="w-full"
-                    onClick={handleBook}
-                  >
-                    Book Now
-                    <ChevronRight className="h-4 w-4 ml-1" />
-                  </Button>
-                </>
-              )}
-
-              {step === "date" && (
-                <>
-                  <div className="flex items-center gap-2 mb-4">
+              <div className="flex flex-col gap-2 mb-4 max-h-[320px] overflow-y-auto pr-1">
+                {services.map((service) => {
+                  const isActive = selectedService === service.id;
+                  return (
                     <button
-                      onClick={() => setStep("service")}
-                      className="p-1 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                      key={service.id}
+                      data-testid={`hero-service-${service.id}`}
+                      onClick={() => setSelectedService(isActive ? null : service.id)}
+                      className={`flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 border ${
+                        isActive
+                          ? "bg-primary text-primary-foreground border-primary shadow-md"
+                          : "bg-background/60 text-foreground border-border hover:border-primary/50 hover:bg-background"
+                      }`}
                     >
-                      <ChevronLeft className="h-5 w-5" />
+                      <span className="text-left">{service.name}</span>
+                      <span className={`text-xs ${isActive ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                        {service.price}
+                      </span>
                     </button>
-                    <div>
-                      <h3 className="font-serif text-2xl font-semibold text-foreground">
-                        Pick a Date
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {services.find((s) => s.id === selectedService)?.name}
-                      </p>
-                    </div>
-                  </div>
+                  );
+                })}
+              </div>
 
-                  <div className="flex justify-center mb-4">
-                    <Calendar
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={(date) => {
-                        setSelectedDate(date);
-                        setSelectedStaff(null);
-                        setSelectedTime(null);
-                      }}
-                      disabled={(date) => {
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        return date < today || date.getDay() === 0 || date.getDay() === 1;
-                      }}
-                      className={cn("p-3 pointer-events-auto rounded-lg border border-border")}
-                    />
-                  </div>
-
-                  {selectedDate && (
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="text-sm text-center text-muted-foreground mb-3"
-                    >
-                      Selected: <span className="font-medium text-foreground">{format(selectedDate, "EEEE, MMMM d, yyyy")}</span>
-                    </motion.p>
-                  )}
-
-                  <Button
-                    variant="gold"
-                    size="lg"
-                    className="w-full"
-                    disabled={!selectedDate}
-                    onClick={() => setStep("stylist")}
-                  >
-                    Choose Stylist
-                    <User className="h-4 w-4 ml-1" />
-                  </Button>
-                </>
-              )}
-
-              {step === "stylist" && (
-                <>
-                  <div className="flex items-center gap-2 mb-4">
-                    <button
-                      onClick={() => {
-                        setStep("date");
-                        setSelectedStaff(null);
-                        setSelectedTime(null);
-                      }}
-                      className="p-1 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-                    >
-                      <ChevronLeft className="h-5 w-5" />
-                    </button>
-                    <div>
-                      <h3 className="font-serif text-xl font-semibold text-foreground">
-                        Choose Stylist & Time
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
-                        {selectedDate && format(selectedDate, "EEE, MMM d")} · {services.find((s) => s.id === selectedService)?.name}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Stylist Selection */}
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
-                    Available Stylists
-                  </p>
-                  <div className="grid grid-cols-2 gap-2 mb-4">
-                    {availableStaff.length === 0 ? (
-                      <p className="col-span-2 text-sm text-muted-foreground text-center py-4">
-                        No stylists available on this day
-                      </p>
-                    ) : (
-                      availableStaff.map((staff) => (
-                        <button
-                          key={staff.id}
-                          onClick={() => {
-                            setSelectedStaff(selectedStaff === staff.id ? null : staff.id);
-                            setSelectedTime(null);
-                          }}
-                          className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 border ${
-                            selectedStaff === staff.id
-                              ? "bg-primary text-primary-foreground border-primary shadow-md"
-                              : "bg-background/60 text-foreground border-border hover:border-primary/50 hover:bg-background"
-                          }`}
-                        >
-                          <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-semibold shrink-0">
-                            {staff.avatar}
-                          </div>
-                          <div className="text-left">
-                            <span className="block leading-tight">{staff.name}</span>
-                            <span className={`text-[10px] ${selectedStaff === staff.id ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-                              {staff.role}
-                            </span>
-                          </div>
-                        </button>
-                      ))
-                    )}
-                  </div>
-
-                  {/* Time Slots */}
-                  {selectedStaff && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 0.3 }}
-                      className="mb-4"
-                    >
-                      <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1">
-                        <Clock className="h-3 w-3" /> Select Time (1hr slots)
-                      </p>
-                      <div className="grid grid-cols-3 gap-1.5 max-h-40 overflow-y-auto">
-                        {timeSlots.map((time) => (
-                          <button
-                            key={time}
-                            onClick={() => setSelectedTime(selectedTime === time ? null : time)}
-                            className={`px-2 py-2 rounded-lg text-sm font-medium transition-all duration-200 border ${
-                              selectedTime === time
-                                ? "bg-primary text-primary-foreground border-primary"
-                                : "bg-background/60 text-foreground border-border hover:border-primary/50"
-                            }`}
-                          >
-                            {time}
-                          </button>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-
-                  <Button
-                    variant="gold"
-                    size="lg"
-                    className="w-full"
-                    disabled={!selectedStaff || !selectedTime}
-                    onClick={handleBook}
-                  >
-                    Continue Booking
-                    <ChevronRight className="h-4 w-4 ml-1" />
-                  </Button>
-                </>
-              )}
+              <Button
+                variant="gold"
+                size="lg"
+                className="w-full"
+                data-testid="hero-book-now"
+                onClick={handleBook}
+              >
+                Book Now
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
             </div>
           </motion.div>
         </div>
