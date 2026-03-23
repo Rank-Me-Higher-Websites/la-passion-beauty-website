@@ -41,48 +41,44 @@ const FAQSection = () => {
 
   return (
     <section ref={ref} className="section-padding bg-cream-dark">
-      <div className="container-custom">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
-            <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">FAQ</p>
-            <h2 className="heading-section text-foreground mb-3">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-body">
-              Have questions about our services? We've compiled answers to the most common 
-              questions to help you prepare for your visit to La Passion Beauty Salon.
-            </p>
-          </motion.div>
+      <div className="container-custom max-w-3xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-8"
+        >
+          <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">FAQ</p>
+          <h2 className="heading-section text-foreground mb-3">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-body">
+            Have questions about our services? Here are answers to the most common ones.
+          </p>
+        </motion.div>
 
-          {/* Accordion */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <Accordion type="single" collapsible className="space-y-4">
-              {faqs.map((faq, index) => (
-                <AccordionItem
-                  key={index}
-                  value={`item-${index}`}
-                  className="bg-card rounded-lg px-6 border border-border shadow-soft"
-                >
-                  <AccordionTrigger className="text-left font-serif text-lg hover:text-primary hover:no-underline py-5">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pb-5">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </motion.div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          <Accordion type="single" collapsible className="space-y-3">
+            {faqs.map((faq, index) => (
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="bg-card rounded-lg px-5 border border-black/15 shadow-soft"
+              >
+                <AccordionTrigger className="text-left font-serif text-base hover:text-primary hover:no-underline py-4">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground text-sm pb-4">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </motion.div>
       </div>
     </section>
   );
