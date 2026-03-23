@@ -12,64 +12,56 @@ const allServices = [
   {
     title: "Haircut",
     price: "$45+",
-    duration: "60 min",
-    description: "Our professional stylists specialize in personalized haircuts that enhance your natural beauty. Whether you're looking for a fresh new style or a simple trim, we make sure your hair looks flawless and feels its best.",
+    description: "Personalized cuts that enhance your natural beauty — from fresh new styles to simple trims.",
     image: hairStylingImage,
     icon: Scissors,
   },
   {
     title: "Root Touch-Up",
     price: "$85+",
-    duration: "90 min",
-    description: "Keep your color looking fresh with a seamless root touch-up. We carefully match your existing shade to blend new growth naturally, leaving you with vibrant, even color from root to tip.",
+    description: "Seamless root coverage matched to your existing shade for vibrant, even color.",
     image: hairColoringImage,
     icon: Palette,
   },
   {
     title: "Full Color",
     price: "$110+",
-    duration: "120 min",
-    description: "Transform your look with a full, all-over color application. From rich brunettes and warm blondes to bold fashion shades, our colorists create stunning, long-lasting results tailored to your skin tone.",
+    description: "All-over color transformation — rich brunettes, warm blondes, or bold fashion shades.",
     image: hairColoringImage,
     icon: Palette,
   },
   {
     title: "Full Color + Cut",
     price: "$140+",
-    duration: "150 min",
-    description: "The ultimate combo — a complete color transformation paired with a precision haircut. Save time and leave the salon with a fully refreshed look, from color to shape.",
+    description: "Complete color and precision cut in one session. Leave fully refreshed.",
     image: hairColoringImage,
     icon: Palette,
   },
   {
     title: "Partial Highlights",
     price: "$120+",
-    duration: "120 min",
-    description: "Add dimension and brightness with strategically placed partial highlights. Perfect for a subtle, sun-kissed effect that adds depth without committing to a full head of highlights.",
+    description: "Strategic highlights for a subtle, sun-kissed effect with natural dimension.",
     image: hairColoringImage,
     icon: Palette,
   },
   {
     title: "Full Highlights",
     price: "$160+",
-    duration: "150 min",
-    description: "Make a statement with full highlights that add multi-tonal dimension throughout your entire head. Our colorists use expert foiling techniques to create natural movement and gorgeous depth.",
+    description: "Multi-tonal dimension throughout — expert foiling for natural movement and depth.",
     image: hairColoringImage,
     icon: Palette,
   },
   {
     title: "Highlights + Cut + Toner",
     price: "$190+",
-    duration: "180 min",
-    description: "Our most comprehensive color package — full highlights refined with a custom toner for the perfect shade, finished with a precision cut. Walk out with a completely polished, salon-fresh look.",
+    description: "Our most comprehensive package — highlights, custom toner, and a precision cut.",
     image: hairColoringImage,
     icon: Palette,
   },
   {
     title: "Extensions",
     price: "Quote",
-    duration: "Consultation",
-    description: "Looking for instant length or volume? Our high-quality hair extensions blend seamlessly with your natural hair, giving you a fuller, longer look that feels comfortable and effortless. Available with Kamila Janik and Veronika Dadek.",
+    description: "Instant length and volume that blends seamlessly. Available with select stylists.",
     image: hairExtensionsImage,
     icon: Cable,
   },
@@ -81,7 +73,7 @@ const ServicesSection = () => {
 
   return (
     <section ref={ref}>
-      <div className="section-padding bg-secondary/30">
+      <div className="py-12 bg-secondary/30">
         <div className="container-custom">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -91,10 +83,6 @@ const ServicesSection = () => {
           >
             <p className="text-primary uppercase tracking-[0.2em] text-sm mb-3">What We Offer</p>
             <h2 className="heading-section text-foreground mb-4">Our Services</h2>
-            <p className="text-body">
-              At La Passion Beauty Salon, we create styles that blend beauty with everyday ease.
-              Expert haircuts, rich color, and premium extensions — all in one place.
-            </p>
           </motion.div>
         </div>
       </div>
@@ -102,40 +90,31 @@ const ServicesSection = () => {
       {allServices.map((service, index) => (
         <motion.div
           key={service.title}
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: index * 0.08 }}
-          className={`grid lg:grid-cols-2 items-stretch ${index % 2 === 0 ? 'bg-card' : 'bg-secondary/20'}`}
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.4, delay: index * 0.05 }}
+          className={`grid lg:grid-cols-2 items-stretch border-b border-black/10 ${index % 2 === 0 ? 'bg-card' : 'bg-secondary/20'}`}
         >
-          <div className={`relative group ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
-            <div className="overflow-hidden h-full">
-              <img
-                src={service.image}
-                alt={`${service.title} at La Passion Beauty Salon`}
-                className="w-full h-64 lg:h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-            </div>
+          <div className={`relative group ${index % 2 === 1 ? 'lg:order-2' : ''} overflow-hidden`}>
+            <img
+              src={service.image}
+              alt={`${service.title} at La Passion Beauty Salon`}
+              className="w-full h-48 lg:h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
           </div>
 
-          <div className={`flex flex-col justify-center px-8 py-12 lg:px-16 lg:py-16 ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
-            <div className="max-w-lg">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center">
-                  <service.icon className="h-4 w-4 text-primary" />
-                </div>
-                <h3 className="heading-card text-foreground">{service.title}</h3>
+          <div className={`flex items-center px-8 py-8 lg:px-16 ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+            <div className="w-full">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-serif text-2xl lg:text-3xl font-semibold text-foreground">{service.title}</h3>
+                <span className="text-lg font-semibold text-primary">{service.price}</span>
               </div>
-              <div className="flex items-center gap-3 mb-4 ml-12">
-                <span className="text-sm font-semibold text-primary">{service.price}</span>
-                <span className="text-xs text-muted-foreground">·</span>
-                <span className="text-sm text-muted-foreground">{service.duration}</span>
-              </div>
-              <p className="text-body mb-5">{service.description}</p>
+              <p className="text-base text-muted-foreground mb-4">{service.description}</p>
               <Link
                 to="/booking"
-                className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all"
+                className="inline-flex items-center gap-2 text-primary font-medium text-sm hover:gap-3 transition-all"
               >
-                Book {service.title}
+                Book Now
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -143,12 +122,10 @@ const ServicesSection = () => {
         </motion.div>
       ))}
 
-      <div className="section-padding bg-secondary/30">
-        <div className="container-custom text-center">
-          <Button variant="gold" size="lg" asChild>
-            <Link to="/booking">Book an Appointment</Link>
-          </Button>
-        </div>
+      <div className="py-10 bg-secondary/30 text-center">
+        <Button variant="gold" size="lg" asChild>
+          <Link to="/booking">Book an Appointment</Link>
+        </Button>
       </div>
     </section>
   );
