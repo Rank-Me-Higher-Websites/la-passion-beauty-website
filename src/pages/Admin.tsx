@@ -646,9 +646,9 @@ const Admin = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-3">
                 {[
                   { label: "Today", value: todayBookings.length, color: "text-primary" },
-                  { label: "Pending", value: bookings.filter((b) => b.status === "pending").length, color: "text-yellow-600" },
-                  { label: "Confirmed", value: bookings.filter((b) => b.status === "confirmed").length, color: "text-green-600" },
-                  { label: "Total", value: bookings.length, color: "text-foreground" },
+                  { label: "Pending", value: staffFilteredBookings.filter((b) => b.status === "pending").length, color: "text-yellow-600" },
+                  { label: "Confirmed", value: staffFilteredBookings.filter((b) => b.status === "confirmed").length, color: "text-green-600" },
+                  { label: "Total", value: staffFilteredBookings.length, color: "text-foreground" },
                 ].map((stat) => (
                   <div key={stat.label} className="bg-card rounded-lg md:rounded-xl border border-black/40 px-3 py-2 md:p-4 flex items-center justify-between md:block">
                     <p className="text-xs md:text-sm text-muted-foreground font-medium">{stat.label}</p>
