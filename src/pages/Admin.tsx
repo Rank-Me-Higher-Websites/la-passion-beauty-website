@@ -650,7 +650,7 @@ const Admin = () => {
                   { label: "Confirmed", value: bookings.filter((b) => b.status === "confirmed").length, color: "text-green-600" },
                   { label: "Total", value: bookings.length, color: "text-foreground" },
                 ].map((stat) => (
-                  <div key={stat.label} className="bg-card rounded-lg md:rounded-xl border border-black/20 px-3 py-2 md:p-4 flex items-center justify-between md:block">
+                  <div key={stat.label} className="bg-card rounded-lg md:rounded-xl border border-black/40 px-3 py-2 md:p-4 flex items-center justify-between md:block">
                     <p className="text-xs md:text-sm text-muted-foreground font-medium">{stat.label}</p>
                     <p className={cn("text-lg md:text-2xl font-semibold", stat.color)}>{stat.value}</p>
                   </div>
@@ -1182,7 +1182,7 @@ function BookingCard({
   const price = getServicePrice(booking.serviceId);
 
   return (
-    <div className="bg-card rounded-xl border border-black/20 p-3 md:p-4 mb-2 md:mb-3 overflow-hidden">
+    <div className="bg-card rounded-xl border border-black/40 p-3 md:p-4 mb-2 md:mb-3 overflow-hidden">
       <div className="flex items-start justify-between mb-2 md:mb-3">
         <div className="min-w-0 flex-1 mr-2">
           <p className="font-semibold text-foreground text-sm md:text-base truncate">{booking.clientName}</p>
@@ -1208,7 +1208,7 @@ function BookingCard({
           <Users className="h-3 w-3 shrink-0" /> {getStaffName(booking.staffId)}
         </span>
       </div>
-      <div className="bg-muted/50 rounded-lg border border-black/15 px-2 md:px-3 py-1.5 md:py-2 mb-2 md:mb-3 overflow-hidden">
+      <div className="bg-muted/50 rounded-lg border border-black/30 px-2 md:px-3 py-1.5 md:py-2 mb-2 md:mb-3 overflow-hidden">
         <div className="flex flex-col sm:flex-row gap-1 sm:gap-x-4 text-[11px] md:text-xs text-muted-foreground">
           <a href={`tel:${booking.clientPhone}`} className="flex items-center gap-1 hover:text-primary shrink-0">
             <Phone className="h-3 w-3 shrink-0" /> {booking.clientPhone}
