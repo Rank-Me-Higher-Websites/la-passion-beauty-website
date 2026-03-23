@@ -208,9 +208,6 @@ const Booking = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container-custom max-w-2xl pt-8 pb-16">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
-          <Home className="h-4 w-4" /> Back to Home
-        </Link>
           {/* Progress bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-3">
@@ -253,6 +250,9 @@ const Booking = () => {
               {/* Step 1: Service */}
               {currentStep === "service" && (
                 <div>
+                  <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-4">
+                    <ArrowLeft className="h-4 w-4" /> Back to Home
+                  </Link>
                   <h2 className="heading-card text-foreground mb-2">Choose a Service</h2>
                   <p className="text-body text-sm mb-6">Select the service you'd like to book</p>
 
@@ -320,6 +320,9 @@ const Booking = () => {
               {/* Step 2: Staff */}
               {currentStep === "staff" && (
                 <div>
+                  <button onClick={goBack} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-4">
+                    <ArrowLeft className="h-4 w-4" /> Back to Service
+                  </button>
                   <h2 className="heading-card text-foreground mb-2">Choose Your Stylist</h2>
                   <p className="text-body text-sm mb-6">Select who you'd like to see</p>
 
