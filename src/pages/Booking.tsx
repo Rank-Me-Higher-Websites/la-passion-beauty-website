@@ -35,9 +35,11 @@ const Booking = () => {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const initialCategory = searchParams.get("category");
-  const [currentStep, setCurrentStep] = useState<Step>("service");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory);
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const initialServiceId = searchParams.get("service");
+  const initialService = initialServiceId ? services.find((s) => s.id === initialServiceId) || null : null;
+  const [currentStep, setCurrentStep] = useState<Step>(initialService ? "staff" : "service");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory || (initialService ? initialService.category : null));
+  const [selectedService, setSelectedService] = useState<Service | null>(initialService);
   const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
