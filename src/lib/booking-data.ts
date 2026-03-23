@@ -44,13 +44,13 @@ export interface Booking {
 
 export const services: Service[] = [
   { id: "s1", name: "Haircut", category: "hair", duration: 60, price: "$45+" },
-  { id: "s2", name: "Root Touch-Up", category: "coloring", duration: 90, price: "$85+" },
+  { id: "s2", name: "Root Touch-Up", category: "coloring", duration: 120, price: "$85+" },
   { id: "s3", name: "Full Color", category: "coloring", duration: 120, price: "$110+" },
-  { id: "s4", name: "Full Color + Cut", category: "coloring", duration: 150, price: "$140+" },
-  { id: "s5", name: "Partial Highlights", category: "coloring", duration: 120, price: "$120+" },
-  { id: "s6", name: "Full Highlights", category: "coloring", duration: 150, price: "$160+" },
-  { id: "s7", name: "Highlights + Cut + Toner", category: "coloring", duration: 180, price: "$190+" },
-  { id: "s8", name: "Extensions", category: "extensions", duration: 180, price: "Quote" },
+  { id: "s4", name: "Full Color + Cut", category: "coloring", duration: 180, price: "$140+" },
+  { id: "s5", name: "Partial Highlights", category: "coloring", duration: 150, price: "$120+" },
+  { id: "s6", name: "Full Highlights", category: "coloring", duration: 240, price: "$160+" },
+  { id: "s7", name: "Highlights + Cut + Toner", category: "coloring", duration: 300, price: "$190+" },
+  { id: "s8", name: "Extensions", category: "extensions", duration: 300, price: "Quote" },
 ];
 
 export const staffMembers: StaffMember[] = [

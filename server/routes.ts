@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { storage } from "./storage";
-import { insertBookingSchema } from "../shared/schema";
+import { insertBookingSchema, insertTimeBlockSchema } from "../shared/schema";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -16,6 +16,23 @@ declare module "express-serve-static-core" {
 }
 
 const router = Router();
+
+function parseTimeTo24(t: string): number {
+  const [time, period] = t.split(" ");
+  let [h] = time.split(":").map(Number);
+  if (period === "PM" && h !== 12) h += 12;
+  if (period === "AM" && h === 12) h = 0;
+  return h;
+}
+
+function isTimeBlocked(bookingTime: string, blocks: { startTime: string; endTime: string }[]): boolean {
+  const hour = parseTimeTo24(bookingTime);
+  return blocks.some((b) => {
+    const start = parseTimeTo24(b.startTime);
+    const end = parseTimeTo24(b.endTime);
+    return hour >= start && hour < end;
+  });
+}
 
 function log(action: string, details: string) {
   const ts = new Date().toISOString();
@@ -141,8 +158,11 @@ router.get("/api/bookings/availability", async (req: Request, res: Response) => 
     .filter((b) => b.status !== "cancelled")
     .map((b) => ({ time: b.time, serviceId: b.serviceId }));
 
-  log("AVAILABILITY_CHECK", `staffId=${staffId} date=${date} → ${booked.length} booked slots, ip=${req.ip}`);
-  res.json({ booked });
+  const blocks = await storage.getTimeBlocksByStaffAndDate(String(staffId), String(date));
+  const blocked = blocks.map((b) => ({ startTime: b.startTime, endTime: b.endTime, reason: b.reason }));
+
+  log("AVAILABILITY_CHECK", `staffId=${staffId} date=${date} → ${booked.length} booked, ${blocked.length} blocked, ip=${req.ip}`);
+  res.json({ booked, blocked });
 });
 
 router.get("/api/auth/me", async (req: Request, res: Response) => {
@@ -203,6 +223,12 @@ router.post("/api/bookings", async (req: Request, res: Response) => {
       return res.status(409).json({ error: "This time slot is already booked. Please choose a different time." });
     }
 
+    const blocks = await storage.getTimeBlocksByStaffAndDate(data.staffId, data.date);
+    if (isTimeBlocked(data.time, blocks)) {
+      log("BOOKING_BLOCKED", `Time-block prevented booking: staff=${data.staffId} date=${data.date} time=${data.time} client="${data.clientName}" ip=${req.ip}`);
+      return res.status(409).json({ error: "This time slot is blocked. Please choose a different time." });
+    }
+
     let booking;
     try {
       booking = await storage.createBooking(data);
@@ -238,11 +264,7 @@ router.patch("/api/bookings/:id", async (req: Request, res: Response) => {
   }
 
   const id = parseInt(req.params.id);
-  const { status } = req.body;
-  if (!status) {
-    log("BOOKING_UPDATE_FAIL", `${staff.name} PATCH booking ${id} missing status`);
-    return res.status(400).json({ error: "Status required" });
-  }
+  const { status, date, time, serviceId } = req.body;
 
   const existing = await storage.getBookingById(id);
   if (!existing) {
@@ -255,8 +277,37 @@ router.patch("/api/bookings/:id", async (req: Request, res: Response) => {
     return res.status(403).json({ error: "Not authorized" });
   }
 
-  const booking = await storage.updateBookingStatus(id, status);
-  log("BOOKING_STATUS", `${staff.name} changed booking ${id} ("${existing.clientName}") status: ${existing.status} → ${status}`);
+  if (status && !date && !time && !serviceId) {
+    const booking = await storage.updateBookingStatus(id, status);
+    log("BOOKING_STATUS", `${staff.name} changed booking ${id} ("${existing.clientName}") status: ${existing.status} → ${status}`);
+    return res.json(booking);
+  }
+
+  const updateData: any = {};
+  if (status) updateData.status = status;
+  if (date) updateData.date = date;
+  if (time) updateData.time = time;
+  if (serviceId) updateData.serviceId = serviceId;
+
+  if ((date || time) && existing.status !== "cancelled") {
+    const checkDate = date || existing.date;
+    const checkTime = time || existing.time;
+    const existingBookings = await storage.getBookingsByStaffAndDate(existing.staffId, checkDate);
+    const conflict = existingBookings.find((b) => b.time === checkTime && b.id !== id && b.status !== "cancelled");
+    if (conflict) {
+      log("BOOKING_CONFLICT", `${staff.name} tried to move booking ${id} to ${checkDate} ${checkTime} but slot taken`);
+      return res.status(409).json({ error: "This time slot is already booked." });
+    }
+    const blocks = await storage.getTimeBlocksByStaffAndDate(existing.staffId, checkDate);
+    if (isTimeBlocked(checkTime, blocks)) {
+      log("BOOKING_BLOCKED", `${staff.name} tried to move booking ${id} to blocked time ${checkDate} ${checkTime}`);
+      return res.status(409).json({ error: "This time slot is blocked." });
+    }
+  }
+
+  const booking = await storage.updateBooking(id, updateData);
+  const changes = Object.entries(updateData).map(([k, v]) => `${k}=${v}`).join(", ");
+  log("BOOKING_UPDATED", `${staff.name} updated booking ${id} ("${existing.clientName}"): ${changes}`);
   res.json(booking);
 });
 
@@ -319,6 +370,82 @@ router.delete("/api/bookings/:id", async (req: Request, res: Response) => {
 
   await storage.deleteBooking(id);
   log("BOOKING_DELETED", `${staff.name} deleted booking ${id} ("${existing.clientName}" - ${existing.date} ${existing.time})`);
+  res.json({ ok: true });
+});
+
+router.get("/api/time-blocks", async (req: Request, res: Response) => {
+  const sessionStaffId = (req.session as any)?.staffId;
+  if (!sessionStaffId) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  const staff = await storage.getStaffById(sessionStaffId);
+  if (!staff) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  let blocks;
+  if (staff.role === "admin") {
+    blocks = await storage.getAllTimeBlocks();
+  } else {
+    blocks = await storage.getTimeBlocksByStaffId(staff.staffDataId);
+  }
+  res.json(blocks);
+});
+
+router.get("/api/time-blocks/availability", async (req: Request, res: Response) => {
+  const { staffId, date } = req.query;
+  if (!staffId || !date) {
+    return res.status(400).json({ error: "staffId and date are required" });
+  }
+  const blocks = await storage.getTimeBlocksByStaffAndDate(String(staffId), String(date));
+  res.json(blocks);
+});
+
+router.post("/api/time-blocks", async (req: Request, res: Response) => {
+  const sessionStaffId = (req.session as any)?.staffId;
+  if (!sessionStaffId) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  const staff = await storage.getStaffById(sessionStaffId);
+  if (!staff) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  try {
+    const data = insertTimeBlockSchema.parse(req.body);
+    if (staff.role !== "admin" && data.staffId !== staff.staffDataId) {
+      return res.status(403).json({ error: "Not authorized" });
+    }
+    const block = await storage.createTimeBlock(data);
+    log("TIME_BLOCK_CREATED", `${staff.name} blocked ${data.date} ${data.startTime}-${data.endTime} for staff ${data.staffId}`);
+    res.status(201).json(block);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Invalid data" });
+  }
+});
+
+router.delete("/api/time-blocks/:id", async (req: Request, res: Response) => {
+  const sessionStaffId = (req.session as any)?.staffId;
+  if (!sessionStaffId) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  const staff = await storage.getStaffById(sessionStaffId);
+  if (!staff) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  const id = parseInt(req.params.id);
+  const block = await storage.getTimeBlockById(id);
+  if (!block) {
+    return res.status(404).json({ error: "Time block not found" });
+  }
+  if (staff.role !== "admin" && block.staffId !== staff.staffDataId) {
+    log("AUTH_DENIED", `${staff.name} tried to delete time block ${id} owned by ${block.staffId}`);
+    return res.status(403).json({ error: "Not authorized" });
+  }
+
+  await storage.deleteTimeBlock(id);
+  log("TIME_BLOCK_DELETED", `${staff.name} removed time block ${id}`);
   res.json({ ok: true });
 });
 

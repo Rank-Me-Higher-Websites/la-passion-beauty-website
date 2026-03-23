@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { staffAccounts, bookings } from "../shared/schema";
-import type { StaffAccount, InsertStaffAccount, Booking, InsertBooking } from "../shared/schema";
+import { staffAccounts, bookings, timeBlocks } from "../shared/schema";
+import type { StaffAccount, InsertStaffAccount, Booking, InsertBooking, TimeBlock, InsertTimeBlock } from "../shared/schema";
 import { eq, and, desc } from "drizzle-orm";
 
 export interface IStorage {
@@ -14,7 +14,15 @@ export interface IStorage {
   getBookingById(id: number): Promise<Booking | undefined>;
   createBooking(booking: InsertBooking): Promise<Booking>;
   updateBookingStatus(id: number, status: string): Promise<Booking | undefined>;
+  updateBooking(id: number, data: Partial<InsertBooking>): Promise<Booking | undefined>;
   deleteBooking(id: number): Promise<void>;
+
+  getTimeBlocksByStaffAndDate(staffId: string, date: string): Promise<TimeBlock[]>;
+  getTimeBlocksByStaffId(staffId: string): Promise<TimeBlock[]>;
+  getTimeBlockById(id: number): Promise<TimeBlock | undefined>;
+  getAllTimeBlocks(): Promise<TimeBlock[]>;
+  createTimeBlock(block: InsertTimeBlock): Promise<TimeBlock>;
+  deleteTimeBlock(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -69,6 +77,11 @@ export class DatabaseStorage implements IStorage {
     await db.delete(bookings).where(eq(bookings.id, id));
   }
 
+  async updateBooking(id: number, data: Partial<InsertBooking>): Promise<Booking | undefined> {
+    const [updated] = await db.update(bookings).set(data).where(eq(bookings.id, id)).returning();
+    return updated;
+  }
+
   async getBookingsByStaffAndDate(staffId: string, date: string): Promise<Booking[]> {
     return db.select().from(bookings)
       .where(and(eq(bookings.staffId, staffId), eq(bookings.date, date)));
@@ -76,6 +89,33 @@ export class DatabaseStorage implements IStorage {
 
   async updateStaffPassword(id: number, passwordHash: string): Promise<void> {
     await db.update(staffAccounts).set({ passwordHash }).where(eq(staffAccounts.id, id));
+  }
+
+  async getTimeBlocksByStaffAndDate(staffId: string, date: string): Promise<TimeBlock[]> {
+    return db.select().from(timeBlocks)
+      .where(and(eq(timeBlocks.staffId, staffId), eq(timeBlocks.date, date)));
+  }
+
+  async getTimeBlockById(id: number): Promise<TimeBlock | undefined> {
+    const [block] = await db.select().from(timeBlocks).where(eq(timeBlocks.id, id));
+    return block;
+  }
+
+  async getTimeBlocksByStaffId(staffId: string): Promise<TimeBlock[]> {
+    return db.select().from(timeBlocks).where(eq(timeBlocks.staffId, staffId)).orderBy(desc(timeBlocks.createdAt));
+  }
+
+  async getAllTimeBlocks(): Promise<TimeBlock[]> {
+    return db.select().from(timeBlocks).orderBy(desc(timeBlocks.createdAt));
+  }
+
+  async createTimeBlock(block: InsertTimeBlock): Promise<TimeBlock> {
+    const [created] = await db.insert(timeBlocks).values(block).returning();
+    return created;
+  }
+
+  async deleteTimeBlock(id: number): Promise<void> {
+    await db.delete(timeBlocks).where(eq(timeBlocks.id, id));
   }
 }
 

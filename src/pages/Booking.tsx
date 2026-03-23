@@ -88,7 +88,26 @@ const Booking = () => {
         })
         .then((data) => {
           const taken = (data.booked || []).map((b: { time: string }) => b.time);
-          setBookedSlots(taken);
+          const blocked = data.blocked || [];
+          const blockedTimes = blocked.flatMap((block: { startTime: string; endTime: string }) => {
+            const times: string[] = [];
+            const parseTime = (t: string) => {
+              const [time, period] = t.split(" ");
+              let [h, m] = time.split(":").map(Number);
+              if (period === "PM" && h !== 12) h += 12;
+              if (period === "AM" && h === 12) h = 0;
+              return h;
+            };
+            const start = parseTime(block.startTime);
+            const end = parseTime(block.endTime);
+            for (let h = start; h < end; h++) {
+              const hr = h > 12 ? h - 12 : h === 0 ? 12 : h;
+              const ampm = h >= 12 ? "PM" : "AM";
+              times.push(`${hr}:00 ${ampm}`);
+            }
+            return times;
+          });
+          setBookedSlots([...taken, ...blockedTimes]);
         })
         .catch((err) => {
           if (err.name !== "AbortError") setBookedSlots([]);

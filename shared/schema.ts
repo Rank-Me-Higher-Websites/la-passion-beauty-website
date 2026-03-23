@@ -25,10 +25,23 @@ export const bookings = pgTable("bookings", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const timeBlocks = pgTable("time_blocks", {
+  id: serial("id").primaryKey(),
+  staffId: varchar("staff_id", { length: 20 }).notNull(),
+  date: varchar("date", { length: 10 }).notNull(),
+  startTime: varchar("start_time", { length: 10 }).notNull(),
+  endTime: varchar("end_time", { length: 10 }).notNull(),
+  reason: text("reason"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const insertStaffAccountSchema = createInsertSchema(staffAccounts).omit({ id: true });
 export const insertBookingSchema = createInsertSchema(bookings).omit({ id: true, createdAt: true });
+export const insertTimeBlockSchema = createInsertSchema(timeBlocks).omit({ id: true, createdAt: true });
 
 export type StaffAccount = typeof staffAccounts.$inferSelect;
 export type InsertStaffAccount = z.infer<typeof insertStaffAccountSchema>;
 export type Booking = typeof bookings.$inferSelect;
 export type InsertBooking = z.infer<typeof insertBookingSchema>;
+export type TimeBlock = typeof timeBlocks.$inferSelect;
+export type InsertTimeBlock = z.infer<typeof insertTimeBlockSchema>;

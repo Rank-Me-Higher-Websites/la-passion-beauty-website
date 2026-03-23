@@ -21,7 +21,7 @@ A React/Vite frontend with Express/PostgreSQL backend for La Passion Beauty Salo
 
 ## Database
 - PostgreSQL with Drizzle ORM
-- Tables: `staff_accounts` (id, name, email, password_hash, role, staff_data_id), `bookings` (id, client info, service/staff/date/time, status, notes, created_at)
+- Tables: `staff_accounts` (id, name, email, password_hash, role, staff_data_id), `bookings` (id, client info, service/staff/date/time, status, notes, created_at), `time_blocks` (id, staff_id, date, start_time, end_time, reason, created_at)
 - Schema push: `npx drizzle-kit push --force`
 
 ## Authentication
@@ -60,7 +60,12 @@ Service IDs: s1=Haircut, s2=Root Touch-Up, s3=Full Color, s4=Full Color+Cut, s5=
 - `DELETE /api/bookings/:id` - Delete booking (auth + IDOR protection)
 - `PATCH /api/auth/change-password` - Change password (self: requires current password; admin: can reset any stylist)
 - `GET /api/staff` - Get staff list (admin only, no password hashes returned)
-- `GET /api/bookings/availability?staffId=X&date=Y` - Check booked slots (public, for booking form)
+- `GET /api/bookings/availability?staffId=X&date=Y` - Check booked slots + blocked times (public, for booking form)
+- `GET /api/time-blocks` - Get time blocks (auth required, filtered by role)
+- `GET /api/time-blocks/availability?staffId=X&date=Y` - Get blocks for a staff+date
+- `POST /api/time-blocks` - Create time block (auth, admin or own staff only)
+- `DELETE /api/time-blocks/:id` - Delete time block (auth, admin or owner only)
+- `PATCH /api/bookings/:id` - Also supports date/time/serviceId changes with conflict + block checks
 
 ## Server Logging
 All API actions are logged with timestamps, including:

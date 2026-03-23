@@ -25,6 +25,8 @@ import {
   Save,
   KeyRound,
   DollarSign,
+  Ban,
+  Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -90,6 +92,12 @@ const Admin = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [dbStaffList, setDbStaffList] = useState<{ id: number; name: string; email: string; role: string; staffDataId: string }[]>([]);
+  const [timeBlocksList, setTimeBlocksList] = useState<any[]>([]);
+  const [showBlockForm, setShowBlockForm] = useState(false);
+  const [blockDate, setBlockDate] = useState("");
+  const [blockStartTime, setBlockStartTime] = useState("9:00 AM");
+  const [blockEndTime, setBlockEndTime] = useState("5:00 PM");
+  const [blockReason, setBlockReason] = useState("");
 
   const isAdmin = staffUser?.role === "admin";
 
@@ -121,6 +129,17 @@ const Admin = () => {
   useEffect(() => {
     if (staffUser) fetchBookings();
   }, [staffUser, fetchBookings]);
+
+  const fetchTimeBlocks = useCallback(async () => {
+    try {
+      const res = await fetch("/api/time-blocks");
+      if (res.ok) setTimeBlocksList(await res.json());
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    if (staffUser) fetchTimeBlocks();
+  }, [staffUser, fetchTimeBlocks]);
 
   useEffect(() => {
     if (staffUser?.role === "admin") {
@@ -163,6 +182,52 @@ const Admin = () => {
       if (res.ok) {
         setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
       }
+    } catch {}
+  };
+
+  const updateBookingDetails = async (id: number, data: { date?: string; time?: string; serviceId?: string }) => {
+    try {
+      const res = await fetch(`/api/bookings/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, ...updated } : b)));
+        return true;
+      }
+      const err = await res.json();
+      alert(err.error || "Failed to update booking");
+      return false;
+    } catch {
+      alert("Network error");
+      return false;
+    }
+  };
+
+  const createTimeBlock = async () => {
+    const staffId = isAdmin && selectedStaffId !== "all" ? selectedStaffId : staffUser?.staffDataId;
+    if (!staffId || !blockDate) return;
+    try {
+      const res = await fetch("/api/time-blocks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ staffId, date: blockDate, startTime: blockStartTime, endTime: blockEndTime, reason: blockReason || null }),
+      });
+      if (res.ok) {
+        fetchTimeBlocks();
+        setShowBlockForm(false);
+        setBlockDate("");
+        setBlockReason("");
+      }
+    } catch {}
+  };
+
+  const removeTimeBlock = async (id: number) => {
+    try {
+      const res = await fetch(`/api/time-blocks/${id}`, { method: "DELETE" });
+      if (res.ok) setTimeBlocksList((prev) => prev.filter((b) => b.id !== id));
     } catch {}
   };
 
@@ -513,6 +578,7 @@ const Admin = () => {
                         onUpdateStatus={updateStatus}
                         onDelete={removeBooking}
                         onUpdateNotes={updateNotes}
+                        onUpdateBooking={updateBookingDetails}
                       />
                     ))}
                   </div>
@@ -551,6 +617,7 @@ const Admin = () => {
                     onUpdateStatus={updateStatus}
                     onDelete={removeBooking}
                     onUpdateNotes={updateNotes}
+                    onUpdateBooking={updateBookingDetails}
                     showDate
                   />
                 ))}
@@ -636,9 +703,78 @@ const Admin = () => {
               </div>
 
               <div>
-                <h3 className="font-medium text-foreground mb-3">
-                  {format(selectedDate, "EEEE, MMMM d")}
-                </h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-medium text-foreground">
+                    {format(selectedDate, "EEEE, MMMM d")}
+                  </h3>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setBlockDate(format(selectedDate, "yyyy-MM-dd"));
+                      setShowBlockForm(true);
+                    }}
+                    data-testid="button-block-time"
+                  >
+                    <Ban className="h-3.5 w-3.5 mr-1" /> Block Time
+                  </Button>
+                </div>
+
+                {showBlockForm && (
+                  <div className="bg-red-50 rounded-xl border border-red-200 p-4 mb-4 space-y-3">
+                    <p className="text-sm font-semibold text-red-800">Block Calendar Time</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-xs text-muted-foreground block mb-1">Date</label>
+                        <Input value={blockDate} onChange={(e) => setBlockDate(e.target.value)} type="date" className="text-sm" />
+                      </div>
+                      <div>
+                        <label className="text-xs text-muted-foreground block mb-1">Reason (optional)</label>
+                        <Input value={blockReason} onChange={(e) => setBlockReason(e.target.value)} placeholder="e.g. Day off" className="text-sm" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-xs text-muted-foreground block mb-1">Start Time</label>
+                        <select value={blockStartTime} onChange={(e) => setBlockStartTime(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border bg-card text-sm">
+                          {["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM"].map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs text-muted-foreground block mb-1">End Time</label>
+                        <select value={blockEndTime} onChange={(e) => setBlockEndTime(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border bg-card text-sm">
+                          {["10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM","7:00 PM"].map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="gold" size="sm" onClick={createTimeBlock}>
+                        <Ban className="h-3.5 w-3.5 mr-1" /> Block
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => setShowBlockForm(false)}>Cancel</Button>
+                    </div>
+                  </div>
+                )}
+
+                {timeBlocksList
+                  .filter((b) => b.date === format(selectedDate, "yyyy-MM-dd"))
+                  .filter((b) => isAdmin || b.staffId === staffUser?.staffDataId)
+                  .map((block) => (
+                    <div key={block.id} className="bg-red-50 rounded-xl border border-red-200 p-3 mb-3 flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-red-800 flex items-center gap-1">
+                          <Ban className="h-3.5 w-3.5" /> Blocked: {block.startTime} - {block.endTime}
+                        </p>
+                        <p className="text-xs text-red-600">
+                          {getStaffName(block.staffId)}{block.reason ? ` — ${block.reason}` : ""}
+                        </p>
+                      </div>
+                      <Button variant="outline" size="sm" onClick={() => removeTimeBlock(block.id)} className="text-red-600 hover:text-red-700">
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  ))}
+
                 {staffFilteredBookings
                   .filter((b) => isSameDay(parseISO(b.date), selectedDate))
                   .sort((a, b) => a.time.localeCompare(b.time))
@@ -652,9 +788,11 @@ const Admin = () => {
                       onUpdateStatus={updateStatus}
                       onDelete={removeBooking}
                       onUpdateNotes={updateNotes}
+                      onUpdateBooking={updateBookingDetails}
                     />
                   ))}
-                {!staffFilteredBookings.some((b) => isSameDay(parseISO(b.date), selectedDate)) && (
+                {!staffFilteredBookings.some((b) => isSameDay(parseISO(b.date), selectedDate)) && 
+                 !timeBlocksList.some((b) => b.date === format(selectedDate, "yyyy-MM-dd")) && (
                   <p className="text-muted-foreground text-sm text-center py-8">No bookings on this day</p>
                 )}
               </div>
@@ -808,6 +946,7 @@ function BookingCard({
   onUpdateStatus,
   onDelete,
   onUpdateNotes,
+  onUpdateBooking,
   showDate,
 }: {
   booking: AdminBooking;
@@ -817,10 +956,15 @@ function BookingCard({
   onUpdateStatus: (id: number, status: string) => void;
   onDelete: (id: number) => void;
   onUpdateNotes: (id: number, notes: string) => void;
+  onUpdateBooking?: (id: number, data: { date?: string; time?: string; serviceId?: string }) => Promise<boolean>;
   showDate?: boolean;
 }) {
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesValue, setNotesValue] = useState(booking.notes || "");
+  const [editing, setEditing] = useState(false);
+  const [editDate, setEditDate] = useState(booking.date);
+  const [editTime, setEditTime] = useState(booking.time);
+  const [editServiceId, setEditServiceId] = useState(booking.serviceId);
   const price = getServicePrice(booking.serviceId);
 
   return (
@@ -917,7 +1061,60 @@ function BookingCard({
           </button>
         )}
       </div>
+      {editing && onUpdateBooking && (
+        <div className="bg-blue-50 rounded-lg border border-blue-200 p-3 mb-3 space-y-2">
+          <p className="text-xs font-semibold text-blue-800">Edit Booking</p>
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <label className="text-[10px] text-muted-foreground block mb-0.5">Date</label>
+              <Input type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} className="text-sm h-8" />
+            </div>
+            <div>
+              <label className="text-[10px] text-muted-foreground block mb-0.5">Time</label>
+              <select value={editTime} onChange={(e) => setEditTime(e.target.value)} className="w-full px-2 py-1 rounded-lg border border-border bg-card text-sm h-8">
+                {["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM"].map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-[10px] text-muted-foreground block mb-0.5">Service</label>
+              <select value={editServiceId} onChange={(e) => setEditServiceId(e.target.value)} className="w-full px-2 py-1 rounded-lg border border-border bg-card text-sm h-8">
+                {services.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="gold" size="sm" onClick={async () => {
+              const changes: any = {};
+              if (editDate !== booking.date) changes.date = editDate;
+              if (editTime !== booking.time) changes.time = editTime;
+              if (editServiceId !== booking.serviceId) changes.serviceId = editServiceId;
+              if (Object.keys(changes).length === 0) { setEditing(false); return; }
+              const ok = await onUpdateBooking(booking.id, changes);
+              if (ok) setEditing(false);
+            }}>
+              <Save className="h-3.5 w-3.5 mr-1" /> Save
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => {
+              setEditDate(booking.date);
+              setEditTime(booking.time);
+              setEditServiceId(booking.serviceId);
+              setEditing(false);
+            }}>Cancel</Button>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-wrap gap-2">
+        {(booking.status === "pending" || booking.status === "confirmed") && onUpdateBooking && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setEditing(!editing)}
+            data-testid={`button-edit-${booking.id}`}
+          >
+            <Pencil className="h-3.5 w-3.5 mr-1" /> Edit
+          </Button>
+        )}
         {booking.status === "pending" && (
           <Button
             variant="gold"
