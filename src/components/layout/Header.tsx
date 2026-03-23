@@ -44,11 +44,11 @@ const Header = () => {
       <div className="container-custom">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center justify-center overflow-hidden h-10 md:h-12 w-44 md:w-52">
+          <Link to="/" className="flex items-center justify-center overflow-hidden h-14 w-48 md:w-56">
             <img 
               src={logo} 
               alt="La Passion Beauty Salon" 
-              className="w-full scale-[1.7] brightness-0 invert contrast-200"
+              className="w-full scale-125 -translate-y-0.5 brightness-0 invert contrast-200"
             />
           </Link>
 
