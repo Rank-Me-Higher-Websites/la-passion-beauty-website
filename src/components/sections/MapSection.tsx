@@ -34,7 +34,7 @@ const MapSection = () => {
             className="lg:col-span-1 space-y-6"
           >
             {/* Address */}
-            <div className="bg-card rounded-xl p-6 shadow-soft border border-border">
+            <div className="bg-background rounded-xl p-6 shadow-soft border border-black/15">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <MapPin className="h-6 w-6 text-primary" />
@@ -55,7 +55,7 @@ const MapSection = () => {
             </div>
 
             {/* Phone */}
-            <div className="bg-card rounded-xl p-6 shadow-soft border border-border">
+            <div className="bg-background rounded-xl p-6 shadow-soft border border-black/15">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <Phone className="h-6 w-6 text-primary" />
@@ -73,7 +73,7 @@ const MapSection = () => {
             </div>
 
             {/* Hours */}
-            <div className="bg-card rounded-xl p-6 shadow-soft border border-border">
+            <div className="bg-background rounded-xl p-6 shadow-soft border border-black/15">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <Clock className="h-6 w-6 text-primary" />
@@ -96,7 +96,7 @@ const MapSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:col-span-2"
           >
-            <div className="bg-card rounded-2xl overflow-hidden shadow-card h-full min-h-[400px] border border-border">
+            <div className="bg-background rounded-2xl overflow-hidden shadow-card h-full min-h-[400px] border border-black/15">
               <iframe 
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2887.5534534651215!2d-87.96842082403798!3d41.66221607126628!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e384a230a083d%3A0xfd3d8f5449fd7b9c!2sLa%20Passion%20Beauty%20Salon!5e1!3m2!1sen!2slt!4v1769706988091!5m2!1sen!2slt" 
                 width="100%" 
