@@ -1,6 +1,6 @@
 import express from "express";
 import session from "express-session";
-import { createServer } from "http";
+import path from "path";
 import routes from "./routes";
 import { seedStaffAccounts } from "./seed";
 
@@ -23,12 +23,22 @@ app.use(
 
 app.use(routes);
 
-const PORT = parseInt(process.env.API_PORT || "3001");
+const isProd = process.env.NODE_ENV === "production";
+
+if (isProd) {
+  const distPath = path.resolve(process.cwd(), "dist/public");
+  app.use(express.static(distPath));
+  app.get("*", (_req, res) => {
+    res.sendFile(path.join(distPath, "index.html"));
+  });
+}
+
+const PORT = parseInt(process.env.PORT || process.env.API_PORT || "3001");
 
 async function start() {
   await seedStaffAccounts();
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`API server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
   });
 }
 
