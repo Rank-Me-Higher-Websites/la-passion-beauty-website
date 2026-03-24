@@ -41,7 +41,7 @@ const serviceCategories = [
 const Services = () => {
   return (
     <Layout>
-      <section className="relative pt-28 pb-10">
+      <section className="relative pt-28 pb-16 md:pb-20">
         <div className="absolute inset-0">
           <img
             src={salonImage}
