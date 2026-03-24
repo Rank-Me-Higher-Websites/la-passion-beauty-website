@@ -41,16 +41,16 @@ const serviceCategories = [
 const Services = () => {
   return (
     <Layout>
-      <section className="relative pt-28 pb-16 md:pb-20">
+      <section className="relative min-h-[40vh] md:min-h-[50vh] flex items-end">
         <div className="absolute inset-0">
           <img
             src={salonImage}
             alt="La Passion Beauty Salon"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20" />
         </div>
-        <div className="container-custom relative z-10">
+        <div className="container-custom relative z-10 pb-8 md:pb-12 pt-28">
           <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
