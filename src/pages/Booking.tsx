@@ -402,6 +402,7 @@ const Booking = () => {
                   <div className="bg-card rounded-xl border-2 border-black p-4 mb-6">
                     <Calendar
                       mode="single"
+                      showOutsideDays={false}
                       selected={selectedDate}
                       onSelect={(date) => {
                         setSelectedDate(date);
