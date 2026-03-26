@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { bookings } from "../shared/schema";
-import { eq } from "drizzle-orm";
+import { bookings, timeBlocks } from "../shared/schema";
+import { eq, and } from "drizzle-orm";
 
 const TEAMUP_API_KEY = process.env.TEAMUP_API_KEY || "";
 const CALENDAR_KEY = "ks20db078d08133796";
@@ -416,13 +416,60 @@ async function pollTeamupChanges() {
       const staffId = subCalIds.map((id: number) => SUBCALENDAR_TO_STAFF[id]).find(Boolean) || "";
       if (!staffId) continue;
 
-      const { clientName, serviceName } = parseTeamupTitle(event.title || "");
+      const title = (event.title || "").trim();
+      const isOff = /^off$/i.test(title);
+      const date = event.start_dt ? isoToDate(event.start_dt) : "";
+      const startTime = event.start_dt ? isoToTime(event.start_dt) : "";
+      const endTime = event.end_dt ? isoToTime(event.end_dt) : "";
+
+      if (!date) continue;
+
+      if (isOff) {
+        if (event.delete_dt) {
+          const existingBlocks = await db.select().from(timeBlocks)
+            .where(and(
+              eq(timeBlocks.staffId, staffId),
+              eq(timeBlocks.date, date),
+              eq(timeBlocks.reason, `teamup:${eventId}`)
+            ));
+          for (const block of existingBlocks) {
+            await db.delete(timeBlocks).where(eq(timeBlocks.id, block.id));
+            log("POLL_BLOCK_DELETE", `Time block ${block.id} removed (Teamup Off event ${eventId} deleted)`);
+          }
+          continue;
+        }
+
+        const [existingBlock] = await db.select().from(timeBlocks)
+          .where(eq(timeBlocks.reason, `teamup:${eventId}`));
+
+        if (existingBlock) {
+          if (existingBlock.date !== date || existingBlock.startTime !== startTime || existingBlock.endTime !== endTime || existingBlock.staffId !== staffId) {
+            await db.update(timeBlocks).set({
+              staffId,
+              date,
+              startTime,
+              endTime,
+            }).where(eq(timeBlocks.id, existingBlock.id));
+            log("POLL_BLOCK_UPDATE", `Time block ${existingBlock.id} updated from Teamup Off event ${eventId}`);
+          }
+        } else {
+          const [created] = await db.insert(timeBlocks).values({
+            staffId,
+            date,
+            startTime,
+            endTime,
+            reason: `teamup:${eventId}`,
+          }).returning();
+          log("POLL_BLOCK_CREATE", `Time block ${created.id} created from Teamup Off event ${eventId} (${staffId} ${date} ${startTime}-${endTime})`);
+        }
+        continue;
+      }
+
+      if (!startTime) continue;
+
+      const { clientName, serviceName } = parseTeamupTitle(title);
       const { phone, email, extraNotes } = parseTeamupNotes(event.notes || null);
       const serviceId = SERVICE_NAME_TO_ID[serviceName.toLowerCase()] || "s1";
-      const date = event.start_dt ? isoToDate(event.start_dt) : "";
-      const time = event.start_dt ? isoToTime(event.start_dt) : "";
-
-      if (!date || !time) continue;
 
       if (event.delete_dt) {
         const [existing] = await db.select().from(bookings).where(eq(bookings.teamupEventId, eventId));
@@ -439,7 +486,7 @@ async function pollTeamupChanges() {
         const needsUpdate =
           existing.clientName !== clientName ||
           existing.date !== date ||
-          existing.time !== time ||
+          existing.time !== startTime ||
           existing.serviceId !== serviceId ||
           existing.staffId !== staffId;
 
@@ -451,7 +498,7 @@ async function pollTeamupChanges() {
             serviceId,
             staffId,
             date,
-            time,
+            time: startTime,
             notes: extraNotes || existing.notes,
           }).where(eq(bookings.id, existing.id));
           log("POLL_UPDATE", `Booking ${existing.id} updated from Teamup event ${eventId}`);
@@ -464,7 +511,7 @@ async function pollTeamupChanges() {
           serviceId,
           staffId,
           date,
-          time,
+          time: startTime,
           status: "confirmed",
           notes: extraNotes || null,
           teamupEventId: eventId,
