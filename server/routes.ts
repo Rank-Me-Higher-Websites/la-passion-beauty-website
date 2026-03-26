@@ -208,6 +208,7 @@ router.get("/api/bookings", async (req: Request, res: Response) => {
     bookingsList = await storage.getBookingsByStaffId(staff.staffDataId);
     log("BOOKINGS_READ", `${staff.name} fetched ${bookingsList.length} own bookings`);
   }
+  bookingsList = bookingsList.filter((b: any) => !/^off$/i.test(b.clientName));
   res.json(bookingsList);
 });
 

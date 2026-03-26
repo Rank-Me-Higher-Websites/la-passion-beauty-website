@@ -38,7 +38,7 @@ import {
 } from "@/lib/booking-data";
 import logo from "@/assets/logo.png";
 
-type Tab = "dashboard" | "bookings" | "calendar" | "staff";
+type Tab = "dashboard" | "bookings" | "calendar" | "blocked" | "staff";
 
 interface AdminBooking {
   id: number;
@@ -380,6 +380,7 @@ const Admin = () => {
     { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { key: "bookings", label: "Bookings", icon: List },
     { key: "calendar", label: "Calendar", icon: CalendarIcon },
+    { key: "blocked", label: "Blocked", icon: Ban },
     { key: "staff", label: "Staff", icon: Users },
   ];
 
@@ -908,6 +909,119 @@ const Admin = () => {
                   <p className="text-muted-foreground text-sm text-center py-8">No bookings on this day</p>
                 )}
               </div>
+            </div>
+          )}
+
+          {activeTab === "blocked" && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <Ban className="h-5 w-5 text-red-600" /> Blocked Times
+                </h2>
+                <Button variant="gold" size="sm" onClick={() => { setShowBlockForm(true); setBlockDate(format(new Date(), "yyyy-MM-dd")); }} data-testid="button-add-block">
+                  <Ban className="h-3.5 w-3.5 mr-1" /> Block Time
+                </Button>
+              </div>
+
+              {showBlockForm && (
+                <div className="bg-card rounded-xl border border-black/20 p-4 space-y-3">
+                  <p className="text-sm font-semibold text-foreground">Add Time Block</p>
+                  {isAdmin && selectedStaffId === "all" && (
+                    <div>
+                      <label className="text-xs text-muted-foreground block mb-1">Stylist</label>
+                      <select value={blockStaffId} onChange={(e) => setBlockStaffId(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border bg-card text-sm" data-testid="select-block-staff">
+                        <option value="">Select staff...</option>
+                        {staffMembers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                      </select>
+                    </div>
+                  )}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-xs text-muted-foreground block mb-1">Date</label>
+                      <Input value={blockDate} onChange={(e) => setBlockDate(e.target.value)} type="date" className="text-sm" data-testid="input-block-date" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground block mb-1">Reason (optional)</label>
+                      <Input value={blockReason} onChange={(e) => setBlockReason(e.target.value)} placeholder="e.g. Day off" className="text-sm" data-testid="input-block-reason" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-xs text-muted-foreground block mb-1">Start Time</label>
+                      <select value={blockStartTime} onChange={(e) => setBlockStartTime(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border bg-card text-sm" data-testid="select-block-start">
+                        {["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM"].map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground block mb-1">End Time</label>
+                      <select value={blockEndTime} onChange={(e) => setBlockEndTime(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border bg-card text-sm" data-testid="select-block-end">
+                        {["10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM","7:00 PM"].map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="gold" size="sm" onClick={createTimeBlock} data-testid="button-create-block">
+                      <Ban className="h-3.5 w-3.5 mr-1" /> Block
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => setShowBlockForm(false)}>Cancel</Button>
+                  </div>
+                </div>
+              )}
+
+              {(() => {
+                const filtered = timeBlocksList
+                  .filter((b) => {
+                    if (!isAdmin) return b.staffId === staffUser?.staffDataId;
+                    if (selectedStaffId !== "all") return b.staffId === selectedStaffId;
+                    return true;
+                  })
+                  .sort((a, b) => {
+                    const dateComp = a.date.localeCompare(b.date);
+                    if (dateComp !== 0) return dateComp;
+                    return (a.startTime || "").localeCompare(b.startTime || "");
+                  });
+
+                if (filtered.length === 0) {
+                  return (
+                    <p className="text-muted-foreground text-sm text-center py-8" data-testid="text-no-blocks">
+                      No blocked times{isAdmin && selectedStaffId === "all" ? "" : " for this stylist"}
+                    </p>
+                  );
+                }
+
+                const grouped: Record<string, typeof filtered> = {};
+                filtered.forEach((block) => {
+                  if (!grouped[block.date]) grouped[block.date] = [];
+                  grouped[block.date].push(block);
+                });
+
+                return Object.entries(grouped).map(([date, blocks]) => (
+                  <div key={date} className="space-y-2">
+                    <h3 className="text-sm font-semibold text-foreground sticky top-0 bg-background py-1 flex items-center gap-2">
+                      <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                      {format(parseISO(date), "EEEE, MMMM d, yyyy")}
+                      <span className="text-xs text-muted-foreground font-normal">({blocks.length} block{blocks.length !== 1 ? "s" : ""})</span>
+                    </h3>
+                    {blocks.map((block) => (
+                      <div key={block.id} className="bg-red-50 rounded-xl border border-red-200 p-3 flex items-center justify-between" data-testid={`block-item-${block.id}`}>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-red-800 flex items-center gap-1">
+                            <Ban className="h-3.5 w-3.5 shrink-0" /> {block.startTime} - {block.endTime}
+                          </p>
+                          <p className="text-xs text-red-600 truncate">
+                            {getStaffName(block.staffId)}
+                            {block.reason && !block.reason.startsWith("teamup:") ? ` — ${block.reason}` : ""}
+                            {block.reason?.startsWith("teamup:") ? " — synced from Teamup" : ""}
+                          </p>
+                        </div>
+                        <Button variant="outline" size="sm" onClick={() => removeTimeBlock(block.id)} className="text-red-600 hover:text-red-700 shrink-0 ml-2" data-testid={`button-remove-block-${block.id}`}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ));
+              })()}
             </div>
           )}
 
