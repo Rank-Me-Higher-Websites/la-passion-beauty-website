@@ -357,7 +357,7 @@ export async function handleTeamupWebhook(payload: any) {
 let lastPollTimestamp: string | null = null;
 let pollInterval: ReturnType<typeof setInterval> | null = null;
 
-const POLL_INTERVAL_MS = 2 * 60 * 1000;
+const POLL_INTERVAL_MS = 30 * 1000;
 
 async function pollTeamupChanges() {
   if (!TEAMUP_API_KEY) return;
