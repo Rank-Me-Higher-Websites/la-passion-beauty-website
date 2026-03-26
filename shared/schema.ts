@@ -22,6 +22,7 @@ export const bookings = pgTable("bookings", {
   time: varchar("time", { length: 10 }).notNull(),
   status: varchar("status", { length: 20 }).notNull().default("pending"),
   notes: text("notes"),
+  teamupEventId: varchar("teamup_event_id", { length: 50 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

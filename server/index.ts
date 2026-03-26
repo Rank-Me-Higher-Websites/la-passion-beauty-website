@@ -3,6 +3,7 @@ import session from "express-session";
 import path from "path";
 import routes from "./routes";
 import { seedStaffAccounts } from "./seed";
+import { registerTeamupWebhook, syncExistingBookingsToTeamup } from "./teamup";
 
 const app = express();
 
@@ -39,6 +40,13 @@ async function start() {
   await seedStaffAccounts();
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
+
+    if (isProd && process.env.REPLIT_DOMAINS) {
+      const domain = process.env.REPLIT_DOMAINS.split(",")[0];
+      const appUrl = `https://${domain}`;
+      registerTeamupWebhook(appUrl).catch(console.error);
+    }
+    syncExistingBookingsToTeamup().catch(console.error);
   });
 }
 

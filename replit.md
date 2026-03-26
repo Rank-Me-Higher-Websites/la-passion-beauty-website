@@ -72,6 +72,17 @@ Service IDs: s1=Haircut, s2=Root Touch-Up, s3=Full Color, s4=Full Color+Cut, s5=
 - `DELETE /api/webhooks/:id` - Delete webhook (admin only)
 - `POST /api/webhooks/test` - Send test webhook payload (admin only)
 
+## Teamup Calendar Sync
+- Two-way sync between bookings and Teamup calendar (calendar key: ks20db078d08133796)
+- Secret: `TEAMUP_API_KEY` stored in Replit Secrets
+- Subcalendar mapping: st1→Laima(2608423), st2→Kasia(1845588), st3→Kamila(1773715), st4→Karolina(1845589), st5→Veronica(1773714), st6→Zofia(12458481), st7→Kamila2(4505234), st8→Birute(14609252)
+- Site → Teamup: Bookings pushed on create/update/delete/cancel
+- Teamup → Site: Webhook at `/api/teamup-webhook` handles event.created/updated/deleted
+- `teamup_event_id` column on bookings table links records
+- Loop prevention: skipWebhookFor set with 30s TTL prevents infinite loops
+- Webhook registered automatically in production on startup
+- Unsynced bookings pushed to Teamup on startup
+
 ## Server Logging
 All API actions are logged with timestamps, including:
 - Login attempts (success/failure with email and IP)

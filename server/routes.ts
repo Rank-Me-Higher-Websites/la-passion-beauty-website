@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { storage } from "./storage";
 import { insertBookingSchema, insertTimeBlockSchema, insertWebhookSchema } from "../shared/schema";
 import { fireWebhooks } from "./webhooks";
+import { pushBookingToTeamup, cancelTeamupEvent, deleteTeamupEvent, handleTeamupWebhook } from "./teamup";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -245,6 +246,7 @@ router.post("/api/bookings", async (req: Request, res: Response) => {
     const who = staffAccount ? `${staffAccount.name} (staff)` : `public client`;
     log("BOOKING_CREATED", `${who} created booking id=${booking.id} client="${booking.clientName}" service=${booking.serviceId} staff=${booking.staffId} date=${booking.date} time=${booking.time} ip=${req.ip}`);
     fireWebhooks(booking.staffId, "booking.created", booking).catch(() => {});
+    pushBookingToTeamup(booking).catch(() => {});
     res.status(201).json(booking);
   } catch (err: any) {
     log("BOOKING_CREATE_FAIL", `Error from ${req.ip}: ${err.message}`);
@@ -282,6 +284,11 @@ router.patch("/api/bookings/:id", async (req: Request, res: Response) => {
   if (status && !date && !time && !serviceId) {
     const booking = await storage.updateBookingStatus(id, status);
     log("BOOKING_STATUS", `${staff.name} changed booking ${id} ("${existing.clientName}") status: ${existing.status} → ${status}`);
+    if (status === "cancelled" && existing.teamupEventId) {
+      cancelTeamupEvent({ id, clientName: existing.clientName, serviceId: existing.serviceId, teamupEventId: existing.teamupEventId }).catch(() => {});
+    } else if (booking) {
+      pushBookingToTeamup(booking).catch(() => {});
+    }
     return res.json(booking);
   }
 
@@ -310,6 +317,9 @@ router.patch("/api/bookings/:id", async (req: Request, res: Response) => {
   const booking = await storage.updateBooking(id, updateData);
   const changes = Object.entries(updateData).map(([k, v]) => `${k}=${v}`).join(", ");
   log("BOOKING_UPDATED", `${staff.name} updated booking ${id} ("${existing.clientName}"): ${changes}`);
+  if (booking) {
+    pushBookingToTeamup({ ...booking, teamupEventId: existing.teamupEventId }).catch(() => {});
+  }
   res.json(booking);
 });
 
@@ -370,6 +380,9 @@ router.delete("/api/bookings/:id", async (req: Request, res: Response) => {
     return res.status(403).json({ error: "Not authorized" });
   }
 
+  if (existing.teamupEventId) {
+    deleteTeamupEvent(existing.teamupEventId).catch(() => {});
+  }
   await storage.deleteBooking(id);
   log("BOOKING_DELETED", `${staff.name} deleted booking ${id} ("${existing.clientName}" - ${existing.date} ${existing.time})`);
   res.json({ ok: true });
@@ -564,6 +577,19 @@ router.post("/api/webhooks/test", async (req: Request, res: Response) => {
   } catch (err: any) {
     log("WEBHOOK_TEST_FAIL", `${staff.name} tested webhook → ${url} error="${err.message}"`);
     res.json({ ok: false, error: err.message, payload });
+  }
+});
+
+router.post("/api/teamup-webhook", async (req: Request, res: Response) => {
+  const ts = new Date().toISOString();
+  console.log(`[${ts}] TEAMUP_WEBHOOK_RECEIVED: ${JSON.stringify(req.body).slice(0, 500)}`);
+
+  try {
+    await handleTeamupWebhook(req.body);
+    res.json({ ok: true });
+  } catch (err: any) {
+    console.log(`[${ts}] TEAMUP_WEBHOOK_ERROR: ${err.message}`);
+    res.status(500).json({ error: "Internal error" });
   }
 });
 
