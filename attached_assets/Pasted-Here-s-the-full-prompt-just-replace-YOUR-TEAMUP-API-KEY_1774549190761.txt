@@ -1,0 +1,43 @@
+Here's the full prompt — just replace YOUR_TEAMUP_API_KEY and YOUR_REPLIT_APP_URL:
+
+Add two-way Teamup calendar sync to this booking app.
+Credentials:
+
+Teamup API key: YOUR_TEAMUP_API_KEY
+Teamup calendar key: ks20db078d08133796
+Base URL for all Teamup API calls: https://api.teamup.com
+Header required on every request: Teamup-Token: YOUR_TEAMUP_API_KEY
+
+Step 1 — Fetch and store sub-calendar IDs
+On app startup, call GET https://api.teamup.com/ks20db078d08133796/subcalendars and store the sub-calendar IDs mapped to stylist names. The stylists are: Laima, Kasia, Karolina, Kamila, Kamila 2, Veronica, Zofia, Birute. Cache this mapping so every booking push knows which sub-calendar ID to use.
+Step 2 — Site booking → Teamup
+Whenever a new booking is inserted into the bookings table (or an existing one is updated), push it to Teamup:
+POST https://api.teamup.com/ks20db078d08133796/events
+Body:
+json{
+  "subcalendar_id": "<id matching the stylist>",
+  "title": "<client_name> — <service_name>",
+  "start_dt": "<date + time in ISO 8601 format>",
+  "end_dt": "<date + time + duration in ISO 8601 format>",
+  "notes": "Phone: <client_phone>\nEmail: <client_email>\nPrice: <service_price>"
+}
+Store the returned Teamup event_id in a new column teamup_event_id on the bookings table so we can match events later. Add this column if it doesn't exist.
+Step 3 — Teamup → Site (webhook)
+Create a new POST endpoint /api/teamup-webhook that receives Teamup event webhook payloads.
+When a new event is created in Teamup, insert it into the bookings table if no row with that teamup_event_id exists yet.
+When an existing event is updated in Teamup, find the matching row by teamup_event_id and update it.
+When an event is deleted in Teamup, mark the matching booking as cancelled (update status to cancelled).
+Parse the event title to extract client name and service name (split on —). Parse the notes field to extract phone, email, and price.
+Step 4 — Register the webhook in Teamup
+After setting up the endpoint, call:
+POST https://api.teamup.com/ks20db078d08133796/hooks
+Body:
+json{
+  "url": "YOUR_REPLIT_APP_URL/api/teamup-webhook",
+  "event_types": ["event.created", "event.updated", "event.deleted"]
+}
+Important:
+
+Use the production database only for live sync, development database for testing
+Skip the Teamup push if a booking update was itself triggered by a Teamup webhook (use a flag to avoid infinite loops)
+Log all Teamup API errors but don't crash the app if Teamup is unreachable
