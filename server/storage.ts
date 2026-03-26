@@ -1,7 +1,7 @@
 import { db } from "./db";
 import { staffAccounts, bookings, timeBlocks, webhooks } from "../shared/schema";
 import type { StaffAccount, InsertStaffAccount, Booking, InsertBooking, TimeBlock, InsertTimeBlock, Webhook, InsertWebhook } from "../shared/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, isNull, isNotNull } from "drizzle-orm";
 
 export interface IStorage {
   getStaffByEmail(email: string): Promise<StaffAccount | undefined>;
@@ -16,6 +16,10 @@ export interface IStorage {
   updateBookingStatus(id: number, status: string): Promise<Booking | undefined>;
   updateBooking(id: number, data: Partial<InsertBooking>): Promise<Booking | undefined>;
   deleteBooking(id: number): Promise<void>;
+  softDeleteBooking(id: number, deletedBy: string): Promise<void>;
+  getDeletedBookings(): Promise<Booking[]>;
+  getDeletedBookingsByStaffId(staffId: string): Promise<Booking[]>;
+  restoreBooking(id: number): Promise<Booking | undefined>;
 
   getTimeBlocksByStaffAndDate(staffId: string, date: string): Promise<TimeBlock[]>;
   getTimeBlocksByStaffId(staffId: string): Promise<TimeBlock[]>;
@@ -52,11 +56,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllBookings(): Promise<Booking[]> {
-    return db.select().from(bookings).orderBy(desc(bookings.createdAt));
+    return db.select().from(bookings).where(isNull(bookings.deletedAt)).orderBy(desc(bookings.createdAt));
   }
 
   async getBookingsByStaffId(staffId: string): Promise<Booking[]> {
-    return db.select().from(bookings).where(eq(bookings.staffId, staffId)).orderBy(desc(bookings.createdAt));
+    return db.select().from(bookings).where(and(eq(bookings.staffId, staffId), isNull(bookings.deletedAt))).orderBy(desc(bookings.createdAt));
   }
 
   async getBookingById(id: number): Promise<Booking | undefined> {
@@ -81,6 +85,23 @@ export class DatabaseStorage implements IStorage {
 
   async deleteBooking(id: number): Promise<void> {
     await db.delete(bookings).where(eq(bookings.id, id));
+  }
+
+  async softDeleteBooking(id: number, deletedBy: string): Promise<void> {
+    await db.update(bookings).set({ deletedAt: new Date(), deletedBy }).where(eq(bookings.id, id));
+  }
+
+  async getDeletedBookings(): Promise<Booking[]> {
+    return db.select().from(bookings).where(isNotNull(bookings.deletedAt)).orderBy(desc(bookings.deletedAt));
+  }
+
+  async getDeletedBookingsByStaffId(staffId: string): Promise<Booking[]> {
+    return db.select().from(bookings).where(and(eq(bookings.staffId, staffId), isNotNull(bookings.deletedAt))).orderBy(desc(bookings.deletedAt));
+  }
+
+  async restoreBooking(id: number): Promise<Booking | undefined> {
+    const [restored] = await db.update(bookings).set({ deletedAt: null, deletedBy: null }).where(eq(bookings.id, id)).returning();
+    return restored;
   }
 
   async updateBooking(id: number, data: Partial<InsertBooking>): Promise<Booking | undefined> {

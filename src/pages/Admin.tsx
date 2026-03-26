@@ -38,7 +38,7 @@ import {
 } from "@/lib/booking-data";
 import logo from "@/assets/logo.png";
 
-type Tab = "dashboard" | "bookings" | "calendar" | "blocked" | "staff";
+type Tab = "dashboard" | "bookings" | "calendar" | "blocked" | "deleted" | "staff";
 
 interface AdminBooking {
   id: number;
@@ -99,6 +99,7 @@ const Admin = () => {
   const [blockEndTime, setBlockEndTime] = useState("5:00 PM");
   const [blockReason, setBlockReason] = useState("");
   const [blockStaffId, setBlockStaffId] = useState("");
+  const [deletedBookings, setDeletedBookings] = useState<AdminBooking[]>([]);
 
   const [webhooksList, setWebhooksList] = useState<any[]>([]);
   const [showWebhookForm, setShowWebhookForm] = useState(false);
@@ -152,10 +153,18 @@ const Admin = () => {
     } catch {}
   }, []);
 
+  const fetchDeletedBookings = useCallback(async () => {
+    try {
+      const res = await fetch("/api/bookings/deleted");
+      if (res.ok) setDeletedBookings(await res.json());
+    } catch {}
+  }, []);
+
   useEffect(() => {
     if (staffUser) fetchTimeBlocks();
     if (staffUser) fetchWebhooks();
-  }, [staffUser, fetchTimeBlocks, fetchWebhooks]);
+    if (staffUser) fetchDeletedBookings();
+  }, [staffUser, fetchTimeBlocks, fetchWebhooks, fetchDeletedBookings]);
 
   useEffect(() => {
     if (staffUser?.role === "admin") {
@@ -253,6 +262,18 @@ const Admin = () => {
       const res = await fetch(`/api/bookings/${id}`, { method: "DELETE" });
       if (res.ok) {
         setBookings((prev) => prev.filter((b) => b.id !== id));
+        fetchDeletedBookings();
+      }
+    } catch {}
+  };
+
+  const restoreBooking = async (id: number) => {
+    try {
+      const res = await fetch(`/api/bookings/${id}/restore`, { method: "POST" });
+      if (res.ok) {
+        const restored = await res.json();
+        setDeletedBookings((prev) => prev.filter((b) => b.id !== id));
+        setBookings((prev) => [restored, ...prev]);
       }
     } catch {}
   };
@@ -381,6 +402,7 @@ const Admin = () => {
     { key: "bookings", label: "Bookings", icon: List },
     { key: "calendar", label: "Calendar", icon: CalendarIcon },
     { key: "blocked", label: "Blocked", icon: Ban },
+    { key: "deleted", label: "Deleted", icon: Trash2 },
     { key: "staff", label: "Staff", icon: Users },
   ];
 
@@ -1019,6 +1041,89 @@ const Admin = () => {
                         </Button>
                       </div>
                     ))}
+                  </div>
+                ));
+              })()}
+            </div>
+          )}
+
+          {activeTab === "deleted" && (
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <Trash2 className="h-5 w-5 text-muted-foreground" /> Deleted Bookings
+                <span className="text-sm font-normal text-muted-foreground">
+                  ({(() => {
+                    const filtered = deletedBookings.filter((b) => {
+                      if (!isAdmin) return b.staffId === staffUser?.staffDataId;
+                      if (selectedStaffId !== "all") return b.staffId === selectedStaffId;
+                      return true;
+                    });
+                    return filtered.length;
+                  })()})
+                </span>
+              </h2>
+
+              {(() => {
+                const filtered = deletedBookings
+                  .filter((b) => {
+                    if (!isAdmin) return b.staffId === staffUser?.staffDataId;
+                    if (selectedStaffId !== "all") return b.staffId === selectedStaffId;
+                    return true;
+                  });
+
+                if (filtered.length === 0) {
+                  return (
+                    <p className="text-muted-foreground text-sm text-center py-8" data-testid="text-no-deleted">
+                      No deleted bookings
+                    </p>
+                  );
+                }
+
+                return filtered.map((booking) => (
+                  <div key={booking.id} className="bg-card rounded-xl border border-black/20 p-3 md:p-4 opacity-70" data-testid={`deleted-booking-${booking.id}`}>
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="min-w-0 flex-1 mr-2">
+                        <p className="font-semibold text-foreground text-sm md:text-base truncate">{booking.clientName}</p>
+                        <p className="text-xs md:text-sm text-primary font-medium truncate">{getServiceName(booking.serviceId)}</p>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] md:text-xs font-semibold bg-red-100 text-red-800 border border-red-200 shrink-0">
+                        Deleted
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-x-3 md:gap-x-4 gap-y-1 text-xs md:text-sm text-muted-foreground mb-2">
+                      <span className="flex items-center gap-1">
+                        <CalendarIcon className="h-3 w-3 shrink-0" /> {format(parseISO(booking.date), "MMM d, yyyy")}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3 shrink-0" /> {booking.time}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Users className="h-3 w-3 shrink-0" /> {getStaffName(booking.staffId)}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground mb-3">
+                      {booking.clientPhone && (
+                        <span className="flex items-center gap-1">
+                          <Phone className="h-3 w-3 shrink-0" /> {booking.clientPhone}
+                        </span>
+                      )}
+                      {booking.clientEmail && (
+                        <span className="flex items-center gap-1">
+                          <MailIcon className="h-3 w-3 shrink-0" /> {booking.clientEmail}
+                        </span>
+                      )}
+                    </div>
+                    {isAdmin && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-green-700 border-green-300 hover:bg-green-50"
+                        onClick={() => restoreBooking(booking.id)}
+                        data-testid={`button-restore-${booking.id}`}
+                      >
+                        <RotateCcw className="h-3.5 w-3.5 mr-1" /> Restore
+                      </Button>
+                    )}
                   </div>
                 ));
               })()}

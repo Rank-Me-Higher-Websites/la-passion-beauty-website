@@ -23,6 +23,8 @@ export const bookings = pgTable("bookings", {
   status: varchar("status", { length: 20 }).notNull().default("pending"),
   notes: text("notes"),
   teamupEventId: varchar("teamup_event_id", { length: 50 }),
+  deletedAt: timestamp("deleted_at"),
+  deletedBy: text("deleted_by"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

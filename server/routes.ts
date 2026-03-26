@@ -384,9 +384,40 @@ router.delete("/api/bookings/:id", async (req: Request, res: Response) => {
   if (existing.teamupEventId) {
     deleteTeamupEvent(existing.teamupEventId).catch(() => {});
   }
-  await storage.deleteBooking(id);
+  await storage.softDeleteBooking(id, staff.name);
   log("BOOKING_DELETED", `${staff.name} deleted booking ${id} ("${existing.clientName}" - ${existing.date} ${existing.time})`);
   res.json({ ok: true });
+});
+
+router.get("/api/bookings/deleted", async (req: Request, res: Response) => {
+  const staffId = (req.session as any)?.staffId;
+  if (!staffId) return res.status(401).json({ error: "Not authenticated" });
+  const staff = await storage.getStaffById(staffId);
+  if (!staff) return res.status(401).json({ error: "Not authenticated" });
+
+  let deleted;
+  if (staff.role === "admin") {
+    deleted = await storage.getDeletedBookings();
+  } else {
+    deleted = await storage.getDeletedBookingsByStaffId(staff.staffDataId);
+  }
+  deleted = deleted.filter((b: any) => !/^off$/i.test(b.clientName));
+  res.json(deleted);
+});
+
+router.post("/api/bookings/:id/restore", async (req: Request, res: Response) => {
+  const staffId = (req.session as any)?.staffId;
+  if (!staffId) return res.status(401).json({ error: "Not authenticated" });
+  const staff = await storage.getStaffById(staffId);
+  if (!staff) return res.status(401).json({ error: "Not authenticated" });
+  if (staff.role !== "admin") return res.status(403).json({ error: "Admin only" });
+
+  const id = parseInt(req.params.id);
+  const restored = await storage.restoreBooking(id);
+  if (!restored) return res.status(404).json({ error: "Booking not found" });
+
+  log("BOOKING_RESTORED", `${staff.name} restored booking ${id} ("${restored.clientName}" - ${restored.date} ${restored.time})`);
+  res.json(restored);
 });
 
 router.get("/api/time-blocks", async (req: Request, res: Response) => {
