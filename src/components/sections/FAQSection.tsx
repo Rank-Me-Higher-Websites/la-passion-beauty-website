@@ -27,7 +27,7 @@ const faqs = [
   },
   {
     question: "Where is La Passion Beauty Salon located?",
-    answer: "We are conveniently located in Lemont, IL, serving the greater Chicago area. Our salon offers a relaxing, modern atmosphere where you can unwind and enjoy your beauty treatment. Visit our contact page for detailed directions.",
+    answer: "We are located at 12420 Archer Ave, Suite C, Lemont, IL 60439, serving the greater Chicago area. Our salon offers a relaxing, modern atmosphere where you can unwind and enjoy your beauty treatment. Visit our contact page for detailed directions.",
   },
   {
     question: "What should I expect during my first visit?",

@@ -38,7 +38,7 @@ const MapSection = () => {
                 </div>
                 <div>
                   <h3 className="font-serif text-xs md:text-lg font-semibold text-foreground mb-0.5 md:mb-1">Address</h3>
-                  <p className="text-[11px] md:text-sm text-muted-foreground">Lemont, IL</p>
+                  <p className="text-[11px] md:text-sm text-muted-foreground">12420 Archer Ave, Suite C, Lemont, IL 60439</p>
                   <a
                     href="https://maps.app.goo.gl/rz34qNsMxhEowymC8"
                     target="_blank"

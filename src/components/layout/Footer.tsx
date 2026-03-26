@@ -88,7 +88,7 @@ const Footer = () => {
                 className="flex items-center gap-2 md:gap-3 text-primary-foreground/70 hover:text-primary transition-colors group"
               >
                 <MapPin className="h-4 w-4 md:h-5 md:w-5 text-primary group-hover:scale-110 transition-transform shrink-0" />
-                <p className="text-xs md:text-sm">Lemont, IL</p>
+                <p className="text-xs md:text-sm">12420 Archer Ave, Suite C, Lemont, IL 60439</p>
               </a>
               <div className="flex items-center gap-2 md:gap-3 text-primary-foreground/70">
                 <Clock className="h-4 w-4 md:h-5 md:w-5 text-primary shrink-0" />

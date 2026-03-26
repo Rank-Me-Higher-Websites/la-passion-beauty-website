@@ -139,7 +139,8 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-serif text-lg font-semibold text-foreground">Address</h3>
-                      <p className="text-primary font-medium">Lemont, IL</p>
+                      <p className="text-primary font-medium">12420 Archer Ave, Suite C</p>
+                      <p className="text-primary font-medium">Lemont, IL 60439</p>
                       <p className="text-sm text-muted-foreground">Click for directions</p>
                     </div>
                   </a>
@@ -256,7 +257,7 @@ const Contact = () => {
               >
                 <h2 className="heading-section text-foreground mb-4">Find Us</h2>
                 <p className="text-body mb-6">
-                  Conveniently located in Lemont, IL, serving the greater Chicago area. 
+                  Conveniently located at 12420 Archer Ave, Suite C, Lemont, IL 60439, serving the greater Chicago area. 
                   Visit our salon and experience the luxurious atmosphere that sets La Passion apart.
                 </p>
                 <div className="flex items-start gap-3 mb-6">
