@@ -354,37 +354,150 @@ export async function handleTeamupWebhook(payload: any) {
   log("WEBHOOK_UNKNOWN", `Unknown trigger: ${triggerEvent}`);
 }
 
-export async function registerTeamupWebhook(appUrl: string) {
+let lastPollTimestamp: string | null = null;
+let pollInterval: ReturnType<typeof setInterval> | null = null;
+
+const POLL_INTERVAL_MS = 2 * 60 * 1000;
+
+async function pollTeamupChanges() {
+  if (!TEAMUP_API_KEY) return;
+
+  try {
+    const now = new Date();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 1);
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 90);
+
+    const params = new URLSearchParams({
+      startDate: startDate.toISOString().slice(0, 10),
+      endDate: endDate.toISOString().slice(0, 10),
+    });
+
+    if (lastPollTimestamp) {
+      params.set("modifiedSince", lastPollTimestamp);
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    const res = await fetch(`${BASE_URL}/events?${params.toString()}`, {
+      headers: headers(),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    if (!res.ok) {
+      log("POLL_ERROR", `Teamup API returned status ${res.status}`);
+      return;
+    }
+
+    const data = await res.json();
+    const events = data.events || [];
+
+    lastPollTimestamp = now.toISOString();
+
+    if (events.length === 0) return;
+
+    log("POLL", `Found ${events.length} events to check`);
+
+    for (const event of events) {
+      const eventId = String(event.id);
+
+      if (skipWebhookFor.has(eventId)) {
+        continue;
+      }
+
+      const subCalIds: number[] = Array.isArray(event.subcalendar_ids)
+        ? event.subcalendar_ids
+        : event.subcalendar_id
+        ? [event.subcalendar_id]
+        : [];
+
+      const staffId = subCalIds.map((id: number) => SUBCALENDAR_TO_STAFF[id]).find(Boolean) || "";
+      if (!staffId) continue;
+
+      const { clientName, serviceName } = parseTeamupTitle(event.title || "");
+      const { phone, email, extraNotes } = parseTeamupNotes(event.notes || null);
+      const serviceId = SERVICE_NAME_TO_ID[serviceName.toLowerCase()] || "s1";
+      const date = event.start_dt ? isoToDate(event.start_dt) : "";
+      const time = event.start_dt ? isoToTime(event.start_dt) : "";
+
+      if (!date || !time) continue;
+
+      if (event.delete_dt) {
+        const [existing] = await db.select().from(bookings).where(eq(bookings.teamupEventId, eventId));
+        if (existing && existing.status !== "cancelled") {
+          await db.update(bookings).set({ status: "cancelled" }).where(eq(bookings.id, existing.id));
+          log("POLL_DELETE", `Booking ${existing.id} cancelled (Teamup event ${eventId} deleted)`);
+        }
+        continue;
+      }
+
+      const [existing] = await db.select().from(bookings).where(eq(bookings.teamupEventId, eventId));
+
+      if (existing) {
+        const needsUpdate =
+          existing.clientName !== clientName ||
+          existing.date !== date ||
+          existing.time !== time ||
+          existing.serviceId !== serviceId ||
+          existing.staffId !== staffId;
+
+        if (needsUpdate) {
+          await db.update(bookings).set({
+            clientName,
+            clientPhone: phone || existing.clientPhone,
+            clientEmail: email || existing.clientEmail,
+            serviceId,
+            staffId,
+            date,
+            time,
+            notes: extraNotes || existing.notes,
+          }).where(eq(bookings.id, existing.id));
+          log("POLL_UPDATE", `Booking ${existing.id} updated from Teamup event ${eventId}`);
+        }
+      } else {
+        const [created] = await db.insert(bookings).values({
+          clientName,
+          clientPhone: phone || "N/A",
+          clientEmail: email || "N/A",
+          serviceId,
+          staffId,
+          date,
+          time,
+          status: "confirmed",
+          notes: extraNotes || null,
+          teamupEventId: eventId,
+        }).returning();
+        log("POLL_CREATE", `Booking ${created.id} created from Teamup event ${eventId}`);
+      }
+    }
+  } catch (err: any) {
+    log("POLL_ERROR", `Polling failed: ${err.message}`);
+  }
+}
+
+export function startTeamupPolling() {
   if (!TEAMUP_API_KEY) {
-    log("SKIP", "No API key, skipping webhook registration");
+    log("SKIP", "No API key, skipping Teamup polling");
     return;
   }
 
-  const webhookUrl = `${appUrl}/api/teamup-webhook`;
+  log("POLL_START", `Polling Teamup every ${POLL_INTERVAL_MS / 1000}s for changes`);
 
-  try {
-    const listRes = await fetch(`${BASE_URL}/hooks`, { headers: headers() });
-    if (listRes.ok) {
-      const data = await listRes.json();
-      const existing = (data.hooks || []).find((h: any) => h.url === webhookUrl);
-      if (existing) {
-        log("WEBHOOK_REG", `Webhook already registered: ${webhookUrl} (id=${existing.id})`);
-        return;
-      }
-    }
+  setTimeout(() => {
+    pollTeamupChanges().catch(console.error);
+  }, 5000);
 
-    const res = await fetch(`${BASE_URL}/hooks`, {
-      method: "POST",
-      headers: headers(),
-      body: JSON.stringify({
-        url: webhookUrl,
-        event_types: ["event.created", "event.updated", "event.deleted"],
-      }),
-    });
-    const data = await res.json();
-    log("WEBHOOK_REG", `Registered webhook: ${webhookUrl} (status ${res.status}) response=${JSON.stringify(data)}`);
-  } catch (err: any) {
-    log("WEBHOOK_REG_ERROR", `Failed to register webhook: ${err.message}`);
+  pollInterval = setInterval(() => {
+    pollTeamupChanges().catch(console.error);
+  }, POLL_INTERVAL_MS);
+}
+
+export function stopTeamupPolling() {
+  if (pollInterval) {
+    clearInterval(pollInterval);
+    pollInterval = null;
   }
 }
 
