@@ -34,7 +34,7 @@ if (isProd) {
   });
 }
 
-const PORT = parseInt(process.env.PORT || process.env.API_PORT || "3001");
+const PORT = parseInt(process.env.PORT || (isProd ? "5000" : "3001"));
 
 async function start() {
   await seedStaffAccounts();
