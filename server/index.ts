@@ -29,6 +29,8 @@ app.use(
   })
 );
 
+app.get("/health", (_req, res) => res.status(200).send("ok"));
+
 app.use(routes);
 
 if (isProd) {
@@ -46,8 +48,10 @@ async function start() {
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
 
-    syncExistingBookingsToTeamup().catch(console.error);
-    startTeamupPolling();
+    setTimeout(() => {
+      syncExistingBookingsToTeamup().catch(console.error);
+      startTeamupPolling();
+    }, 5000);
   });
 }
 
