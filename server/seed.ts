@@ -1,15 +1,17 @@
 import bcrypt from "bcryptjs";
 import { storage } from "./storage";
 
+const BCRYPT_ROUNDS = 12;
+
 const staffData = [
-  { name: "Laima", email: "laima@lapassion.com", password: "laima123", role: "admin", staffDataId: "st1" },
-  { name: "Kasia", email: "kasia@lapassion.com", password: "kasia123", role: "stylist", staffDataId: "st2" },
-  { name: "Kamila Janik", email: "kamila.j@lapassion.com", password: "kamila123", role: "stylist", staffDataId: "st3" },
-  { name: "Karolina", email: "karolina@lapassion.com", password: "karolina123", role: "stylist", staffDataId: "st4" },
-  { name: "Veronika Dadek", email: "veronika@lapassion.com", password: "veronika123", role: "stylist", staffDataId: "st5" },
-  { name: "Zofia", email: "zofia@lapassion.com", password: "zofia123", role: "stylist", staffDataId: "st6" },
-  { name: "Kamila G.", email: "kamila.g@lapassion.com", password: "kamilag123", role: "stylist", staffDataId: "st7" },
-  { name: "Birute Francis", email: "birute@lapassion.com", password: "birute123", role: "stylist", staffDataId: "st8" },
+  { name: "Laima", email: "laima@lapassion.com", password: "%@KwHmLazdZMBE", role: "admin", staffDataId: "st1" },
+  { name: "Kasia", email: "kasia@lapassion.com", password: "RjrYGCCrSfZ44S", role: "stylist", staffDataId: "st2" },
+  { name: "Kamila Janik", email: "kamila.j@lapassion.com", password: "NGj9qCUh#KA*Wy", role: "stylist", staffDataId: "st3" },
+  { name: "Karolina", email: "karolina@lapassion.com", password: "bBK&k*Xw6ZaKYk", role: "stylist", staffDataId: "st4" },
+  { name: "Veronika Dadek", email: "veronika@lapassion.com", password: "Kh2Ng#c$hu%CM7", role: "stylist", staffDataId: "st5" },
+  { name: "Zofia", email: "zofia@lapassion.com", password: "n6BBdq&aytZCpa", role: "stylist", staffDataId: "st6" },
+  { name: "Kamila G.", email: "kamila.g@lapassion.com", password: "t$qYf9Q7gq&Qe*", role: "stylist", staffDataId: "st7" },
+  { name: "Birute Francis", email: "birute@lapassion.com", password: "sq7!cHrYm$zzeE", role: "stylist", staffDataId: "st8" },
 ];
 
 const webhookData = [
@@ -26,7 +28,7 @@ export async function seedStaffAccounts() {
   for (const s of staffData) {
     const existing = await storage.getStaffByEmail(s.email);
     if (!existing) {
-      const passwordHash = await bcrypt.hash(s.password, 10);
+      const passwordHash = await bcrypt.hash(s.password, BCRYPT_ROUNDS);
       await storage.createStaff({
         name: s.name,
         email: s.email,
@@ -55,4 +57,17 @@ export async function seedStaffAccounts() {
   } else {
     console.log(`Webhooks already exist (${existingWebhooks.length}), skipping seed`);
   }
+}
+
+export async function resetAllPasswords() {
+  console.log("Resetting all staff passwords...");
+  for (const s of staffData) {
+    const existing = await storage.getStaffByEmail(s.email);
+    if (existing) {
+      const passwordHash = await bcrypt.hash(s.password, BCRYPT_ROUNDS);
+      await storage.updateStaffPassword(existing.id, passwordHash);
+      console.log(`Password reset: ${s.name}`);
+    }
+  }
+  console.log("All passwords reset successfully");
 }

@@ -41,6 +41,19 @@ function log(action: string, details: string) {
   console.log(`[${ts}] ${action}: ${details}`);
 }
 
+const loginAttempts = new Map<string, { count: number; lockedUntil: number }>();
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_DURATION = 15 * 60 * 1000;
+const ATTEMPT_WINDOW = 15 * 60 * 1000;
+
+function cleanupAttempts() {
+  const now = Date.now();
+  for (const [key, val] of loginAttempts) {
+    if (val.lockedUntil && now > val.lockedUntil) loginAttempts.delete(key);
+  }
+}
+setInterval(cleanupAttempts, 60 * 1000);
+
 router.post("/api/auth/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -48,18 +61,43 @@ router.post("/api/auth/login", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "Email and password required" });
   }
 
+  const key = `${(email || "").toLowerCase().trim()}::${req.ip}`;
+  const attempts = loginAttempts.get(key);
+  const now = Date.now();
+
+  if (attempts && attempts.lockedUntil > now) {
+    const remainMin = Math.ceil((attempts.lockedUntil - now) / 60000);
+    log("LOGIN_LOCKED", `Account locked for "${email}" from ${req.ip}, ${remainMin}min remaining`);
+    return res.status(429).json({ error: `Too many failed attempts. Try again in ${remainMin} minutes.` });
+  }
+
   const staff = await storage.getStaffByEmail(email);
   if (!staff) {
     log("LOGIN_FAIL", `Unknown email "${email}" from ${req.ip}`);
+    const current = loginAttempts.get(key) || { count: 0, lockedUntil: 0 };
+    current.count++;
+    if (current.count >= MAX_LOGIN_ATTEMPTS) {
+      current.lockedUntil = now + LOCKOUT_DURATION;
+      log("LOGIN_LOCKOUT", `Locked out "${email}" from ${req.ip} after ${current.count} failed attempts`);
+    }
+    loginAttempts.set(key, current);
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
   const valid = await bcrypt.compare(password, staff.passwordHash);
   if (!valid) {
     log("LOGIN_FAIL", `Wrong password for "${email}" from ${req.ip}`);
+    const current = loginAttempts.get(key) || { count: 0, lockedUntil: 0 };
+    current.count++;
+    if (current.count >= MAX_LOGIN_ATTEMPTS) {
+      current.lockedUntil = now + LOCKOUT_DURATION;
+      log("LOGIN_LOCKOUT", `Locked out "${email}" from ${req.ip} after ${current.count} failed attempts`);
+    }
+    loginAttempts.set(key, current);
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
+  loginAttempts.delete(key);
   (req.session as any).staffId = staff.id;
   log("LOGIN_OK", `${staff.name} (${staff.email}) logged in, role=${staff.role}, ip=${req.ip}`);
   res.json({

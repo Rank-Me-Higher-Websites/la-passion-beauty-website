@@ -6,25 +6,30 @@ import { seedStaffAccounts } from "./seed";
 import { startTeamupPolling, syncExistingBookingsToTeamup } from "./teamup";
 
 const app = express();
+const isProd = process.env.NODE_ENV === "production";
 
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
+
+if (isProd) {
+  app.set("trust proxy", 1);
+}
 
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "la-passion-secret-key-2026",
+    name: "lp.sid",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 8 * 60 * 60 * 1000,
       httpOnly: true,
       sameSite: "lax",
+      secure: isProd,
     },
   })
 );
 
 app.use(routes);
-
-const isProd = process.env.NODE_ENV === "production";
 
 if (isProd) {
   const distPath = path.resolve(process.cwd(), "dist/public");
