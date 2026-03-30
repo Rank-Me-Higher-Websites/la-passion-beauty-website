@@ -7,6 +7,7 @@ import { startTeamupPolling, syncExistingBookingsToTeamup } from "./teamup";
 
 const app = express();
 const isProd = process.env.NODE_ENV === "production";
+const PORT = parseInt(process.env.PORT || (isProd ? "5000" : "3001"));
 
 app.use(express.json({ limit: "1mb" }));
 
@@ -45,18 +46,15 @@ if (isProd) {
   });
 }
 
-const PORT = parseInt(process.env.PORT || (isProd ? "5000" : "3001"));
+const server = app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT} (isProd: ${isProd})`);
+});
 
-async function start() {
-  await seedStaffAccounts();
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT} (isProd: ${isProd})`);
-
+seedStaffAccounts()
+  .then(() => {
     setTimeout(() => {
       syncExistingBookingsToTeamup().catch(console.error);
       startTeamupPolling();
-    }, 5000);
-  });
-}
-
-start().catch(console.error);
+    }, 10000);
+  })
+  .catch(console.error);
