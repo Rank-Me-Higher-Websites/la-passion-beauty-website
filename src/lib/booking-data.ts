@@ -57,7 +57,7 @@ export const staffMembers: StaffMember[] = [
   {
     id: "st1",
     name: "Laima",
-    role: "Senior Stylist",
+    role: "Stylist",
     avatar: "L",
     services: ["hair", "coloring"],
     schedule: [

@@ -373,22 +373,6 @@ const Booking = () => {
                       </button>
                     ))}
 
-                    <button
-                      onClick={() => {
-                        setSelectedStaff(null);
-                        goNext();
-                      }}
-                      className="w-full flex items-center gap-3 md:gap-4 p-2.5 md:p-4 rounded-xl border-2 border-black hover:border-primary bg-card transition-all text-left"
-                    >
-                      <div className="w-9 h-9 md:w-12 md:h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-                        <User className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-sm md:text-base text-foreground">No Preference</p>
-                        <p className="text-xs md:text-sm text-muted-foreground">Any available stylist</p>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                    </button>
                   </div>
                 </div>
               )}
@@ -560,7 +544,7 @@ const Booking = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Stylist</span>
-                        <span className="font-medium text-foreground">{selectedStaff?.name || "No Preference"}</span>
+                        <span className="font-medium text-foreground">{selectedStaff?.name || "—"}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Date</span>
@@ -610,7 +594,7 @@ const Booking = () => {
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground text-sm">Stylist</span>
                       <span className="font-medium text-foreground">
-                        {selectedStaff?.name || "No Preference"}
+                        {selectedStaff?.name || "—"}
                       </span>
                     </div>
                     <div className="border-t border-black/20" />
