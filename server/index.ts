@@ -31,11 +31,15 @@ app.use(
 
 app.get("/health", (_req, res) => res.status(200).send("ok"));
 
+if (isProd) {
+  const distPath = path.resolve(process.cwd(), "dist/public");
+  app.use(express.static(distPath));
+}
+
 app.use(routes);
 
 if (isProd) {
   const distPath = path.resolve(process.cwd(), "dist/public");
-  app.use(express.static(distPath));
   app.get("/{*splat}", (_req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
@@ -46,7 +50,7 @@ const PORT = parseInt(process.env.PORT || (isProd ? "5000" : "3001"));
 async function start() {
   await seedStaffAccounts();
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT} (isProd: ${isProd})`);
 
     setTimeout(() => {
       syncExistingBookingsToTeamup().catch(console.error);
