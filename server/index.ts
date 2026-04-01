@@ -2,7 +2,7 @@ import express from "express";
 import session from "express-session";
 import path from "path";
 import routes from "./routes";
-import { seedStaffAccounts, resetAllPasswords } from "./seed";
+import { seedStaffAccounts } from "./seed";
 import { startTeamupPolling, syncExistingBookingsToTeamup } from "./teamup";
 
 const app = express();
@@ -51,7 +51,6 @@ const server = app.listen(PORT, "0.0.0.0", () => {
 });
 
 seedStaffAccounts()
-  .then(() => resetAllPasswords())
   .then(() => {
     setTimeout(() => {
       syncExistingBookingsToTeamup().catch(console.error);

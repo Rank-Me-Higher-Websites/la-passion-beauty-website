@@ -51,6 +51,10 @@ export const services: Service[] = [
   { id: "s6", name: "Full Highlights", category: "coloring", duration: 240, price: "$160+" },
   { id: "s7", name: "Highlights + Cut + Toner", category: "coloring", duration: 300, price: "$190+" },
   { id: "s8", name: "Extensions", category: "extensions", duration: 300, price: "Quote" },
+  { id: "s9", name: "SPMU Brows", category: "spmu", duration: 120, price: "$400+" },
+  { id: "s10", name: "SPMU Eyeliner", category: "spmu", duration: 120, price: "$350+" },
+  { id: "s11", name: "SPMU Lips / Lip Blushing", category: "spmu", duration: 120, price: "$450+" },
+  { id: "s12", name: "BrowXenna Powder", category: "spmu", duration: 60, price: "$40" },
 ];
 
 export const staffMembers: StaffMember[] = [
@@ -86,8 +90,11 @@ export const staffMembers: StaffMember[] = [
     avatar: "KJ",
     services: ["hair", "coloring", "extensions"],
     schedule: [
-      { day: 2, startHour: 10, endHour: 16 }, // Tue
-      { day: 3, startHour: 10, endHour: 16 }, // Wed
+      { day: 2, startHour: 10, endHour: 17 }, // Tue
+      { day: 3, startHour: 10, endHour: 17 }, // Wed
+      { day: 4, startHour: 10, endHour: 17 }, // Thu
+      { day: 5, startHour: 10, endHour: 16 }, // Fri
+      { day: 6, startHour: 9, endHour: 14 },  // Sat
     ],
   },
   {
@@ -139,11 +146,22 @@ export const staffMembers: StaffMember[] = [
     avatar: "KG",
     services: ["hair", "coloring"],
     schedule: [
+      { day: 2, startHour: 10, endHour: 16 }, // Tue
+      { day: 3, startHour: 10, endHour: 16 }, // Wed
+    ],
+  },
+  {
+    id: "st8",
+    name: "Birute Francis",
+    role: "SPMU Artist",
+    avatar: "BF",
+    services: ["spmu"],
+    schedule: [
       { day: 2, startHour: 10, endHour: 17 }, // Tue
       { day: 3, startHour: 10, endHour: 17 }, // Wed
       { day: 4, startHour: 10, endHour: 17 }, // Thu
-      { day: 5, startHour: 10, endHour: 16 }, // Fri
-      { day: 6, startHour: 9, endHour: 14 },  // Sat
+      { day: 5, startHour: 10, endHour: 17 }, // Fri
+      { day: 6, startHour: 10, endHour: 17 }, // Sat
     ],
   },
 ];
@@ -152,6 +170,7 @@ export const serviceCategories = [
   { id: "hair", label: "Hair Services" },
   { id: "coloring", label: "Hair Coloring" },
   { id: "extensions", label: "Extensions" },
+  { id: "spmu", label: "Semi-Permanent Makeup" },
 ];
 
 export function generateTimeSlots(date: Date): TimeSlot[] {
