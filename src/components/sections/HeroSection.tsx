@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, ChevronRight, Star } from "lucide-react";
-import heroBg from "@/assets/hero-bg.png";
+
 import { services } from "@/lib/booking-data";
 
 const HeroSection = () => {
@@ -17,11 +17,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative md:min-h-[85vh] flex items-start md:items-center overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        <img src={heroBg} alt="La Passion Beauty Salon" className="w-full h-full object-cover opacity-70" />
-      </div>
-      <div className="absolute inset-0 -z-10 bg-white/10" />
+    <section className="relative md:min-h-[85vh] flex items-start md:items-center overflow-hidden bg-white">
 
       <div className="w-full relative z-10 pt-[52px] md:pt-24 pb-4 md:pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-5 gap-10 lg:gap-14 items-center">
