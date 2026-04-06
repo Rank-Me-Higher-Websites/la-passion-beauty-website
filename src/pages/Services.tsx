@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Scissors, Palette, Cable, ArrowRight } from "lucide-react";
+import { Scissors, Palette, Cable, Sparkles, ArrowRight } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import CTASection from "@/components/sections/CTASection";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,17 @@ const serviceCategories = [
     icon: Cable,
     items: [
       { name: "Extensions", price: "Quote" },
+    ],
+  },
+  {
+    id: "spmu",
+    title: "Semi-Permanent Makeup",
+    icon: Sparkles,
+    items: [
+      { name: "SPMU Brows", price: "$400+" },
+      { name: "SPMU Eyeliner", price: "$350+" },
+      { name: "SPMU Lips / Lip Blushing", price: "$450+" },
+      { name: "BrowXenna Powder", price: "$40" },
     ],
   },
 ];
@@ -97,11 +108,11 @@ const Services = () => {
                 <h2 className="font-serif text-xl font-semibold text-foreground">{category.title}</h2>
               </div>
 
-              <div className="rounded-lg border border-black/15 bg-card overflow-hidden">
+              <div className="rounded-lg border-2 border-gray-300 bg-card overflow-hidden">
                 {category.items.map((item, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between px-4 py-3 border-b border-black/10 last:border-b-0"
+                    className="flex items-center justify-between px-4 py-3 border-b border-gray-300 last:border-b-0"
                   >
                     <span className="font-serif text-base text-foreground">{item.name}</span>
                     <span className="text-sm font-semibold text-primary ml-4">{item.price}</span>
