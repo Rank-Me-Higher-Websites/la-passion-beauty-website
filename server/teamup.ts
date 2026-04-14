@@ -9,11 +9,11 @@ const BASE_URL = `https://api.teamup.com/${CALENDAR_KEY}`;
 const STAFF_TO_SUBCALENDAR: Record<string, number> = {
   st1: 2608423,
   st2: 1845588,
-  st3: 1773715,
+  st3: 4505234,
   st4: 1845589,
   st5: 1773714,
   st6: 12458481,
-  st7: 4505234,
+  st7: 1773715,
   st8: 14609252,
 };
 
