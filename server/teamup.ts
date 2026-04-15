@@ -80,6 +80,66 @@ function from24ToDisplay(hours: number, minutes: number): string {
   return `${h}:${String(minutes).padStart(2, "0")} ${period}`;
 }
 
+export async function getTeamupEventsForStaffDate(staffId: string, date: string): Promise<{ time: string; endTime: string; title: string }[]> {
+  if (!TEAMUP_API_KEY) return [];
+
+  const subCalId = STAFF_TO_SUBCALENDAR[staffId];
+  if (!subCalId) return [];
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    const params = new URLSearchParams({
+      startDate: date,
+      endDate: date,
+      "subcalendarId[]": String(subCalId),
+    });
+    const res = await fetch(`${BASE_URL}/events?${params.toString()}`, {
+      headers: headers(),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    if (!res.ok) {
+      log("AVAILABILITY_ERROR", `Teamup API returned ${res.status} for staff ${staffId} date ${date}`);
+      return [];
+    }
+
+    const data = await res.json();
+    const events = data.events || [];
+
+    const results: { time: string; endTime: string; title: string }[] = [];
+    for (const e of events) {
+      const title = (e.title || "").toLowerCase();
+      if (title.startsWith("off")) continue;
+
+      const startStr = e.start_dt as string;
+      const endStr = e.end_dt as string;
+      const startH = parseInt(startStr.substring(11, 13));
+      const startM = parseInt(startStr.substring(14, 16));
+      const endH = parseInt(endStr.substring(11, 13));
+      const endM = parseInt(endStr.substring(14, 16));
+
+      let curH = startH;
+      let curM = startM;
+      while (curH < endH || (curH === endH && curM < endM)) {
+        if (curH >= 8 && curH <= 20) {
+          results.push({
+            time: from24ToDisplay(curH, curM),
+            endTime: from24ToDisplay(endH, endM),
+            title: e.title || "",
+          });
+        }
+        curH += 1;
+      }
+    }
+    return results;
+  } catch (err: any) {
+    log("AVAILABILITY_ERROR", `Failed to fetch Teamup events for staff ${staffId} date ${date}: ${err.message}`);
+    return [];
+  }
+}
+
 export async function pushBookingToTeamup(booking: {
   id: number;
   clientName: string;

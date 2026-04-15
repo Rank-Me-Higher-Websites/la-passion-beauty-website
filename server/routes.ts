@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { storage } from "./storage";
 import { insertBookingSchema, insertTimeBlockSchema, insertWebhookSchema } from "../shared/schema";
 import { fireWebhooks } from "./webhooks";
-import { pushBookingToTeamup, cancelTeamupEvent, deleteTeamupEvent, handleTeamupWebhook } from "./teamup";
+import { pushBookingToTeamup, cancelTeamupEvent, deleteTeamupEvent, handleTeamupWebhook, getTeamupEventsForStaffDate } from "./teamup";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -198,10 +198,18 @@ router.get("/api/bookings/availability", async (req: Request, res: Response) => 
     .filter((b) => b.status !== "cancelled")
     .map((b) => ({ time: b.time, serviceId: b.serviceId }));
 
+  const teamupEvents = await getTeamupEventsForStaffDate(String(staffId), String(date));
+  const bookedTimes = new Set(booked.map((b) => b.time));
+  for (const te of teamupEvents) {
+    if (!bookedTimes.has(te.time)) {
+      booked.push({ time: te.time, serviceId: "teamup" });
+    }
+  }
+
   const blocks = await storage.getTimeBlocksByStaffAndDate(String(staffId), String(date));
   const blocked = blocks.map((b) => ({ startTime: b.startTime, endTime: b.endTime, reason: b.reason }));
 
-  log("AVAILABILITY_CHECK", `staffId=${staffId} date=${date} → ${booked.length} booked, ${blocked.length} blocked, ip=${req.ip}`);
+  log("AVAILABILITY_CHECK", `staffId=${staffId} date=${date} → ${booked.length} booked (${teamupEvents.length} from teamup), ${blocked.length} blocked, ip=${req.ip}`);
   res.json({ booked, blocked });
 });
 
@@ -261,6 +269,13 @@ router.post("/api/bookings", async (req: Request, res: Response) => {
     const conflict = activeBookings.find((b) => b.time === data.time);
     if (conflict) {
       log("BOOKING_CONFLICT", `Double-booking blocked: staff=${data.staffId} date=${data.date} time=${data.time} client="${data.clientName}" ip=${req.ip}`);
+      return res.status(409).json({ error: "This time slot is already booked. Please choose a different time." });
+    }
+
+    const teamupEvents = await getTeamupEventsForStaffDate(data.staffId, data.date);
+    const teamupConflict = teamupEvents.find((e) => e.time === data.time);
+    if (teamupConflict) {
+      log("BOOKING_CONFLICT_TEAMUP", `Teamup double-booking blocked: staff=${data.staffId} date=${data.date} time=${data.time} client="${data.clientName}" teamup="${teamupConflict.title}" ip=${req.ip}`);
       return res.status(409).json({ error: "This time slot is already booked. Please choose a different time." });
     }
 
