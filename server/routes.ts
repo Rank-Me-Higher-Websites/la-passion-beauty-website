@@ -27,6 +27,45 @@ function parseTimeTo24(t: string): number {
   return h;
 }
 
+const SERVICE_DURATIONS: Record<string, number> = {
+  s1: 60, s2: 120, s3: 120, s4: 180, s5: 150, s6: 240, s7: 300, s8: 300,
+  s9: 180, s10: 180, s11: 120, s12: 60,
+};
+
+function timeToMinutes(t: string): number {
+  const [time, period] = t.split(" ");
+  const [hStr, mStr] = time.split(":");
+  let h = parseInt(hStr);
+  const m = parseInt(mStr);
+  if (period === "PM" && h !== 12) h += 12;
+  if (period === "AM" && h === 12) h = 0;
+  return h * 60 + m;
+}
+
+function minutesToHourSlot(mins: number): string {
+  const hour = Math.floor(mins / 60);
+  const h = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+  const ampm = hour >= 12 ? "PM" : "AM";
+  return `${h}:00 ${ampm}`;
+}
+
+/** Given a start time string and duration in minutes, return all 1-hour slot strings the booking overlaps */
+function getCoveredHourSlots(startTime: string, durationMin: number): string[] {
+  const startMin = timeToMinutes(startTime);
+  const endMin = startMin + durationMin;
+  const firstHour = Math.floor(startMin / 60);
+  const lastHour = Math.ceil(endMin / 60);
+  const slots: string[] = [];
+  for (let h = firstHour; h < lastHour; h++) {
+    slots.push(minutesToHourSlot(h * 60));
+  }
+  return slots;
+}
+
+function bookingsOverlap(startA: number, durA: number, startB: number, durB: number): boolean {
+  return startA < startB + durB && startB < startA + durA;
+}
+
 function isTimeBlocked(bookingTime: string, blocks: { startTime: string; endTime: string }[]): boolean {
   const hour = parseTimeTo24(bookingTime);
   return blocks.some((b) => {
@@ -194,17 +233,27 @@ router.get("/api/bookings/availability", async (req: Request, res: Response) => 
   }
 
   const existing = await storage.getBookingsByStaffAndDate(String(staffId), String(date));
-  const booked = existing
-    .filter((b) => b.status !== "cancelled")
-    .map((b) => ({ time: b.time, serviceId: b.serviceId }));
+  const activeBookings = existing.filter((b) => b.status !== "cancelled");
 
-  const teamupEvents = await getTeamupEventsForStaffDate(String(staffId), String(date));
-  const bookedTimes = new Set(booked.map((b) => b.time));
-  for (const te of teamupEvents) {
-    if (!bookedTimes.has(te.time)) {
-      booked.push({ time: te.time, serviceId: "teamup" });
+  const bookedSlotMap = new Map<string, string>();
+  for (const b of activeBookings) {
+    const dur = SERVICE_DURATIONS[b.serviceId] || 60;
+    for (const slot of getCoveredHourSlots(b.time, dur)) {
+      if (!bookedSlotMap.has(slot)) bookedSlotMap.set(slot, b.serviceId);
     }
   }
+
+  const teamupEvents = await getTeamupEventsForStaffDate(String(staffId), String(date));
+  for (const te of teamupEvents) {
+    const startMin = timeToMinutes(te.time);
+    const endMin = timeToMinutes(te.endTime);
+    const dur = Math.max(60, endMin - startMin);
+    for (const slot of getCoveredHourSlots(te.time, dur)) {
+      if (!bookedSlotMap.has(slot)) bookedSlotMap.set(slot, "teamup");
+    }
+  }
+
+  const booked = Array.from(bookedSlotMap.entries()).map(([time, serviceId]) => ({ time, serviceId }));
 
   const blocks = await storage.getTimeBlocksByStaffAndDate(String(staffId), String(date));
   const blocked = blocks.map((b) => ({ startTime: b.startTime, endTime: b.endTime, reason: b.reason }));
@@ -264,16 +313,28 @@ router.post("/api/bookings", async (req: Request, res: Response) => {
 
     data.status = "pending";
 
+    const newDur = SERVICE_DURATIONS[data.serviceId] || 60;
+    const newStart = timeToMinutes(data.time);
+
     const existing = await storage.getBookingsByStaffAndDate(data.staffId, data.date);
     const activeBookings = existing.filter((b) => b.status !== "cancelled");
-    const conflict = activeBookings.find((b) => b.time === data.time);
+    const conflict = activeBookings.find((b) => {
+      const bDur = SERVICE_DURATIONS[b.serviceId] || 60;
+      const bStart = timeToMinutes(b.time);
+      return bookingsOverlap(newStart, newDur, bStart, bDur);
+    });
     if (conflict) {
-      log("BOOKING_CONFLICT", `Double-booking blocked: staff=${data.staffId} date=${data.date} time=${data.time} client="${data.clientName}" ip=${req.ip}`);
+      log("BOOKING_CONFLICT", `Double-booking blocked: staff=${data.staffId} date=${data.date} time=${data.time} dur=${newDur}min conflicts with existing ${conflict.time} client="${data.clientName}" ip=${req.ip}`);
       return res.status(409).json({ error: "This time slot is already booked. Please choose a different time." });
     }
 
     const teamupEvents = await getTeamupEventsForStaffDate(data.staffId, data.date);
-    const teamupConflict = teamupEvents.find((e) => e.time === data.time);
+    const teamupConflict = teamupEvents.find((e) => {
+      const eStart = timeToMinutes(e.time);
+      const eEnd = timeToMinutes(e.endTime);
+      const eDur = Math.max(60, eEnd - eStart);
+      return bookingsOverlap(newStart, newDur, eStart, eDur);
+    });
     if (teamupConflict) {
       log("BOOKING_CONFLICT_TEAMUP", `Teamup double-booking blocked: staff=${data.staffId} date=${data.date} time=${data.time} client="${data.clientName}" teamup="${teamupConflict.title}" ip=${req.ip}`);
       return res.status(409).json({ error: "This time slot is already booked. Please choose a different time." });
