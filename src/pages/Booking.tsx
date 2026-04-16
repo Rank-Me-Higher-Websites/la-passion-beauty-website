@@ -119,10 +119,32 @@ const Booking = () => {
     }
   }, [selectedDate, selectedStaff]);
 
-  const staffTimeSlots = useMemo(
-    () => allTimeSlots.filter((t) => !bookedSlots.includes(t)),
-    [allTimeSlots, bookedSlots]
-  );
+  const staffTimeSlots = useMemo(() => {
+    if (!selectedService) return allTimeSlots.filter((t) => !bookedSlots.includes(t));
+    const hoursNeeded = Math.ceil(selectedService.duration / 60);
+    const parseHour = (t: string) => {
+      const [time, period] = t.split(" ");
+      let h = parseInt(time.split(":")[0]);
+      if (period === "PM" && h !== 12) h += 12;
+      if (period === "AM" && h === 12) h = 0;
+      return h;
+    };
+    const formatHour = (h: number) => {
+      const hr = h > 12 ? h - 12 : h === 0 ? 12 : h;
+      const ampm = h >= 12 ? "PM" : "AM";
+      return `${hr}:00 ${ampm}`;
+    };
+    const allSlotHours = new Set(allTimeSlots.map(parseHour));
+    return allTimeSlots.filter((slot) => {
+      const startH = parseHour(slot);
+      for (let i = 0; i < hoursNeeded; i++) {
+        const checkH = startH + i;
+        if (!allSlotHours.has(checkH)) return false;
+        if (bookedSlots.includes(formatHour(checkH))) return false;
+      }
+      return true;
+    });
+  }, [allTimeSlots, bookedSlots, selectedService]);
 
   const goNext = () => {
     const next = steps[currentStepIndex + 1];
