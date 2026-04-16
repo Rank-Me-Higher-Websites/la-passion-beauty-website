@@ -434,9 +434,6 @@ async function pollTeamupChanges() {
       endDate: endDate.toISOString().slice(0, 10),
     });
 
-    if (lastPollTimestamp) {
-      params.set("modifiedSince", lastPollTimestamp);
-    }
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
