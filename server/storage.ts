@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { staffAccounts, bookings, timeBlocks, webhooks } from "../shared/schema";
-import type { StaffAccount, InsertStaffAccount, Booking, InsertBooking, TimeBlock, InsertTimeBlock, Webhook, InsertWebhook } from "../shared/schema";
+import { staffAccounts, bookings, timeBlocks, webhooks, leads } from "../shared/schema";
+import type { StaffAccount, InsertStaffAccount, Booking, InsertBooking, TimeBlock, InsertTimeBlock, Webhook, InsertWebhook, Lead, InsertLead } from "../shared/schema";
 import { eq, and, desc, isNull, isNotNull } from "drizzle-orm";
 
 export interface IStorage {
@@ -33,6 +33,10 @@ export interface IStorage {
   createWebhook(webhook: InsertWebhook): Promise<Webhook>;
   updateWebhook(id: number, data: Partial<InsertWebhook>): Promise<Webhook | undefined>;
   deleteWebhook(id: number): Promise<void>;
+
+  createLead(lead: InsertLead): Promise<Lead>;
+  getAllLeads(): Promise<Lead[]>;
+  deleteLead(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -165,6 +169,19 @@ export class DatabaseStorage implements IStorage {
 
   async deleteWebhook(id: number): Promise<void> {
     await db.delete(webhooks).where(eq(webhooks.id, id));
+  }
+
+  async createLead(lead: InsertLead): Promise<Lead> {
+    const [created] = await db.insert(leads).values(lead).returning();
+    return created;
+  }
+
+  async getAllLeads(): Promise<Lead[]> {
+    return db.select().from(leads).orderBy(desc(leads.createdAt));
+  }
+
+  async deleteLead(id: number): Promise<void> {
+    await db.delete(leads).where(eq(leads.id, id));
   }
 }
 

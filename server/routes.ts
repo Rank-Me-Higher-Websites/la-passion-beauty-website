@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { storage } from "./storage";
-import { insertBookingSchema, insertTimeBlockSchema, insertWebhookSchema } from "../shared/schema";
+import { insertBookingSchema, insertTimeBlockSchema, insertWebhookSchema, insertLeadSchema } from "../shared/schema";
 import { fireWebhooks } from "./webhooks";
 import { pushBookingToTeamup, cancelTeamupEvent, deleteTeamupEvent, handleTeamupWebhook, getTeamupEventsForStaffDate } from "./teamup";
 
@@ -741,6 +741,45 @@ router.post("/api/webhooks/test", async (req: Request, res: Response) => {
     log("WEBHOOK_TEST_FAIL", `${staff.name} tested webhook → ${url} error="${err.message}"`);
     res.json({ ok: false, error: err.message, payload });
   }
+});
+
+router.post("/api/leads", async (req: Request, res: Response) => {
+  try {
+    const data = insertLeadSchema.parse(req.body);
+    const lead = await storage.createLead(data);
+    log("LEAD_CREATED", `New lead from "${lead.name}" email=${lead.email} phone=${lead.phone || "n/a"} source=${lead.source} ip=${req.ip}`);
+    res.status(201).json({ ok: true, id: lead.id });
+  } catch (err: any) {
+    log("LEAD_ERROR", `Failed to save lead: ${err.message} ip=${req.ip}`);
+    res.status(400).json({ error: "Invalid submission" });
+  }
+});
+
+router.get("/api/leads", async (req: Request, res: Response) => {
+  const staffId = (req.session as any)?.staffId;
+  if (!staffId) {
+    log("AUTH_DENIED", `Unauthenticated GET /api/leads from ${req.ip}`);
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  const staff = await storage.getStaffById(staffId);
+  if (!staff || staff.role !== "admin") {
+    log("AUTH_DENIED", `Non-admin GET /api/leads from staffId=${staffId} ip=${req.ip}`);
+    return res.status(403).json({ error: "Admin only" });
+  }
+  const leadsList = await storage.getAllLeads();
+  log("LEADS_READ", `${staff.name} fetched ${leadsList.length} leads`);
+  res.json(leadsList);
+});
+
+router.delete("/api/leads/:id", async (req: Request, res: Response) => {
+  const staffId = (req.session as any)?.staffId;
+  if (!staffId) return res.status(401).json({ error: "Not authenticated" });
+  const staff = await storage.getStaffById(staffId);
+  if (!staff || staff.role !== "admin") return res.status(403).json({ error: "Admin only" });
+  const id = parseInt(req.params.id);
+  await storage.deleteLead(id);
+  log("LEAD_DELETED", `${staff.name} deleted lead ${id}`);
+  res.json({ ok: true });
 });
 
 router.post("/api/teamup-webhook", async (req: Request, res: Response) => {
