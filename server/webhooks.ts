@@ -18,7 +18,7 @@ const STAFF_MAP: Record<string, string> = {
   st2: "Kasia",
   st3: "Kamila Janik",
   st4: "Karolina",
-  st5: "Veronika Dadek",
+  st5: "Veronika",
   st6: "Zofia",
   st7: "Kamila G.",
   st8: "Birute Francis",

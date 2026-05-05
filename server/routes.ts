@@ -66,12 +66,13 @@ function bookingsOverlap(startA: number, durA: number, startB: number, durB: num
   return startA < startB + durB && startB < startA + durA;
 }
 
-function isTimeBlocked(bookingTime: string, blocks: { startTime: string; endTime: string }[]): boolean {
-  const hour = parseTimeTo24(bookingTime);
+function isTimeBlocked(bookingTime: string, blocks: { startTime: string; endTime: string }[], durationMin: number = 60): boolean {
+  const startMin = timeToMinutes(bookingTime);
+  const endMin = startMin + durationMin;
   return blocks.some((b) => {
-    const start = parseTimeTo24(b.startTime);
-    const end = parseTimeTo24(b.endTime);
-    return hour >= start && hour < end;
+    const bStart = timeToMinutes(b.startTime);
+    const bEnd = timeToMinutes(b.endTime);
+    return startMin < bEnd && bStart < endMin;
   });
 }
 
@@ -253,9 +254,17 @@ router.get("/api/bookings/availability", async (req: Request, res: Response) => 
     }
   }
 
-  const booked = Array.from(bookedSlotMap.entries()).map(([time, serviceId]) => ({ time, serviceId }));
-
   const blocks = await storage.getTimeBlocksByStaffAndDate(String(staffId), String(date));
+  for (const b of blocks) {
+    const startMin = timeToMinutes(b.startTime);
+    const endMin = timeToMinutes(b.endTime);
+    const dur = Math.max(60, endMin - startMin);
+    for (const slot of getCoveredHourSlots(b.startTime, dur)) {
+      if (!bookedSlotMap.has(slot)) bookedSlotMap.set(slot, "blocked");
+    }
+  }
+
+  const booked = Array.from(bookedSlotMap.entries()).map(([time, serviceId]) => ({ time, serviceId }));
   const blocked = blocks.map((b) => ({ startTime: b.startTime, endTime: b.endTime, reason: b.reason }));
 
   log("AVAILABILITY_CHECK", `staffId=${staffId} date=${date} → ${booked.length} booked (${teamupEvents.length} from teamup), ${blocked.length} blocked, ip=${req.ip}`);
@@ -341,7 +350,7 @@ router.post("/api/bookings", async (req: Request, res: Response) => {
     }
 
     const blocks = await storage.getTimeBlocksByStaffAndDate(data.staffId, data.date);
-    if (isTimeBlocked(data.time, blocks)) {
+    if (isTimeBlocked(data.time, blocks, newDur)) {
       log("BOOKING_BLOCKED", `Time-block prevented booking: staff=${data.staffId} date=${data.date} time=${data.time} client="${data.clientName}" ip=${req.ip}`);
       return res.status(409).json({ error: "This time slot is blocked. Please choose a different time." });
     }
@@ -413,17 +422,25 @@ router.patch("/api/bookings/:id", async (req: Request, res: Response) => {
   if (time) updateData.time = time;
   if (serviceId) updateData.serviceId = serviceId;
 
-  if ((date || time) && existing.status !== "cancelled") {
+  if ((date || time || serviceId) && existing.status !== "cancelled") {
     const checkDate = date || existing.date;
     const checkTime = time || existing.time;
+    const checkServiceId = serviceId || existing.serviceId;
+    const checkDur = SERVICE_DURATIONS[checkServiceId] || 60;
+    const checkStart = timeToMinutes(checkTime);
     const existingBookings = await storage.getBookingsByStaffAndDate(existing.staffId, checkDate);
-    const conflict = existingBookings.find((b) => b.time === checkTime && b.id !== id && b.status !== "cancelled");
+    const conflict = existingBookings.find((b) => {
+      if (b.id === id || b.status === "cancelled") return false;
+      const bDur = SERVICE_DURATIONS[b.serviceId] || 60;
+      const bStart = timeToMinutes(b.time);
+      return bookingsOverlap(checkStart, checkDur, bStart, bDur);
+    });
     if (conflict) {
       log("BOOKING_CONFLICT", `${staff.name} tried to move booking ${id} to ${checkDate} ${checkTime} but slot taken`);
       return res.status(409).json({ error: "This time slot is already booked." });
     }
     const blocks = await storage.getTimeBlocksByStaffAndDate(existing.staffId, checkDate);
-    if (isTimeBlocked(checkTime, blocks)) {
+    if (isTimeBlocked(checkTime, blocks, checkDur)) {
       log("BOOKING_BLOCKED", `${staff.name} tried to move booking ${id} to blocked time ${checkDate} ${checkTime}`);
       return res.status(409).json({ error: "This time slot is blocked." });
     }

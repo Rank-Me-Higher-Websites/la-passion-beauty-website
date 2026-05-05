@@ -8,7 +8,7 @@ const staffData = [
   { name: "Kasia", email: "kasia@lapassion.com", password: "Kasia2026!", role: "stylist", staffDataId: "st2" },
   { name: "Kamila Janik", email: "kamila.j@lapassion.com", password: "KamilaJ2026!", role: "stylist", staffDataId: "st3" },
   { name: "Karolina", email: "karolina@lapassion.com", password: "Karolina2026!", role: "stylist", staffDataId: "st4" },
-  { name: "Veronika Dadek", email: "veronika@lapassion.com", password: "Veronika2026!", role: "stylist", staffDataId: "st5" },
+  { name: "Veronika", email: "veronika@lapassion.com", password: "Veronika2026!", role: "stylist", staffDataId: "st5" },
   { name: "Zofia", email: "zofia@lapassion.com", password: "Zofia2026!", role: "stylist", staffDataId: "st6" },
   { name: "Kamila G.", email: "kamila.g@lapassion.com", password: "KamilaG2026!", role: "stylist", staffDataId: "st7" },
   { name: "Birute Francis", email: "birute@lapassion.com", password: "Birute2026!", role: "stylist", staffDataId: "st8" },

@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     question: "Who does hair extensions?",
-    answer: "Hair extensions are available with Kamila Janik and Veronika Dadek. Contact us for a consultation to discuss the best options for your desired look.",
+    answer: "Hair extensions are available with Kamila Janik and Veronika. Contact us for a consultation to discuss the best options for your desired look.",
   },
   {
     question: "Where is La Passion Beauty Salon located?",

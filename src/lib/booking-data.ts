@@ -113,9 +113,9 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: "st5",
-    name: "Veronika Dadek",
+    name: "Veronika",
     role: "Stylist",
-    avatar: "VD",
+    avatar: "V",
     services: ["hair", "coloring", "extensions"],
     schedule: [
       { day: 2, startHour: 10, endHour: 13 }, // Tue
@@ -146,8 +146,11 @@ export const staffMembers: StaffMember[] = [
     avatar: "KG",
     services: ["hair", "coloring"],
     schedule: [
-      { day: 2, startHour: 10, endHour: 16 }, // Tue
-      { day: 3, startHour: 10, endHour: 16 }, // Wed
+      { day: 2, startHour: 10, endHour: 18 }, // Tue
+      { day: 3, startHour: 10, endHour: 18 }, // Wed
+      { day: 4, startHour: 10, endHour: 18 }, // Thu
+      { day: 5, startHour: 10, endHour: 18 }, // Fri
+      { day: 6, startHour: 10, endHour: 18 }, // Sat
     ],
   },
   {
