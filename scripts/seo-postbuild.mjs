@@ -85,6 +85,30 @@ if (!routes.some((r) => r.path === "/")) {
 
 /* ------------------------------------------------------------------ robots */
 const disallow = m.disallow || [];
+
+// Explicitly welcome AI/answer-engine crawlers. Several sites in this fleet had
+// hand-added blocks like this for AI search visibility, and an earlier version of
+// this template silently replaced them — so emit them by default rather than
+// depending on anyone remembering. Set "aiCrawlers": false to opt a site out.
+const AI_CRAWLERS = [
+  "GPTBot",
+  "OAI-SearchBot",
+  "ChatGPT-User",
+  "ClaudeBot",
+  "anthropic-ai",
+  "PerplexityBot",
+  "Google-Extended",
+  "CCBot",
+  "Applebot-Extended",
+];
+const aiBlock =
+  m.aiCrawlers === false
+    ? []
+    : [
+        `# Answer engines and AI assistants are welcome to read and cite this site.`,
+        ...AI_CRAWLERS.flatMap((ua) => [`User-agent: ${ua}`, `Allow: /`, ``]),
+      ];
+
 const robots = [
   `# ${m.siteName || DOMAIN} — robots.txt`,
   `# ${BASE}`,
@@ -93,6 +117,7 @@ const robots = [
   `Allow: /`,
   ...disallow.map((d) => `Disallow: ${d}`),
   ``,
+  ...aiBlock,
   `Sitemap: ${BASE}/sitemap.xml`,
   ``,
 ].join("\n");
