@@ -1,0 +1,91 @@
+{
+  "site": "la-passion-beauty-website",
+  "domain": "lapassionbeautysalon.com",
+  "distDir": "dist/public",
+  "publicDir": "public",
+  "siteName": "La Passion Beauty Salon",
+  "ogImage": "/logo-icon.png",
+  "disallow": ["/admin", "/login", "/my-bookings", "/api/"],
+  "replacements": [
+    { "from": "lapassionbeauty-website.replit.app", "to": "lapassionbeautysalon.com" }
+  ],
+  "routes": [
+    {
+      "path": "/",
+      "title": "La Passion Beauty Salon | Hair & Beauty Salon in Lemont, IL",
+      "description": "Hair salon in Lemont, IL offering expert haircuts, hair coloring, highlights, extensions and semi-permanent makeup. Book online or call +1 331-318-8113.",
+      "changefreq": "weekly",
+      "priority": 1.0,
+      "jsonLd": [
+        {
+          "@context": "https://schema.org",
+          "@type": "HairSalon",
+          "name": "La Passion Beauty Salon",
+          "url": "https://lapassionbeautysalon.com/",
+          "image": "https://lapassionbeautysalon.com/logo-icon.png",
+          "telephone": "+1-331-318-8113",
+          "email": "info@lapassionbeautysalon.com",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "12420 Archer Ave, Suite C",
+            "addressLocality": "Lemont",
+            "addressRegion": "IL",
+            "postalCode": "60439",
+            "addressCountry": "US"
+          },
+          "openingHoursSpecification": [
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+              "opens": "09:00",
+              "closes": "19:00"
+            }
+          ],
+          "areaServed": {
+            "@type": "City",
+            "name": "Lemont",
+            "containedInPlace": { "@type": "State", "name": "Illinois" }
+          },
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Salon Services",
+            "itemListElement": [
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Hair Services" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Hair Coloring" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Hair Extensions" } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Semi-Permanent Makeup" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/about",
+      "title": "About Us | La Passion Beauty Salon in Lemont, IL",
+      "description": "Meet the certified stylists at La Passion Beauty Salon in Lemont, IL. Personalized care and Kerastase luxury haircare for healthy, radiant hair.",
+      "changefreq": "monthly",
+      "priority": 0.7
+    },
+    {
+      "path": "/services",
+      "title": "Hair Services & Pricing | La Passion Beauty Salon Lemont, IL",
+      "description": "Haircuts, root touch-ups, full color, partial and full highlights, hair extensions and semi-permanent makeup at La Passion Beauty Salon in Lemont, IL.",
+      "changefreq": "monthly",
+      "priority": 0.9
+    },
+    {
+      "path": "/contact",
+      "title": "Contact & Directions | La Passion Beauty Salon Lemont, IL",
+      "description": "Visit La Passion Beauty Salon at 12420 Archer Ave, Suite C, Lemont, IL 60439. Open Monday to Saturday, 9 AM to 7 PM. Call +1 331-318-8113.",
+      "changefreq": "monthly",
+      "priority": 0.8
+    },
+    {
+      "path": "/booking",
+      "title": "Book an Appointment | La Passion Beauty Salon Lemont, IL",
+      "description": "Book your appointment online at La Passion Beauty Salon in Lemont, IL. Choose your service, your stylist and a date and time that suits you.",
+      "changefreq": "monthly",
+      "priority": 0.8
+    }
+  ]
+}
