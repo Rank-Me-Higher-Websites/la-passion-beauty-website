@@ -118,9 +118,14 @@ const sitemap = [
 /* --------------------------------------------------- per-route head rewrite */
 const template = readFileSync(join(distDir, "index.html"), "utf8");
 
+// Always substitute via a replacer FUNCTION. With a string replacement, JS
+// interprets $$, $&, $`, $' and $1 inside it — so a title containing "$40" or a
+// priceRange of "$$" would be silently mangled.
+const sub = (html, re, replacement) => html.replace(re, () => replacement);
+
 /** Replace an existing tag matched by `re`, else insert before </head>. */
 const upsert = (html, re, tag) =>
-  re.test(html) ? html.replace(re, tag) : html.replace(/<\/head>/i, `    ${tag}\n  </head>`);
+  re.test(html) ? sub(html, re, tag) : sub(html, /<\/head>/i, `    ${tag}\n  </head>`);
 
 function buildHtml(route) {
   let html = template;
@@ -134,7 +139,7 @@ function buildHtml(route) {
       : `${BASE}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`
     : null;
 
-  if (title) html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${esc(title)}</title>`);
+  if (title) html = sub(html, /<title>[\s\S]*?<\/title>/i, `<title>${esc(title)}</title>`);
   if (desc)
     html = upsert(
       html,
@@ -204,7 +209,7 @@ function buildHtml(route) {
           `    <script type="application/ld+json" data-seo="route">${jsonForScript(b)}</script>`,
       )
       .join("\n");
-    html = html.replace(/<\/head>/i, `${injected}\n  </head>`);
+    html = sub(html, /<\/head>/i, `${injected}\n  </head>`);
   }
   return html;
 }
