@@ -6,11 +6,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo-cropped.png";
 
-import { useAuth } from "@/contexts/AuthContext";
-
 const navLinks = [
   { name: "Home", path: "/" },
-  { name: "Book Now", path: "/booking" },
+  { name: "About", path: "/about" },
   { name: "Services", path: "/services" },
   { name: "Contact", path: "/contact" },
 ];
@@ -19,7 +17,6 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,24 +68,6 @@ const Header = () => {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-4">
-            {isAuthenticated ? (
-              <>
-                <Link
-                  to="/my-bookings"
-                  className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
-                >
-                  My Bookings
-                </Link>
-                <span className="text-sm text-muted-foreground">{user?.name?.split(" ")[0]}</span>
-                <Button variant="ghost" size="sm" onClick={logout}>
-                  Log Out
-                </Button>
-              </>
-            ) : (
-              <Button size="sm" asChild className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-primary font-semibold">
-                <Link to="/login">Log In</Link>
-              </Button>
-            )}
             <Button size="lg" asChild className="bg-white text-primary border-2 border-white hover:bg-white/90 font-semibold">
               <a href="tel:+13313188113">
                 <Phone className="h-4 w-4 mr-2" />
@@ -134,28 +113,7 @@ const Header = () => {
                     ))}
                   </nav>
 
-                  <div className="mt-auto pb-8 space-y-4">
-                    {isAuthenticated ? (
-                      <>
-                        <Link
-                          to="/my-bookings"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="block px-4 py-3 rounded-lg text-base font-medium text-foreground hover:bg-muted"
-                        >
-                          My Bookings
-                        </Link>
-                        <div className="px-4 py-2">
-                          <p className="text-sm text-muted-foreground">Logged in as {user?.name}</p>
-                          <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="text-sm text-primary hover:underline mt-1">
-                            Log Out
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <Button variant="gold-outline" className="w-full" asChild>
-                        <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Log In / Sign Up</Link>
-                      </Button>
-                    )}
+                  <div className="mt-auto pb-8">
                     <Button variant="gold" size="lg" className="w-full" asChild>
                       <a href="tel:+13313188113">
                         <Phone className="h-4 w-4 mr-2" />

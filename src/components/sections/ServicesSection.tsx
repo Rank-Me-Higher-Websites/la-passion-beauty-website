@@ -1,8 +1,7 @@
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { ArrowRight } from "lucide-react";
+import { Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import storefrontImage from "@/assets/services-storefront.png";
 
@@ -49,10 +48,10 @@ const ServicesSection = () => {
           </div>
 
           <Button variant="gold" size="lg" asChild className="text-sm h-10 md:h-11">
-            <Link to="/booking">
-              Book an Appointment
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+            <a href="tel:+13313188113">
+              <Phone className="mr-2 h-4 w-4" />
+              Call +1 331-318-8113
+            </a>
           </Button>
         </motion.div>
 

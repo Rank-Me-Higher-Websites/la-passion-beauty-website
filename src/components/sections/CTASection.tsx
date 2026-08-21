@@ -1,8 +1,7 @@
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Phone, Calendar } from "lucide-react";
+import { Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const CTASection = () => {
@@ -29,19 +28,8 @@ const CTASection = () => {
             Experience the luxury of personalized beauty care at La Passion Beauty Salon. 
             Our expert stylists are ready to help you look and feel your absolute best.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
+          <div className="flex items-center justify-center">
             <Button variant="cta" size="xl" asChild className="w-full sm:w-auto text-sm md:text-base h-10 md:h-12">
-              <Link to="/booking">
-                <Calendar className="h-4 w-4 md:h-5 md:w-5 mr-2" />
-                Book Appointment
-              </Link>
-            </Button>
-            <Button
-              variant="hero-outline"
-              size="xl"
-              className="border-primary text-primary hover:bg-primary hover:text-primary-foreground w-full sm:w-auto text-sm md:text-base h-10 md:h-12"
-              asChild
-            >
               <a href="tel:+13313188113">
                 <Phone className="h-4 w-4 md:h-5 md:w-5 mr-2" />
                 Call +1 331-318-8113

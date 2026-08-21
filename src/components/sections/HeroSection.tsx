@@ -1,21 +1,10 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Phone, ChevronRight, Star } from "lucide-react";
+import { Phone, Star } from "lucide-react";
 
 import { services } from "@/lib/booking-data";
 
 const HeroSection = () => {
-  const navigate = useNavigate();
-  const [selectedService, setSelectedService] = useState<string | null>(null);
-
-  const handleBook = () => {
-    const params = new URLSearchParams();
-    if (selectedService) params.set("service", selectedService);
-    navigate(`/booking${params.toString() ? `?${params}` : ""}`);
-  };
-
   return (
     <section className="relative md:min-h-[85vh] flex items-start md:items-center overflow-hidden bg-white">
 
@@ -106,7 +95,7 @@ const HeroSection = () => {
             </motion.div>
           </div>
 
-          {/* Right column — booking card (shows on all sizes) */}
+          {/* Right column — services & call card (shows on all sizes) */}
           <div className="lg:col-span-2">
             {/* Mobile copy block — sits above the form on small screens */}
             <div className="lg:hidden mb-8">
@@ -165,47 +154,39 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Booking card */}
+            {/* Services & call card */}
             <div className="bg-card/95 backdrop-blur-md rounded-xl md:rounded-2xl border-2 border-black p-3 md:p-6 shadow-elevated">
               <h3 className="font-serif text-lg md:text-2xl font-semibold text-foreground mb-0.5 md:mb-1">
-                Book Now
+                Our Services
               </h3>
               <p className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-4">
-                Select a service to get started
+                Call us to check availability and book
               </p>
 
               <div className="flex flex-col gap-1 md:gap-1.5 mb-2 md:mb-4">
-                {services.map((service) => {
-                  const isActive = selectedService === service.id;
-                  return (
-                    <button
-                      key={service.id}
-                      data-testid={`hero-service-${service.id}`}
-                      onClick={() => setSelectedService(isActive ? null : service.id)}
-                      className={`flex items-center justify-between px-3 md:px-4 py-2 md:py-2.5 rounded-lg text-[13px] md:text-sm font-medium transition-all duration-200 border ${
-                        isActive
-                          ? "bg-primary text-primary-foreground border-primary shadow-md"
-                          : "bg-background/60 text-foreground border-black/15 hover:border-primary/50 hover:bg-background"
-                      }`}
-                    >
-                      <span className="text-left">{service.name}</span>
-                      <span className={`text-xs ${isActive ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
-                        {service.price}
-                      </span>
-                    </button>
-                  );
-                })}
+                {services.map((service) => (
+                  <div
+                    key={service.id}
+                    data-testid={`hero-service-${service.id}`}
+                    className="flex items-center justify-between px-3 md:px-4 py-2 md:py-2.5 rounded-lg text-[13px] md:text-sm font-medium bg-background/60 text-foreground border border-black/15"
+                  >
+                    <span className="text-left">{service.name}</span>
+                    <span className="text-xs text-muted-foreground">{service.price}</span>
+                  </div>
+                ))}
               </div>
 
               <Button
                 variant="gold"
                 size="lg"
                 className="w-full h-10 md:h-11 text-sm md:text-base"
-                data-testid="hero-book-now"
-                onClick={handleBook}
+                data-testid="hero-call-now"
+                asChild
               >
-                Book Now
-                <ChevronRight className="h-4 w-4 ml-1" />
+                <a href="tel:+13313188113">
+                  <Phone className="h-4 w-4 mr-2" />
+                  Call Now
+                </a>
               </Button>
             </div>
           </div>

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsx server/index.ts & vite",
     "dev:server": "tsx server/index.ts",
+    "dev:vite": "vite",
     "build": "vite build && node esbuild.config.js && node scripts/seo-postbuild.mjs seo.config.json",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",

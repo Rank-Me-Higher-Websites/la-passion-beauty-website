@@ -1,14 +1,40 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
+# La Passion Beauty Salon — robots.txt
+# https://lapassionbeautysalon.com
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /my-bookings
+Disallow: /booking
+Disallow: /api/
+
+# Answer engines and AI assistants are welcome to read and cite this site.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://lapassionbeautysalon.com/sitemap.xml

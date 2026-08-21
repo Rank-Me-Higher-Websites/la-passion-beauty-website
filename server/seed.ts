@@ -15,13 +15,13 @@ const staffData = [
 ];
 
 const webhookData = [
-  { staffId: "st1", url: "https://cdlagency.app.n8n.cloud/webhook/6c52daf8-6159-46a9-b907-0bafee6c6344" },
-  { staffId: "st2", url: "https://cdlagency.app.n8n.cloud/webhook/64271b68-19ac-441d-ac97-f2f5d5d4ef0c" },
-  { staffId: "st3", url: "https://cdlagency.app.n8n.cloud/webhook/c5d3a771-5e24-4e3a-9286-8c7e8917aba7" },
-  { staffId: "st4", url: "https://cdlagency.app.n8n.cloud/webhook/1f00c278-6026-4094-8d1b-78a8aec47fc0" },
-  { staffId: "st5", url: "https://cdlagency.app.n8n.cloud/webhook/86b22402-0853-4362-9b52-3ae63e65c9b9" },
-  { staffId: "st6", url: "https://cdlagency.app.n8n.cloud/webhook/492cd4a0-64a1-4195-8b83-2eb9c938adb7" },
-  { staffId: "st7", url: "https://cdlagency.app.n8n.cloud/webhook/a0d61c3f-9d9d-4ba8-b72b-e195feeca0cf" },
+  { staffId: "st1", url: "https://n8n.andriusdigital.com/webhook/6c52daf8-6159-46a9-b907-0bafee6c6344" }, // Laima
+  { staffId: "st2", url: "https://n8n.andriusdigital.com/webhook/64271b68-19ac-441d-ac97-f2f5d5d4ef0c" }, // Kasia
+  { staffId: "st3", url: "https://n8n.andriusdigital.com/webhook/c5d3a771-5e24-4e3a-9286-8c7e8917aba7" }, // Kamila Janik
+  { staffId: "st4", url: "https://n8n.andriusdigital.com/webhook/1f00c278-6026-4094-8d1b-78a8aec47fc0" }, // Karolina
+  { staffId: "st5", url: "https://n8n.andriusdigital.com/webhook/86b22402-0853-4362-9b52-3ae63e65c9b9" }, // Veronika
+  { staffId: "st6", url: "https://n8n.andriusdigital.com/webhook/492cd4a0-64a1-4195-8b83-2eb9c938adb7" }, // Zofia
+  { staffId: "st7", url: "https://n8n.andriusdigital.com/webhook/a0d61c3f-9d9d-4ba8-b72b-e195feeca0cf" }, // Kamila G.
 ];
 
 export async function seedStaffAccounts() {

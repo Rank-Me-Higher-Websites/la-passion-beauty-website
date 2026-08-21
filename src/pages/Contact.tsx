@@ -1,61 +1,11 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Check } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
 import aboutSalon from "@/assets/about-salon.jpg";
 
 const Contact = () => {
-  const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      const res = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          message: formData.message || null,
-          source: "contact_form",
-        }),
-      });
-      if (!res.ok) throw new Error("Failed");
-      toast({
-        title: "Message Sent!",
-        description: "Thank you for contacting us. We'll get back to you soon!",
-      });
-      setFormData({ name: "", email: "", phone: "", message: "" });
-    } catch {
-      toast({
-        title: "Couldn't send message",
-        description: "Please try again or call us directly.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
   return (
     <Layout>
       {/* Hero Section */}
@@ -185,76 +135,44 @@ const Contact = () => {
                 </Button>
               </motion.div>
 
-              {/* Contact Form */}
+              {/* Book By Phone */}
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
               >
                 <div className="bg-card rounded-2xl p-8 shadow-card border border-border">
-                  <h3 className="font-serif text-2xl font-semibold text-foreground mb-6">Send Us a Message</h3>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                      <Label htmlFor="name">Full Name</Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="Your name"
-                        required
-                        className="mt-2"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email">Email Address</Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="your@email.com"
-                        required
-                        className="mt-2"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        placeholder="+1 (555) 000-0000"
-                        className="mt-2"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="message">Message</Label>
-                      <Textarea
-                        id="message"
-                        name="message"
-                        value={formData.message}
-                        onChange={handleChange}
-                        placeholder="Tell us how we can help you..."
-                        rows={4}
-                        required
-                        className="mt-2"
-                      />
-                    </div>
-                    <Button type="submit" variant="gold" size="lg" className="w-full" disabled={isSubmitting}>
-                      {isSubmitting ? (
-                        "Sending..."
-                      ) : (
-                        <>
-                          <Send className="h-4 w-4 mr-2" />
-                          Send Message
-                        </>
-                      )}
-                    </Button>
-                  </form>
+                  <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">Book by Phone</h3>
+                  <p className="text-muted-foreground mb-6">
+                    All appointments at La Passion Beauty Salon are arranged over the phone, so we can
+                    match you with the right stylist and set aside the time your service needs.
+                  </p>
+
+                  <ul className="space-y-4 mb-8">
+                    {[
+                      "Tell us the service you're interested in",
+                      "Let us know if you have a preferred stylist",
+                      "Share a few dates and times that work for you",
+                      "We'll confirm your appointment on the call",
+                    ].map((item) => (
+                      <li key={item} className="flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Check className="h-3.5 w-3.5 text-primary-foreground" />
+                        </span>
+                        <span className="text-muted-foreground">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Button variant="gold" size="lg" className="w-full" asChild>
+                    <a href="tel:+13313188113">
+                      <Phone className="h-5 w-5 mr-2" />
+                      Call +1 331-318-8113
+                    </a>
+                  </Button>
+                  <p className="text-sm text-muted-foreground text-center mt-4">
+                    Monday - Saturday: 9:00 AM - 7:00 PM
+                  </p>
                 </div>
               </motion.div>
             </div>

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Scissors, Palette, Cable, Sparkles, ArrowRight } from "lucide-react";
+import { Scissors, Palette, Cable, Sparkles, Phone } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import CTASection from "@/components/sections/CTASection";
 import { Button } from "@/components/ui/button";
@@ -123,10 +123,10 @@ const Services = () => {
           ))}
 
           <Button variant="gold" size="lg" asChild className="w-full mt-6">
-            <Link to="/booking">
-              Book an Appointment
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+            <a href="tel:+13313188113">
+              <Phone className="mr-2 h-4 w-4" />
+              Call +1 331-318-8113
+            </a>
           </Button>
         </div>
       </section>
